@@ -1,0 +1,49 @@
+databaseChangeLog:
+  - changeSet:
+      id: 3
+      author: mike
+      changes:
+        - createTable:
+            tableName: events
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+              - column:
+                  name: description
+                  type: VARCHAR(255)
+              - column:
+                  name: type
+                  type: VARCHAR(255)
+              - column:
+                  name: status
+                  type: VARCHAR(255)
+              - column:
+                  name: event_date
+                  type: TIMESTAMP
+              - column:
+                  name: participants_number
+                  type: INTEGER
+              - column:
+                  name: estimated_total_gross_revenue
+                  type: NUMERIC(38,2)
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+              - column:
+                  name: company_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_event_company
+                    references: companies(id)

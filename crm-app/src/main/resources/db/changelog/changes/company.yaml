@@ -1,0 +1,27 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: mike
+      changes:
+        - createTable:
+            tableName: companies
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column: { name: name, type: VARCHAR(255) }
+              - column: { name: tax_id, type: VARCHAR(255) }
+              - column: { name: industry, type: VARCHAR(255) }
+              - column: { name: email, type: VARCHAR(255) }
+              - column: { name: phone_number, type: VARCHAR(255) }
+              - column: { name: website, type: VARCHAR(255) }
+              - column: { name: address, type: VARCHAR(255) }
+              - column: { name: postal_code, type: VARCHAR(255) }
+              - column: { name: city, type: VARCHAR(255) }
+              - column: { name: country, type: VARCHAR(255) }
+              - column: { name: created_at, type: TIMESTAMP }
+              - column: { name: updated_at, type: TIMESTAMP }
