@@ -5,3 +5,9 @@ databaseChangeLog:
       file: db/changelog/changes/contact_person.yaml
   - include:
       file: db/changelog/changes/event.yaml
+  - include:
+      file: db/changelog/changes/hotel.yaml
+  - include:
+      file: db/changelog/changes/role.yaml
+  - include:
+      file: db/changelog/changes/user.yaml
