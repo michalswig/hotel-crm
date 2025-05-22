@@ -1,0 +1,25 @@
+databaseChangeLog:
+  - changeSet:
+      id: 002
+      author: mike
+      changes:
+        - insert:
+            tableName: hotels
+            columns:
+              - column: {name: name, value: "Hotel Marriott"}
+        - insert:
+            tableName: hotels
+            columns:
+              - column: {name: name, value: "Hotel Hilton"}
+        - insert:
+            tableName: roles
+            columns:
+              - column: {name: name, value: "ADMINISTRATOR"}
+        - insert:
+            tableName: roles
+            columns:
+              - column: {name: name, value: "MANAGER"}
+        - insert:
+            tableName: roles
+            columns:
+              - column: {name: name, value: "SPECIALIST"}

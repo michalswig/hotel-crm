@@ -29,7 +29,7 @@ public class UserController {
         return ResponseEntity.ok(UserDto.fromEntity(user));
     }
 
-    @GetMapping
+    @GetMapping("/filter")
     public ResponseEntity<Page<UserDto>> getFilteredUsers(
             @RequestParam(required = false) String username,
             @RequestParam(required = false) String role,
