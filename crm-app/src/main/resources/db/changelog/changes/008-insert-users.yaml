@@ -1,0 +1,40 @@
+databaseChangeLog:
+  - changeSet:
+      id: 004
+      author: mike
+      changes:
+        - insert:
+            tableName: users
+            columns:
+              - column: {name: username, value: admin1}
+              - column: {name: password, value: password123}
+              - column: {name: hotel_id, value: 1}
+              - column: {name: role_id, value: 1}
+        - insert:
+            tableName: users
+            columns:
+              - column: {name: username, value: manager1}
+              - column: {name: password, value: password123}
+              - column: {name: hotel_id, value: 2}
+              - column: {name: role_id, value: 2}
+        - insert:
+            tableName: users
+            columns:
+              - column: {name: username, value: specialist1}
+              - column: {name: password, value: password123}
+              - column: {name: hotel_id, value: 1}
+              - column: {name: role_id, value: 3}
+        - insert:
+            tableName: users
+            columns:
+              - column: {name: username, value: manager2}
+              - column: {name: password, value: password123}
+              - column: {name: hotel_id, value: 2}
+              - column: {name: role_id, value: 2}
+        - insert:
+            tableName: users
+            columns:
+              - column: {name: username, value: specialist2}
+              - column: {name: password, value: password123}
+              - column: {name: hotel_id, value: 2}
+              - column: {name: role_id, value: 3}
