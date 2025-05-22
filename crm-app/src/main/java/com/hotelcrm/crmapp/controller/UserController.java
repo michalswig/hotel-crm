@@ -6,11 +6,9 @@ import com.hotelcrm.crmapp.service.impl.UserServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/v1/users")
@@ -30,6 +28,20 @@ public class UserController {
         User user = userServiceImpl.getById(id);
         return ResponseEntity.ok(UserDto.fromEntity(user));
     }
+
+    @GetMapping
+    public ResponseEntity<Page<UserDto>> getFilteredUsers(
+            @RequestParam(required = false) String username,
+            @RequestParam(required = false) String role,
+            @PageableDefault(size = 10, sort = "username") Pageable pageable) {
+
+        Page<User> users = userServiceImpl.filterUsers(username, role, pageable);
+
+        Page<UserDto> userDtos = users.map(UserDto::fromEntity);
+
+        return ResponseEntity.ok(userDtos);
+    }
+
 
 
 }
