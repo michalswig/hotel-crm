@@ -37,7 +37,6 @@ public class UserServiceImpl implements UserService {
         if (role != null) {
             spec = spec.and(UserSpecification.hasRole(role));
         }
-
         return userRepository.findAll(spec, pageable);
     }
 

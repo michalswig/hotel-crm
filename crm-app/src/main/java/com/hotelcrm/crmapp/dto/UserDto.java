@@ -5,6 +5,8 @@ import com.hotelcrm.crmapp.entity.Role;
 import com.hotelcrm.crmapp.entity.User;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -16,12 +18,16 @@ public class UserDto {
     private String password;
     private Hotel hotel;
     private Role role;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
-    public UserDto(Long id, String username, Hotel hotel, Role role) {
+    public UserDto(Long id, String username, Hotel hotel, Role role, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.username = username;
         this.hotel = hotel;
         this.role = role;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
     public static UserDto fromEntity(User user) {
@@ -30,6 +36,8 @@ public class UserDto {
                 .username(user.getUsername())
                 .hotel(user.getHotel())
                 .role(user.getRole())
+                .createdAt(user.getCreatedAt())
+                .updatedAt(user.getUpdatedAt())
                 .build();
     }
 
