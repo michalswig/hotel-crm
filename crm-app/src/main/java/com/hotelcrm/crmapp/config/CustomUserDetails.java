@@ -1,23 +1,23 @@
 package com.hotelcrm.crmapp.config;
 
 import com.hotelcrm.crmapp.entity.User;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.Collections;
 
+@Getter
+@RequiredArgsConstructor
 public class CustomUserDetails implements UserDetails {
 
     private final User user;
 
-    public CustomUserDetails(User user) {
-        this.user = user;
-    }
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(user.getRole());
+        return Collections.singletonList(() -> "ROLE_" + user.getRole().getName().name());
     }
 
     @Override
@@ -48,9 +48,5 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
-    }
-
-    public User getUser() {
-        return user;
     }
 }

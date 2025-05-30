@@ -6,19 +6,36 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
     @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<Map<String, String>> handleNotFound(EntityNotFoundException ex) {
+    public ResponseEntity<Map<String, Object>> handleEntityNotFound(EntityNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(Map.of("error", ex.getMessage()));
+                .body(errorResponse("Entity not found", ex.getMessage(), HttpStatus.NOT_FOUND));
+    }
+
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<Map<String, Object>> handleInvalidCredentials(InvalidCredentialsException ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(errorResponse("Authentication failed", ex.getMessage(), HttpStatus.UNAUTHORIZED));
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Map<String, String>> handleOtherErrors(Exception ex) {
+    public ResponseEntity<Map<String, Object>> handleUnhandledErrors(Exception ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(Map.of("error", "Something went wrong"));
+                .body(errorResponse("Internal error", "Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR));
+    }
+
+    private Map<String, Object> errorResponse(String error, String message, HttpStatus status) {
+        return Map.of(
+                "timestamp", LocalDateTime.now(),
+                "status", status.value(),
+                "error", error,
+                "message", message
+        );
     }
 }

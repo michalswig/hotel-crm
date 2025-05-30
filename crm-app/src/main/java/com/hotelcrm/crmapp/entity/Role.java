@@ -3,7 +3,6 @@ package com.hotelcrm.crmapp.entity;
 import com.hotelcrm.crmapp.enums.RoleType;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.security.core.GrantedAuthority;
 
 @Entity
 @Table(name = "roles")
@@ -12,7 +11,7 @@ import org.springframework.security.core.GrantedAuthority;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Role implements GrantedAuthority {
+public class Role {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,9 +21,5 @@ public class Role implements GrantedAuthority {
     @Column(nullable = false, unique = true)
     private RoleType name;
 
-    @Override
-    public String getAuthority() {
-        return "ROLE_" + name.name();
-    }
 
 }
