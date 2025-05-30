@@ -2,8 +2,13 @@ package com.hotelcrm.crmapp.controller;
 
 import com.hotelcrm.crmapp.dto.UserDto;
 import com.hotelcrm.crmapp.entity.User;
+import com.hotelcrm.crmapp.mapper.UserMapper;
 import com.hotelcrm.crmapp.service.impl.UserServiceImpl;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -12,36 +17,47 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/v1/users")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UserController {
     private final UserServiceImpl userServiceImpl;
+    private final UserMapper userMapper;
 
+    @Operation(summary = "Get paginated list of users", description = "Returns a page of users with pagination and sorting")
+    @ApiResponse(responseCode = "200", description = "List of users successfully retrieved")
     @GetMapping
-    public ResponseEntity<Page<UserDto>> getUsers(Pageable pageable) {
+    public ResponseEntity<Page<UserDto>> getUsers(
+            @Parameter(description = "Pagination and sorting options")
+            @PageableDefault(size = 10, sort = "username") Pageable pageable) {
+
         Page<UserDto> userPage = userServiceImpl.getUsers(pageable)
-                .map(UserDto::fromEntity);
+                .map(userMapper::toDto);
         return ResponseEntity.ok(userPage);
     }
 
+    @Operation(summary = "Get user by ID", description = "Returns details of a specific user by ID")
+    @ApiResponse(responseCode = "200", description = "User successfully retrieved")
+    @ApiResponse(responseCode = "404", description = "User not found")
     @GetMapping("/{id}")
-    public ResponseEntity<UserDto> getUser(@PathVariable Long id) {
+    public ResponseEntity<UserDto> getUserById(
+            @Parameter(description = "ID of the user to retrieve") @PathVariable Long id) {
+
         User user = userServiceImpl.getById(id);
-        return ResponseEntity.ok(UserDto.fromEntity(user));
+        return ResponseEntity.ok(userMapper.toDto(user));
     }
 
+    @Operation(summary = "Filter users by username and/or role", description = "Returns a paginated list of users filtered by optional username and role")
+    @ApiResponse(responseCode = "200", description = "Filtered list of users successfully retrieved")
     @GetMapping("/filter")
     public ResponseEntity<Page<UserDto>> getFilteredUsers(
-            @RequestParam(required = false) String username,
-            @RequestParam(required = false) String role,
+            @Parameter(description = "Username to filter by") @RequestParam(required = false) String username,
+            @Parameter(description = "Role to filter by (e.g. ADMINISTRATOR, MANAGER)") @RequestParam(required = false) String role,
+            @Parameter(description = "Pagination and sorting options")
             @PageableDefault(size = 10, sort = "username") Pageable pageable) {
 
-        Page<User> users = userServiceImpl.filterUsers(username, role, pageable);
+        Page<UserDto> filteredUsers = userServiceImpl.filterUsers(username, role, pageable)
+                .map(userMapper::toDto);
 
-        Page<UserDto> userDtos = users.map(UserDto::fromEntity);
-
-        return ResponseEntity.ok(userDtos);
+        return ResponseEntity.ok(filteredUsers);
     }
-
-
 
 }
