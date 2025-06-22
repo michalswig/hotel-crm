@@ -33,6 +33,9 @@ public class Company {
     private String postalCode;
     private String city;
     private String country;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "created_by_user_id", nullable = false)
+    private User createdBy;
     @Column(name = "created_at")
     private LocalDateTime createdAt;
     @Column(name = "updated_at")

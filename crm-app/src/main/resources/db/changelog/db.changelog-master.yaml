@@ -1,16 +1,18 @@
 databaseChangeLog:
   - include:
-      file: db/changelog/changes/001-company.yaml
+      file: db/changelog/changes/001-role.yaml
+  - include:
+      file: db/changelog/changes/002-hotel.yaml
+  - include:
+      file: db/changelog/changes/003-user.yaml
+  - include:
+      file: db/changelog/changes/004-company.yaml
   - include:
       file: db/changelog/changes/002-contact_person.yaml
   - include:
-      file: db/changelog/changes/003-event.yaml
+      file: db/changelog/changes/005-event.yaml
   - include:
-      file: db/changelog/changes/004-hotel.yaml
-  - include:
-      file: db/changelog/changes/005-role.yaml
-  - include:
-      file: db/changelog/changes/006-user.yaml
+      file: db/changelog/changes/006-interactions.yaml
   - include:
       file: db/changelog/changes/007-insert-hotels-and-roles.yaml
   - include:

@@ -35,6 +35,12 @@ public class Event {
     private int participantsNumber;
     @Column(name = "estimated_total_gross_revenue")
     private BigDecimal estimatedTotalGrossRevenue;
+    @ManyToOne
+    @JoinColumn(name = "hotel_id", nullable = false)
+    private Hotel hotel;
+    @ManyToOne
+    @JoinColumn(name = "created_by_user_id", nullable = false)
+    private User createdBy;
     @Column(name = "event_date")
     private LocalDateTime eventDate;
     private LocalDateTime createdAt;
