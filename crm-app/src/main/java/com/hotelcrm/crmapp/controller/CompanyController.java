@@ -8,6 +8,7 @@ import com.hotelcrm.crmapp.service.CompanyService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,7 +26,7 @@ public class CompanyController {
     @Operation(summary = "Create a new company", description = "Creates a company using the request data")
     @ApiResponse(responseCode = "200", description = "Company successfully created")
     @PostMapping
-    public ResponseEntity<CompanyResponse> createCompany(@RequestBody CompanyRequest request) {
+    public ResponseEntity<CompanyResponse> createCompany(@Valid @RequestBody CompanyRequest request) {
         Company createdCompany = companyService.createCompany(request);
         return ResponseEntity.ok(CompanyMapper.toResponse(createdCompany));
     }
