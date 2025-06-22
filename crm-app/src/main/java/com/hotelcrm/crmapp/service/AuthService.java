@@ -3,6 +3,7 @@ package com.hotelcrm.crmapp.service;
 import com.hotelcrm.crmapp.config.CustomUserDetails;
 import com.hotelcrm.crmapp.dto.LoginRequest;
 import com.hotelcrm.crmapp.dto.LoginResponse;
+import com.hotelcrm.crmapp.dto.LoginToken;
 import com.hotelcrm.crmapp.dto.UserDto;
 import com.hotelcrm.crmapp.exception.InvalidCredentialsException;
 import com.hotelcrm.crmapp.mapper.UserMapper;
@@ -40,5 +41,24 @@ public class AuthService {
         UserDto userDto = userMapper.toDto(userDetails.getUser());
 
         return new LoginResponse(jwtToken, userDto);
+    }
+
+    public LoginToken authenticateWithCookies(LoginRequest request) {
+        Authentication authentication;
+        try {
+            authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.getUsername(), request.getPassword()
+                    )
+            );
+        } catch (AuthenticationException ex) {
+            throw new InvalidCredentialsException("Invalid username or password");
+        }
+
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        String accessToken = jwtService.generateToken(userDetails.getUsername());
+        String refreshToken = jwtService.generateRefreshToken(userDetails.getUsername());
+
+        return new LoginToken(accessToken, refreshToken);
     }
 }

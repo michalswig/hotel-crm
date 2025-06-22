@@ -6,6 +6,7 @@ import com.hotelcrm.crmapp.repository.UserRepository;
 import com.hotelcrm.crmapp.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Optional;
 
 @Component
@@ -33,23 +35,21 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws IOException, ServletException {
 
-        String authHeader = request.getHeader("Authorization");
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        String token = extractCookie(request, "access_token");
+        if (token == null) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        String token = authHeader.substring(7);
         String username;
-
         try {
             username = jwtService.extractUsername(token);
         } catch (Exception e) {
-            filterChain.doFilter(request, response); // Invalid JWT
+            filterChain.doFilter(request, response);
             return;
         }
 
-        Optional<User> userOpt = userRepository.findByUsername(username);
+        Optional<User> userOpt = userRepository.findByUsernameWithAllRelations(username);
 
         if (userOpt.isPresent() && jwtService.isTokenValid(token, username)) {
             User user = userOpt.get();
@@ -68,5 +68,14 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    private String extractCookie(HttpServletRequest request, String cookieName){
+        if(request.getCookies() == null) return null;
+        return Arrays.stream(request.getCookies())
+                .filter(cookie -> cookie.getName().equals(cookieName))
+                .map(Cookie::getValue)
+                .findFirst()
+                .orElse(null);
     }
 }

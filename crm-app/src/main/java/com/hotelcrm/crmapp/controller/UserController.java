@@ -3,11 +3,10 @@ package com.hotelcrm.crmapp.controller;
 import com.hotelcrm.crmapp.dto.UserDto;
 import com.hotelcrm.crmapp.entity.User;
 import com.hotelcrm.crmapp.mapper.UserMapper;
-import com.hotelcrm.crmapp.service.impl.UserServiceImpl;
+import com.hotelcrm.crmapp.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("api/v1/users")
 @RequiredArgsConstructor
 public class UserController {
-    private final UserServiceImpl userServiceImpl;
+    private final UserService userService;
     private final UserMapper userMapper;
 
     @Operation(summary = "Get paginated list of users", description = "Returns a page of users with pagination and sorting")
@@ -29,7 +28,7 @@ public class UserController {
             @Parameter(description = "Pagination and sorting options")
             @PageableDefault(size = 10, sort = "username") Pageable pageable) {
 
-        Page<UserDto> userPage = userServiceImpl.getUsers(pageable)
+        Page<UserDto> userPage = userService.getUsers(pageable)
                 .map(userMapper::toDto);
         return ResponseEntity.ok(userPage);
     }
@@ -41,7 +40,7 @@ public class UserController {
     public ResponseEntity<UserDto> getUserById(
             @Parameter(description = "ID of the user to retrieve") @PathVariable Long id) {
 
-        User user = userServiceImpl.getById(id);
+        User user = userService.getById(id);
         return ResponseEntity.ok(userMapper.toDto(user));
     }
 
@@ -54,7 +53,7 @@ public class UserController {
             @Parameter(description = "Pagination and sorting options")
             @PageableDefault(size = 10, sort = "username") Pageable pageable) {
 
-        Page<UserDto> filteredUsers = userServiceImpl.filterUsers(username, role, pageable)
+        Page<UserDto> filteredUsers = userService.filterUsers(username, role, pageable)
                 .map(userMapper::toDto);
 
         return ResponseEntity.ok(filteredUsers);

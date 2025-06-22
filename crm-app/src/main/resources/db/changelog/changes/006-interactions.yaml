@@ -1,0 +1,57 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-interactions-table
+      author: mike
+      changes:
+        - createTable:
+            tableName: interactions
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: type
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: notes
+                  type: TEXT
+
+              - column:
+                  name: interaction_date
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: contact_person_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_interaction_contact_person
+                    referencedTableName: contact_persons
+                    referencedColumnNames: id
+
+              - column:
+                  name: user_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_interaction_user
+                    referencedTableName: users
+                    referencedColumnNames: id
+
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
