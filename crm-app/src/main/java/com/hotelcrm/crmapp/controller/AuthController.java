@@ -5,6 +5,7 @@ import com.hotelcrm.crmapp.dto.LoginRequest;
 import com.hotelcrm.crmapp.dto.LoginResponse;
 import com.hotelcrm.crmapp.dto.LoginToken;
 import com.hotelcrm.crmapp.dto.UserDto;
+import com.hotelcrm.crmapp.exception.UnauthenticatedAccessException;
 import com.hotelcrm.crmapp.mapper.UserMapper;
 import com.hotelcrm.crmapp.service.AuthService;
 import com.hotelcrm.crmapp.service.JwtService;
@@ -62,6 +63,31 @@ public class AuthController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(HttpServletResponse response) {
+        ResponseCookie accessToken = ResponseCookie.from("access_token", "")
+                .httpOnly(true)
+                .secure(false)
+                .path("/")
+                .maxAge(0)
+                .sameSite("Lax")
+                .build();
+
+        ResponseCookie refreshToken = ResponseCookie.from("refresh_token", "")
+                .httpOnly(true)
+                .secure(false)
+                .path("/")
+                .maxAge(0)
+                .sameSite("Lax")
+                .build();
+
+        response.addHeader(HttpHeaders.SET_COOKIE, accessToken.toString());
+        response.addHeader(HttpHeaders.SET_COOKIE, refreshToken.toString());
+
+        return ResponseEntity.ok().build();
+    }
+
+
     @PostMapping("/refresh-token")
     public ResponseEntity<Void> refreshToken(HttpServletRequest request, HttpServletResponse response) {
         String refreshToken = extractCookie(request, "refresh_token");
@@ -89,9 +115,11 @@ public class AuthController {
 
 
     @GetMapping("/me")
-    public ResponseEntity<UserDto> me(@AuthenticationPrincipal CustomUserDetails userDetails) {
+    public ResponseEntity<?> me(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        if (userDetails == null) {
+            throw new UnauthenticatedAccessException("User is not authenticated");
+        }
         UserDto dto = userMapper.toDto(userDetails.getUser());
-        System.out.println("User details: " + dto);
         return ResponseEntity.ok(dto);
     }
 

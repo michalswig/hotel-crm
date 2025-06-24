@@ -27,14 +27,22 @@ export class LoginComponent {
 
     this.authService.login(this.loginForm.value).subscribe({
       next: () => {
-        console.log('Logged in successfully');
-        this.router.navigate(['/dashboard']);
+        this.authService.getCurrentUser().subscribe({
+          next: user => {
+            localStorage.setItem('user', JSON.stringify(user));
+            this.router.navigate(['/dashboard']);
+          },
+          error: () => {
+            this.error = 'Unable to fetch user info after login.';
+          }
+        });
       },
       error: () => {
         this.error = 'Invalid username or password';
       }
     });
   }
+
 
 
 }

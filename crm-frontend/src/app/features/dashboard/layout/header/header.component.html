@@ -1,0 +1,22 @@
+<mat-toolbar color="primary" class="toolbar">
+  <span class="logo">🏨 CRM</span>
+
+  <span class="spacer"></span>
+
+  <ng-container *ngIf="user.role === 'ADMINISTRATOR'">
+    <button mat-button routerLink="/dashboard/users">Manage Users</button>
+    <button mat-button routerLink="/dashboard/companies">My Companies</button>
+    <button mat-button routerLink="/dashboard/interactions">My Interactions</button>
+  </ng-container>
+
+  <ng-container *ngIf="user.role === 'SPECIALIST'">
+    <button mat-button routerLink="/dashboard/companies">My Companies</button>
+    <button mat-button routerLink="/dashboard/interactions">My Interactions</button>
+  </ng-container>
+
+
+  <span class="username">Hi, {{ user.username }}</span>
+  <button mat-icon-button (click)="logout()" aria-label="Logout">
+    <mat-icon>logout</mat-icon>
+  </button>
+</mat-toolbar>

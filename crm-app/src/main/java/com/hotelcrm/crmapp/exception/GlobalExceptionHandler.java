@@ -30,6 +30,12 @@ public class GlobalExceptionHandler {
                 .body(errorResponse("Internal error", "Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR));
     }
 
+    @ExceptionHandler(UnauthenticatedAccessException.class)
+    public ResponseEntity<Map<String, Object>> handleUnauthenticatedAccess(UnauthenticatedAccessException ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(errorResponse("Unauthorized", ex.getMessage(), HttpStatus.UNAUTHORIZED));
+    }
+
     private Map<String, Object> errorResponse(String error, String message, HttpStatus status) {
         return Map.of(
                 "timestamp", LocalDateTime.now(),
