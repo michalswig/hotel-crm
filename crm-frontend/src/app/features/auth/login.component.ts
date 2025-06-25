@@ -1,8 +1,9 @@
-import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import {FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {CommonModule} from '@angular/common';
+import {Component} from '@angular/core';
+import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {AuthService} from '../../core/auth/auth.service';
-import { Router } from '@angular/router';
+import {Router} from '@angular/router';
+import {UserService} from '../../core/auth/user.service';
 
 @Component({
   selector: 'app-login',
@@ -14,7 +15,7 @@ export class LoginComponent {
   loginForm: FormGroup;
   error: string = '';
 
-  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {
+  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router, private  userService: UserService) {
 
     this.loginForm = this.fb.group({
       username: ['', Validators.required],
@@ -29,17 +30,15 @@ export class LoginComponent {
       next: () => {
         this.authService.getCurrentUser().subscribe({
           next: user => {
-            localStorage.setItem('user', JSON.stringify(user));
-            this.router.navigate(['/dashboard']);
+            if (user) {
+              this.userService.setUser(user);
+              this.router.navigate(['/dashboard']);
+            }
           },
-          error: () => {
-            this.error = 'Unable to fetch user info after login.';
-          }
+          error: () => this.error = 'Unable to fetch user info after login.'
         });
       },
-      error: () => {
-        this.error = 'Invalid username or password';
-      }
+      error: () => this.error = 'Invalid username or password'
     });
   }
 
