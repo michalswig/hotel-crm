@@ -1,8 +1,16 @@
+.page-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; // full height of screen
+}
+
 .layout {
   display: flex;
+  flex: 1; // this pushes the footer down
 }
 
 .main-content {
   flex-grow: 1;
   padding: 16px;
+  min-height: 100%; // helpful fallback
 }

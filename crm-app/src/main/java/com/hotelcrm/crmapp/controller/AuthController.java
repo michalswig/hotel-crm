@@ -38,7 +38,7 @@ public class AuthController {
     @Operation(summary = "Authenticate user and return JWT token")
     @ApiResponse(responseCode = "200", description = "Successful authentication")
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request, HttpServletResponse response) {
+    public ResponseEntity<Void> login(@Valid @RequestBody LoginRequest request, HttpServletResponse response) {
         LoginToken tokens = authService.authenticateWithCookies(request);
 
         ResponseCookie accessCookie = ResponseCookie.from("access_token", tokens.getAccessToken())

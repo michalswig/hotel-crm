@@ -10,7 +10,7 @@ export class AuthService {
 
   private readonly API_URL = 'http://localhost:8080/api/v1/auth';
 
-  constructor(private readonly http: HttpClient, private  userService: UserService) {
+  constructor(private readonly http: HttpClient, private readonly userService: UserService) {
   }
 
   login(credentials: { username: string; password: string }): Observable<void> {
