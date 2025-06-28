@@ -1,0 +1,94 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2          # next sequential change-set id
+      author: mike
+      changes:
+        # ---------- Company 1 ----------
+        - insert:
+            tableName: companies
+            columns:
+              - column: { name: name,                 value: 'Acme Logistics' }
+              - column: { name: tax_id,               value: 'PL1234567890' }
+              - column: { name: industry,             value: 'Logistics' }
+              - column: { name: email,                value: 'contact@acmelogistics.pl' }
+              - column: { name: phone_number,         value: '+48 22 123 45 67' }
+              - column: { name: website,              value: 'https://acmelogistics.pl' }
+              - column: { name: address,              value: 'ul. Przykładowa 1' }
+              - column: { name: postal_code,          value: '00-001' }
+              - column: { name: city,                 value: 'Warszawa' }
+              - column: { name: country,              value: 'Poland' }
+              - column: { name: created_by_user_id,   valueNumeric: 5 }
+              - column: { name: created_at,           valueDate: '2025-06-28T00:00:00' }
+              - column: { name: updated_at,           valueDate: '2025-06-28T00:00:00' }
+
+        # ---------- Company 2 ----------
+        - insert:
+            tableName: companies
+            columns:
+              - column: { name: name,                 value: 'GreenTech Solutions' }
+              - column: { name: tax_id,               value: 'PL0987654321' }
+              - column: { name: industry,             value: 'Renewable Energy' }
+              - column: { name: email,                value: 'info@greentech.pl' }
+              - column: { name: phone_number,         value: '+48 58 987 65 43' }
+              - column: { name: website,              value: 'https://greentech.pl' }
+              - column: { name: address,              value: 'ul. Zielona 12' }
+              - column: { name: postal_code,          value: '80-001' }
+              - column: { name: city,                 value: 'Gdańsk' }
+              - column: { name: country,              value: 'Poland' }
+              - column: { name: created_by_user_id,   valueNumeric: 5 }
+              - column: { name: created_at,           valueDate: '2025-06-28T00:00:00' }
+              - column: { name: updated_at,           valueDate: '2025-06-28T00:00:00' }
+
+        # ---------- Company 3 ----------
+        - insert:
+            tableName: companies
+            columns:
+              - column: { name: name,                 value: 'Nova Pharma Inc.' }
+              - column: { name: tax_id,               value: 'PL5678901234' }
+              - column: { name: industry,             value: 'Pharmaceuticals' }
+              - column: { name: email,                value: 'hello@novapharma.pl' }
+              - column: { name: phone_number,         value: '+48 61 222 33 44' }
+              - column: { name: website,              value: 'https://novapharma.pl' }
+              - column: { name: address,              value: 'ul. Zdrowa 5' }
+              - column: { name: postal_code,          value: '60-001' }
+              - column: { name: city,                 value: 'Poznań' }
+              - column: { name: country,              value: 'Poland' }
+              - column: { name: created_by_user_id,   valueNumeric: 5 }
+              - column: { name: created_at,           valueDate: '2025-06-28T00:00:00' }
+              - column: { name: updated_at,           valueDate: '2025-06-28T00:00:00' }
+
+        # ---------- Company 4 ----------
+        - insert:
+            tableName: companies
+            columns:
+              - column: { name: name,                 value: 'Blue Ocean Advisors' }
+              - column: { name: tax_id,               value: 'PL2468135790' }
+              - column: { name: industry,             value: 'Consulting' }
+              - column: { name: email,                value: 'support@blueocean.pl' }
+              - column: { name: phone_number,         value: '+48 12 345 67 89' }
+              - column: { name: website,              value: 'https://blueocean.pl' }
+              - column: { name: address,              value: 'Al. Baltic 3A' }
+              - column: { name: postal_code,          value: '31-001' }
+              - column: { name: city,                 value: 'Kraków' }
+              - column: { name: country,              value: 'Poland' }
+              - column: { name: created_by_user_id,   valueNumeric: 5 }
+              - column: { name: created_at,           valueDate: '2025-06-28T00:00:00' }
+              - column: { name: updated_at,           valueDate: '2025-06-28T00:00:00' }
+
+        # ---------- Company 5 ----------
+        - insert:
+            tableName: companies
+            columns:
+              - column: { name: name,                 value: 'Iron Forge Manufacturing' }
+              - column: { name: tax_id,               value: 'PL1357924680' }
+              - column: { name: industry,             value: 'Metal Fabrication' }
+              - column: { name: email,                value: 'sales@ironforge.pl' }
+              - column: { name: phone_number,         value: '+48 42 864 20 20' }
+              - column: { name: website,              value: 'https://ironforge.pl' }
+              - column: { name: address,              value: 'ul. Przemysłowa 7' }
+              - column: { name: postal_code,          value: '90-001' }
+              - column: { name: city,                 value: 'Łódź' }
+              - column: { name: country,              value: 'Poland' }
+              - column: { name: created_by_user_id,   valueNumeric: 5 }
+              - column: { name: created_at,           valueDate: '2025-06-28T00:00:00' }
+              - column: { name: updated_at,           valueDate: '2025-06-28T00:00:00' }

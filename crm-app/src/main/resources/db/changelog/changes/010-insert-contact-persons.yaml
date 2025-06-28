@@ -1,0 +1,65 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2-seed-contacts-fixed-date
+      author: mike
+      context: dev
+      changes:
+        - insert:
+            tableName: contact_persons
+            columns:
+              - column: { name: first_name, value: 'Sylwia' }
+              - column: { name: last_name, value: 'Kaczmarek' }
+              - column: { name: email, value: 'sylwia.k@company2.com' }
+              - column: { name: phone_number, value: '+48 500-002-002' }
+              - column: { name: position, value: 'Sales Manager' }
+              - column: { name: created_at, valueDate: '2025-06-28T00:00:00' }
+              - column: { name: updated_at, valueDate: '2025-06-28T00:00:00' }
+              - column: { name: company_id, valueNumeric: 1 }
+
+        - insert:
+            tableName: contact_persons
+            columns:
+              - column: { name: first_name, value: 'Piotr' }
+              - column: { name: last_name, value: 'Zieliński' }
+              - column: { name: email, value: 'piotr.z@company3.com' }
+              - column: { name: phone_number, value: '+48 500-003-003' }
+              - column: { name: position, value: 'Event Planner' }
+              - column: { name: created_at, valueDate: '2025-06-28T00:00:00' }
+              - column: { name: updated_at, valueDate: '2025-06-28T00:00:00' }
+              - column: { name: company_id, valueNumeric: 2 }
+
+        - insert:
+            tableName: contact_persons
+            columns:
+              - column: { name: first_name, value: 'Maria' }
+              - column: { name: last_name, value: 'Nowicka' }
+              - column: { name: email, value: 'maria.n@company4.com' }
+              - column: { name: phone_number, value: '+48 500-004-004' }
+              - column: { name: position, value: 'Operations Lead' }
+              - column: { name: created_at, valueDate: '2025-06-28T00:00:00' }
+              - column: { name: updated_at, valueDate: '2025-06-28T00:00:00' }
+              - column: { name: company_id, valueNumeric: 3 }
+
+        - insert:
+            tableName: contact_persons
+            columns:
+              - column: { name: first_name, value: 'Tomasz' }
+              - column: { name: last_name, value: 'Lewandowski' }
+              - column: { name: email, value: 'tomasz.l@company5.com' }
+              - column: { name: phone_number, value: '+48 500-005-005' }
+              - column: { name: position, value: 'Key-Account' }
+              - column: { name: created_at, valueDate: '2025-06-28T00:00:00' }
+              - column: { name: updated_at, valueDate: '2025-06-28T00:00:00' }
+              - column: { name: company_id, valueNumeric: 4 }
+
+        - insert:
+            tableName: contact_persons
+            columns:
+              - column: { name: first_name, value: 'Ewa' }
+              - column: { name: last_name, value: 'Baran' }
+              - column: { name: email, value: 'ewa.b@company6.com' }
+              - column: { name: phone_number, value: '+48 500-006-006' }
+              - column: { name: position, value: 'Marketing Coord.' }
+              - column: { name: created_at, valueDate: '2025-06-28T00:00:00' }
+              - column: { name: updated_at, valueDate: '2025-06-28T00:00:00' }
+              - column: { name: company_id, valueNumeric: 5 }
