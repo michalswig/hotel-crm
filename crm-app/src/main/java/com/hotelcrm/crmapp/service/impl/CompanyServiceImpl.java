@@ -1,6 +1,7 @@
 package com.hotelcrm.crmapp.service.impl;
 
 import com.hotelcrm.crmapp.dto.CompanyRequest;
+import com.hotelcrm.crmapp.dto.CompanySummaryDto;
 import com.hotelcrm.crmapp.entity.Company;
 import com.hotelcrm.crmapp.mapper.CompanyMapper;
 import com.hotelcrm.crmapp.repository.CompanyRepository;
@@ -12,6 +13,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -47,4 +50,11 @@ public class CompanyServiceImpl implements CompanyService {
         return companyRepository.findAll(spec, pageable);
 
     }
+
+    @Override
+    public List<CompanySummaryDto> fetchCompanySummaryTable(int ytdYear, int lyYear) {
+        return companyRepository.fetchCompanySummaryTable(ytdYear, lyYear);
+    }
+
+
 }

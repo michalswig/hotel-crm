@@ -1,1 +1,23 @@
-<p>dashboard works!</p>
+<div class="company-summary">
+  <h2>Company Summary</h2>
+  <table>
+    <thead>
+    <tr>
+      <th>Company</th>
+      <th>Owner</th>
+      <th>Last Contact</th>
+      <th>Revenue YTD (€)</th>
+      <th>Revenue LY (€)</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let row of companySummary">
+      <td>{{ row.companyName }}</td>
+      <td>{{ row.ownerUsername }}</td>
+      <td>{{ row.lastContactDate | date: 'short' }}</td>
+      <td>{{ row.totalRevenueYTD | number: '1.0-0' }}</td>
+      <td>{{ row.totalRevenueLY | number: '1.0-0' }}</td>
+    </tr>
+    </tbody>
+  </table>
+</div>

@@ -2,6 +2,7 @@ package com.hotelcrm.crmapp.controller;
 
 import com.hotelcrm.crmapp.dto.CompanyRequest;
 import com.hotelcrm.crmapp.dto.CompanyResponse;
+import com.hotelcrm.crmapp.dto.CompanySummaryDto;
 import com.hotelcrm.crmapp.entity.Company;
 import com.hotelcrm.crmapp.mapper.CompanyMapper;
 import com.hotelcrm.crmapp.service.CompanyService;
@@ -15,6 +16,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/companies")
@@ -66,4 +69,19 @@ public class CompanyController {
 
         return ResponseEntity.ok(filteredCompanies);
     }
+
+    @ApiResponse(responseCode = "200", description = "Overview generated")
+    @GetMapping("/summary")
+    public ResponseEntity<List<CompanySummaryDto>> getCompanySummaryTable(
+            @RequestParam(required = false) Integer ytdYear,
+            @RequestParam(required = false) Integer lyYear) {
+
+        int currentYear = java.time.Year.now().getValue();
+        int yearYTD = (ytdYear != null ? ytdYear : currentYear);
+        int yearLY = (lyYear != null ? lyYear : currentYear - 1);
+
+        List<CompanySummaryDto> summary = companyService.fetchCompanySummaryTable(yearYTD, yearLY);
+        return ResponseEntity.ok(summary);
+    }
+
 }

@@ -26,7 +26,6 @@ import java.util.List;
 public class SecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
-    private final UserRepository userRepository;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -41,6 +40,7 @@ public class SecurityConfig {
                                 "/actuator/health",
                                 "/v3/api-docs/**"
                         ).permitAll()
+                        .requestMatchers("/api/v1/companies/summary").permitAll() //TODO
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
