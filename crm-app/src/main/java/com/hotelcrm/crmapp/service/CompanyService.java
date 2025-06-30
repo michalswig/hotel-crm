@@ -1,5 +1,6 @@
 package com.hotelcrm.crmapp.service;
 
+import com.hotelcrm.crmapp.dto.CompanyFilter;
 import com.hotelcrm.crmapp.dto.CompanyRequest;
 import com.hotelcrm.crmapp.dto.CompanySummaryDto;
 import com.hotelcrm.crmapp.entity.Company;
@@ -13,9 +14,13 @@ public interface CompanyService {
 
     Page<Company> getCompanies(Pageable pageable);
 
-    Company getById(Integer id);
+    Company getById(Long id);
 
     Page<Company> filterCompanies(String name, String city, Pageable pageable);
 
     List<CompanySummaryDto> fetchCompanySummaryTable(int ytdYear, int lyYear);
+
+    Company updateCompany(Long id, CompanyFilter request);
+
+    void deleteCompany(Long id);
 }
