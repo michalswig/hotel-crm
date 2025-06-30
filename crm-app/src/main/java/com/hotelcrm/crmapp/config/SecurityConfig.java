@@ -40,7 +40,7 @@ public class SecurityConfig {
                                 "/actuator/health",
                                 "/v3/api-docs/**"
                         ).permitAll()
-                        .requestMatchers("/api/v1/companies/summary").permitAll() //TODO
+                        .requestMatchers("/api/v1/companies/summary").hasAnyRole("SPECIALIST", "MANAGER", "ADMINISTRATOR")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
