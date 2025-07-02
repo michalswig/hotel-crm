@@ -5,7 +5,7 @@ import {MatIcon} from '@angular/material/icon';
 import {NgIf} from '@angular/common';
 import {AuthService} from '../../../../core/auth/auth.service';
 import {RouterLink} from '@angular/router';
-import {User, UserService} from '../../../../core/auth/user.service';
+import {User, UserService} from '../../../../shared/services/user.service';
 
 @Component({
   selector: 'app-header',
