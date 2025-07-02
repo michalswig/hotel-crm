@@ -19,5 +19,11 @@ export const routes: Routes = [
       { path: '', component: DashboardComponent }
     ]
   },
+  {
+    path: 'companies',
+    loadChildren: () =>
+      import('./features/companies/companies.routes').then(m => m.COMPANY_ROUTES),
+    canActivate: [authGuard]
+  },
   { path: '**', redirectTo: 'login' }
 ];

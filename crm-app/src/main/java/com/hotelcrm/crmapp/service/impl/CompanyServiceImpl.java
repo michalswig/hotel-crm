@@ -13,6 +13,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -24,6 +25,7 @@ public class CompanyServiceImpl implements CompanyService {
 
     private final CompanyRepository companyRepository;
 
+    @PreAuthorize("hasAnyRole('MANAGER','SPECIALIST')")
     @Override
     public Company createCompany(CompanyRequest request) {
         Company company = CompanyMapper.toEntity(request);
@@ -42,13 +44,21 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public Page<Company> filterCompanies(String name, String city, Pageable pageable) {
-        Specification<Company> spec = Specification.where(null);
-        if (name != null) {
-            spec = spec.and(CompanySpecification.hasName(name));
+    public Page<Company> filterCompanies(CompanyFilter filter, Long userId, Pageable pageable) {
+
+        Specification<Company> spec = Specification
+                .where(CompanySpecification.createdBy(userId));
+
+        if (filter.getName() != null) {
+            spec = spec.and(CompanySpecification.hasName(filter.getName()));
+        }
+        if (filter.getId() != null) {
+            spec = spec.and(CompanySpecification.createdBy(filter.getId()));
         }
         return companyRepository.findAll(spec, pageable);
     }
+    //TODO    criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), "%" + name.toLowerCase() + "%")
+
 
     @Override
     public List<CompanySummaryDto> fetchCompanySummaryTable(int ytdYear, int lyYear) {
@@ -60,21 +70,22 @@ public class CompanyServiceImpl implements CompanyService {
         Company company = companyRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Company " + id));
 
-        if (filter.getName()       != null) company.setName(filter.getName());
-        if (filter.getTaxId()      != null) company.setTaxId(filter.getTaxId());
-        if (filter.getIndustry()   != null) company.setIndustry(filter.getIndustry());
-        if (filter.getEmail()      != null) company.setEmail(filter.getEmail());
-        if (filter.getPhoneNumber()!= null) company.setPhoneNumber(filter.getPhoneNumber());
-        if (filter.getWebsite()    != null) company.setWebsite(filter.getWebsite());
-        if (filter.getAddress()    != null) company.setAddress(filter.getAddress());
+        if (filter.getName() != null) company.setName(filter.getName());
+        if (filter.getTaxId() != null) company.setTaxId(filter.getTaxId());
+        if (filter.getIndustry() != null) company.setIndustry(filter.getIndustry());
+        if (filter.getEmail() != null) company.setEmail(filter.getEmail());
+        if (filter.getPhoneNumber() != null) company.setPhoneNumber(filter.getPhoneNumber());
+        if (filter.getWebsite() != null) company.setWebsite(filter.getWebsite());
+        if (filter.getAddress() != null) company.setAddress(filter.getAddress());
         if (filter.getPostalCode() != null) company.setPostalCode(filter.getPostalCode());
-        if (filter.getCity()       != null) company.setCity(filter.getCity());
-        if (filter.getCountry()    != null) company.setCountry(filter.getCountry());
+        if (filter.getCity() != null) company.setCity(filter.getCity());
+        if (filter.getCountry() != null) company.setCountry(filter.getCountry());
 
         company.setUpdatedAt(LocalDateTime.now());
         return companyRepository.save(company);
     }
 
+    @PreAuthorize("hasAnyRole('MANAGER','SPECIALIST')")
     @Override
     public void deleteCompany(Long id) {
         if (!companyRepository.existsById(id)) {
@@ -82,5 +93,6 @@ public class CompanyServiceImpl implements CompanyService {
         }
         companyRepository.deleteById(id);
     }
+
 
 }

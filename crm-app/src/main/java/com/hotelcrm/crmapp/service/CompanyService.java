@@ -16,11 +16,12 @@ public interface CompanyService {
 
     Company getById(Long id);
 
-    Page<Company> filterCompanies(String name, String city, Pageable pageable);
+    Page<Company> filterCompanies(CompanyFilter filter, Long userId, Pageable pageable);
 
     List<CompanySummaryDto> fetchCompanySummaryTable(int ytdYear, int lyYear);
 
     Company updateCompany(Long id, CompanyFilter request);
 
     void deleteCompany(Long id);
+
 }

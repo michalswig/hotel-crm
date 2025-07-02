@@ -1,5 +1,6 @@
 package com.hotelcrm.crmapp.controller;
 
+import com.hotelcrm.crmapp.config.CustomUserDetails;
 import com.hotelcrm.crmapp.dto.CompanyFilter;
 import com.hotelcrm.crmapp.dto.CompanyRequest;
 import com.hotelcrm.crmapp.dto.CompanyResponse;
@@ -16,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -87,20 +89,21 @@ public class CompanyController {
     }
 
     @Operation(
-            summary = "Filter companies by name and/or city",
-            description = "Returns a paginated list of filtered companies")
-    @ApiResponse(responseCode = "200", description = "Filtered list of companies successfully retrieved")
+            summary = "Filter *my* companies",
+            description = "Returns a paginated list of companies created by the current user; "
+                    + "additional filters (name, city, industry, …) are optional query params")
+    @ApiResponse(responseCode = "200", description = "Filtered list successfully retrieved")
     @GetMapping("/filter")
-    public ResponseEntity<Page<CompanyResponse>> filterCompanies(
-            @RequestParam(required = false) String name,
-            @RequestParam(required = false) String city,
+    public ResponseEntity<Page<CompanyResponse>> filterMyCompanies(
+            @ModelAttribute CompanyFilter filter,
+            @AuthenticationPrincipal CustomUserDetails currentUser,
             @PageableDefault(size = 10, sort = "name") Pageable pageable) {
 
-        Page<CompanyResponse> filteredCompanies = companyService
-                .filterCompanies(name != null ? name : "", city != null ? city : "", pageable)
+        Page<CompanyResponse> page = companyService
+                .filterCompanies(filter, currentUser.getId(), pageable)
                 .map(CompanyMapper::toResponse);
 
-        return ResponseEntity.ok(filteredCompanies);
+        return ResponseEntity.ok(page);
     }
 
     @ApiResponse(

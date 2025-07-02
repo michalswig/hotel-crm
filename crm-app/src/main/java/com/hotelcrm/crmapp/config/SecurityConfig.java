@@ -1,6 +1,5 @@
 package com.hotelcrm.crmapp.config;
 
-import com.hotelcrm.crmapp.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -40,7 +39,6 @@ public class SecurityConfig {
                                 "/actuator/health",
                                 "/v3/api-docs/**"
                         ).permitAll()
-                        .requestMatchers("/api/v1/companies/summary").hasAnyRole("SPECIALIST", "MANAGER", "ADMINISTRATOR")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session

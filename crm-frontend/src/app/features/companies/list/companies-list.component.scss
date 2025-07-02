@@ -1,0 +1,28 @@
+.table-container {
+  overflow: auto;
+  margin-top: 1rem;
+}
+
+table {
+  width: 100%;
+  border-radius: 8px;
+  background-color: #fdfdfd;
+  font-size: 14px;
+}
+
+th.mat-header-cell {
+  background-color: #f0f0f0;
+  font-weight: bold;
+  color: #333;
+}
+
+td.mat-cell, th.mat-header-cell {
+  padding: 12px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+mat-card.company-card {
+  margin: 2rem;
+  padding: 1rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}

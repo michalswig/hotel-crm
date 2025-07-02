@@ -8,6 +8,10 @@ public class CompanySpecification {
         return (root, query, cb)
                 -> cb.like(cb.lower(root.get("name")), "%" + name.toLowerCase() + "%");
     }
+    public static Specification<Company> createdBy(Long userId) {
+        return (root, query, cb) -> cb.equal(root.get("createdBy").get("id"), userId);
+    }
+
 
 
 }
