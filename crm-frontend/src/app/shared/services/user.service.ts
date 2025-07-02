@@ -1,15 +1,13 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject, Observable} from 'rxjs';
 
+
 export interface User {
+  id: number;
   username: string;
   role: string;
 }
 
-export interface User {
-  username: string;
-  role: string;
-}
 
 @Injectable({
   providedIn: 'root'
@@ -31,4 +29,10 @@ export class UserService {
     this.userSubject.next(null);
     localStorage.removeItem('user');
   }
+
+  getCurrentUserId(): number | null {
+    return this.userSubject.value?.id ?? null;
+  }
+
+
 }
