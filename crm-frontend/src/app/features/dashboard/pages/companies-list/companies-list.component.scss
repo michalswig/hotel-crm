@@ -1,3 +1,14 @@
+.company-card {
+  margin: 2rem;
+  padding: 1rem;
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
 .table-container {
   overflow: auto;
   margin-top: 1rem;
@@ -19,10 +30,4 @@ th.mat-header-cell {
 td.mat-cell, th.mat-header-cell {
   padding: 12px;
   border-bottom: 1px solid #e0e0e0;
-}
-
-mat-card.company-card {
-  margin: 2rem;
-  padding: 1rem;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }

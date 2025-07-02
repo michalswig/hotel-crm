@@ -11,6 +11,8 @@ import {
 } from "@angular/material/table";
 import {Company} from '../../../../shared/models/company.model';
 import {CompanyService} from '../../../../shared/services/company.service';
+import {MatButton} from '@angular/material/button';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-companies-list',
@@ -26,7 +28,8 @@ import {CompanyService} from '../../../../shared/services/company.service';
     MatRow,
     MatRowDef,
     MatTable,
-    MatHeaderCellDef
+    MatHeaderCellDef,
+    MatButton
   ],
   templateUrl: './companies-list.component.html',
   styleUrl: './companies-list.component.scss'
@@ -35,7 +38,10 @@ export class CompaniesListComponent implements OnInit {
   companies: Company[] = [];
   displayedColumns = ['name', 'email', 'phoneNumber'];
 
-  constructor(private readonly companyService: CompanyService) {}
+  constructor(
+    private readonly companyService: CompanyService,
+    private readonly router: Router
+  ) {}
 
   ngOnInit(): void {
     this.companyService.getMine().subscribe({
@@ -43,4 +49,9 @@ export class CompaniesListComponent implements OnInit {
       error: (err) => console.error('Failed to load companies', err)
     });
   }
+
+  onAddCompany(): void {
+    this.router.navigate(['dashboard', 'companies', 'new']);
+  }
+
 }
