@@ -1,32 +1,32 @@
 import {Component, OnInit} from '@angular/core';
-import {Company} from '../../../shared/models/company.model';
-import {CompanyService} from '../company.service';
+import {MatCard, MatCardTitle} from "@angular/material/card";
 import {
   MatCell,
   MatCellDef,
   MatColumnDef,
-  MatHeaderCell,
-  MatHeaderCellDef, MatHeaderRow,
-  MatHeaderRowDef, MatRow, MatRowDef,
-  MatTable
-} from '@angular/material/table';
-import {MatCard, MatCardTitle} from '@angular/material/card';
+  MatHeaderCell, MatHeaderCellDef,
+  MatHeaderRow,
+  MatHeaderRowDef,
+  MatRow, MatRowDef, MatTable
+} from "@angular/material/table";
+import {Company} from '../../../../shared/models/company.model';
+import {CompanyService} from '../../../../shared/services/company.service';
 
 @Component({
   selector: 'app-companies-list',
   imports: [
-    MatTable,
+    MatCard,
+    MatCardTitle,
+    MatCell,
+    MatCellDef,
     MatColumnDef,
     MatHeaderCell,
-    MatCell,
-    MatHeaderCellDef,
-    MatCellDef,
-    MatHeaderRowDef,
-    MatRowDef,
     MatHeaderRow,
+    MatHeaderRowDef,
     MatRow,
-    MatCardTitle,
-    MatCard
+    MatRowDef,
+    MatTable,
+    MatHeaderCellDef
   ],
   templateUrl: './companies-list.component.html',
   styleUrl: './companies-list.component.scss'

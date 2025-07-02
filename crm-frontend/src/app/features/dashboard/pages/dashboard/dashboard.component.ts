@@ -1,14 +1,14 @@
 import {Component, OnInit} from '@angular/core';
-import {DatePipe, DecimalPipe, NgForOf} from '@angular/common';
-import {CompanySummary, DashboardService} from '../../core/auth/dashboard.service';
+import {DatePipe, DecimalPipe, NgForOf} from "@angular/common";
+import {CompanySummary, DashboardService} from '../../../../core/auth/dashboard.service';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [
-    DatePipe,
-    DecimalPipe,
-    NgForOf
-  ],
+    imports: [
+        DatePipe,
+        DecimalPipe,
+        NgForOf
+    ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
