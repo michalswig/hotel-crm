@@ -1,7 +1,8 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {catchError, map, Observable, of} from 'rxjs';
-import {UserService} from './user.service';
+import {User, UserService} from '../../shared/services/user.service';
+
 
 @Injectable({
   providedIn: 'root'
@@ -30,14 +31,12 @@ export class AuthService {
     );
   }
 
-  getCurrentUser(): Observable<{ username: string; role: string } | null> {
-    return this.http.get<{ username: string; role: string }>(
+  getCurrentUser(): Observable<User | null> {
+    return this.http.get<User>(
       `${this.API_URL}/me`,
-      {withCredentials: true}
+      { withCredentials: true }
     ).pipe(
-      catchError((err) => {
-        return of(null);
-      })
+      catchError(() => of(null))
     );
   }
 
