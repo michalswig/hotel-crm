@@ -3,25 +3,43 @@ import {HttpClient, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {Page} from '../models/helpers';
 import {Company} from '../models/company.model';
+import {CompanyRequest} from '../models/request/company-request.model';
+import {environment} from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CompanyService {
-  private readonly API = 'http://localhost:8080/api/v1/companies';
+  private readonly baseUrl = `${environment.apiUrl}/companies`;
 
   constructor(private readonly http: HttpClient) {
   }
 
-  getMine(page = 0, size = 10): Observable<Page<Company>> {
+  getMyCompanies(page = 0, size = 10): Observable<Page<Company>> {
     const params = new HttpParams()
       .set('page', page)
       .set('size', size);
 
     return this.http.get<Page<Company>>(
-      `${this.API}/filter`,
+      `${this.baseUrl}/filter`,
       { params, withCredentials: true }
     );
+  }
+
+  createCompany(request: CompanyRequest): Observable<Company> {
+    return this.http.post<Company>(`${this.baseUrl}`, request, { withCredentials: true });
+  }
+
+  getCompanyById(id: number): Observable<Company> {
+    return this.http.get<Company>(`${this.baseUrl}/${id}`, { withCredentials: true });
+  }
+
+  updateCompany(id: number, request: CompanyRequest): Observable<Company> {
+    return this.http.put<Company>(`${this.baseUrl}/${id}`, request, { withCredentials: true });
+  }
+
+  deleteCompany(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/${id}`, { withCredentials: true });
   }
 
 }

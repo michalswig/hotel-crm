@@ -34,10 +34,14 @@ public class CompanyController {
             description = "Creates a company using the request data")
     @ApiResponse(responseCode = "200", description = "Company successfully created")
     @PostMapping
-    public ResponseEntity<CompanyResponse> createCompany(@Valid @RequestBody CompanyRequest request) {
-        Company createdCompany = companyService.createCompany(request);
-        return ResponseEntity.ok(CompanyMapper.toResponse(createdCompany));
+    public ResponseEntity<CompanyResponse> createCompany(
+            @Valid @RequestBody CompanyRequest request,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+
+        Company created = companyService.createCompany(request, userDetails.getUser());
+        return ResponseEntity.ok(CompanyMapper.toResponse(created));
     }
+
 
     @Operation(
             summary = "Update company",

@@ -44,7 +44,7 @@ export class CompaniesListComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.companyService.getMine().subscribe({
+    this.companyService.getMyCompanies().subscribe({
       next: (page) => this.companies = page.content,
       error: (err) => console.error('Failed to load companies', err)
     });

@@ -40,7 +40,7 @@ class CompanyControllerTest {
                 .postalCode("00-001")
                 .city("Warsaw")
                 .country("Poland")
-                .createdByUserId(1L)
+//                .createdByUserId(1L)
                 .build();
 
         mockMvc.perform(post("/api/v1/companies")

@@ -4,13 +4,14 @@ import com.hotelcrm.crmapp.dto.CompanyFilter;
 import com.hotelcrm.crmapp.dto.CompanyRequest;
 import com.hotelcrm.crmapp.dto.CompanySummaryDto;
 import com.hotelcrm.crmapp.entity.Company;
+import com.hotelcrm.crmapp.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
 public interface CompanyService {
-    Company createCompany(CompanyRequest request);
+    Company createCompany(CompanyRequest request, User user);
 
     Page<Company> getCompanies(Pageable pageable);
 

@@ -38,7 +38,4 @@ public class CompanyRequest {
     private String city;
 
     private String country;
-
-    @NotNull
-    private Long createdByUserId;
 }

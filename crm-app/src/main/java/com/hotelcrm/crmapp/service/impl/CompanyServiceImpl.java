@@ -4,6 +4,7 @@ import com.hotelcrm.crmapp.dto.CompanyFilter;
 import com.hotelcrm.crmapp.dto.CompanyRequest;
 import com.hotelcrm.crmapp.dto.CompanySummaryDto;
 import com.hotelcrm.crmapp.entity.Company;
+import com.hotelcrm.crmapp.entity.User;
 import com.hotelcrm.crmapp.mapper.CompanyMapper;
 import com.hotelcrm.crmapp.repository.CompanyRepository;
 import com.hotelcrm.crmapp.service.CompanyService;
@@ -27,8 +28,12 @@ public class CompanyServiceImpl implements CompanyService {
 
     @PreAuthorize("hasAnyRole('MANAGER','SPECIALIST')")
     @Override
-    public Company createCompany(CompanyRequest request) {
+    public Company createCompany(CompanyRequest request, User creator) {
+
         Company company = CompanyMapper.toEntity(request);
+        company.setCreatedBy(creator);
+        company.setCreatedAt(LocalDateTime.now());
+
         return companyRepository.save(company);
     }
 
