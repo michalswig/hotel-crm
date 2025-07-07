@@ -37,7 +37,6 @@ class AddCompanyTest {
     void shouldAddNewCompany_whenDataIsValid() {
         final String companyName = "Test Company";
 
-        // 1. Log in
         driver.get(BASE_URL + "/login");
         driver.findElement(By.id("username")).sendKeys("specialist2");
         driver.findElement(By.id("password")).sendKeys("password123");
@@ -46,15 +45,12 @@ class AddCompanyTest {
         new WebDriverWait(driver, Duration.ofSeconds(5))
                 .until(ExpectedConditions.urlContains("/dashboard"));
 
-        // 2. Go to Companies
         driver.get(BASE_URL + "/dashboard/companies");
 
-        // 3. Click "+ Add Company"
         By addBtn = By.cssSelector("button[mat-flat-button][color='primary']");
         new WebDriverWait(driver, Duration.ofSeconds(5))
                 .until(ExpectedConditions.elementToBeClickable(addBtn)).click();
 
-        // 4. Fill the form
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("input[formcontrolname='name']")));
 
@@ -72,10 +68,8 @@ class AddCompanyTest {
         driver.findElement(By.cssSelector("input[formcontrolname='city']")).sendKeys("Warsaw");
         driver.findElement(By.cssSelector("input[formcontrolname='country']")).sendKeys("Poland");
 
-        // 5. Submit
         driver.findElement(By.cssSelector("button[type='submit']")).click();
 
-        // 6. Verify that the company was added
         wait.until(ExpectedConditions.urlContains("/dashboard/companies"));
 
         WebElement table = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("table")));
