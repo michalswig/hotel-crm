@@ -15,10 +15,14 @@ export class CompanyService {
   constructor(private readonly http: HttpClient) {
   }
 
-  getMyCompanies(page = 0, size = 10): Observable<Page<Company>> {
-    const params = new HttpParams()
+  getMyCompanies(page = 0, size = 10, nameFilter = ''): Observable<Page<Company>> {
+    let params = new HttpParams()
       .set('page', page)
       .set('size', size);
+
+    if(nameFilter){
+      params = params.set('name', nameFilter)
+    }
 
     return this.http.get<Page<Company>>(
       `${this.baseUrl}/filter`,

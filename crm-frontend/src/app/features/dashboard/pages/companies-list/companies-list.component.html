@@ -1,10 +1,19 @@
 <mat-card class="company-card">
-  <mat-card-title class="header">
-    Company List
-    <button mat-flat-button color="primary" (click)="onAddCompany()">+ Add Company</button>
-  </mat-card-title>
+  <div class="header">
+    <h2>Company List</h2>
+    <button mat-flat-button color="primary" (click)="onAddCompany()">
+      + Add Company
+    </button>
+  </div>
+
+  <mat-form-field appearance="outline" class="search-field" floatLabel="always">
+    <mat-label>Search by name</mat-label>
+    <input matInput [formControl]="searchControl" placeholder="Type to search..."/>
+    <mat-icon matSuffix>search</mat-icon>
+  </mat-form-field>
+
   <div class="table-container">
-    <table mat-table [dataSource]="companies" class="mat-elevation-z8">
+    <table mat-table [dataSource]="companies" class="mat-elevation-z2">
 
       <ng-container matColumnDef="name">
         <th mat-header-cell *matHeaderCellDef> Name</th>
@@ -24,10 +33,20 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
-    <mat-paginator [length]="totalElements"
-                   [pageSize]="pageSize"
-                   [pageSizeOptions]="[5, 10, 25]"
-                   (page)="onPageChange($event)">
+
+    <div *ngIf="companies.length === 0" class="empty-state">
+      <p>No companies found matching your search.</p>
+    </div>
+  </div>
+
+  <div class="paginator-wrapper">
+    <mat-paginator
+      [length]="totalElements"
+      [pageSize]="pageSize"
+      [pageIndex]="pageIndex"
+      [pageSizeOptions]="[5, 10, 20]"
+      showFirstLastButtons
+      (page)="onPageChange($event)">
     </mat-paginator>
   </div>
 </mat-card>
