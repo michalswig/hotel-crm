@@ -15,7 +15,7 @@ export class CompanyService {
   constructor(private readonly http: HttpClient) {
   }
 
-  getMyCompanies(page = 0, size = 10, nameFilter = ''): Observable<Page<Company>> {
+  getFilteredCompanies(page = 0, size = 10, nameFilter = ''): Observable<Page<Company>> {
     let params = new HttpParams()
       .set('page', page)
       .set('size', size);

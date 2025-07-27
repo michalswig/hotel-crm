@@ -82,7 +82,7 @@ export class CompaniesListComponent implements OnInit {
   }
 
   loadCompanies(): void {
-    this.companyService.getMyCompanies(this.pageIndex, this.pageSize, this.nameFilter).subscribe({
+    this.companyService.getFilteredCompanies(this.pageIndex, this.pageSize, this.nameFilter).subscribe({
       next: (page: Page<Company>) => {
         this.companies = page.content;
         this.totalElements = page.totalElements;

@@ -49,7 +49,7 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public Page<Company> filterCompanies(CompanyFilter filter, Long userId, Pageable pageable) {
+    public Page<Company> getFilteredCompanies(CompanyFilter filter, Long userId, Pageable pageable) {
 
         Specification<Company> spec = Specification
                 .where(CompanySpecification.createdBy(userId));
@@ -62,8 +62,6 @@ public class CompanyServiceImpl implements CompanyService {
         }
         return companyRepository.findAll(spec, pageable);
     }
-    //TODO    criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), "%" + name.toLowerCase() + "%")
-
 
     @Override
     public List<CompanySummaryDto> fetchCompanySummaryTable(int ytdYear, int lyYear) {

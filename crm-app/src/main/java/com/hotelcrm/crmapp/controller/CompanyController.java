@@ -98,13 +98,13 @@ public class CompanyController {
                     + "additional filters (name, city, industry, …) are optional query params")
     @ApiResponse(responseCode = "200", description = "Filtered list successfully retrieved")
     @GetMapping("/filter")
-    public ResponseEntity<Page<CompanyResponse>> filterMyCompanies(
+    public ResponseEntity<Page<CompanyResponse>> getFilteredCompanies(
             @ModelAttribute CompanyFilter filter,
             @AuthenticationPrincipal CustomUserDetails currentUser,
             @PageableDefault(size = 10, sort = "name") Pageable pageable) {
 
         Page<CompanyResponse> page = companyService
-                .filterCompanies(filter, currentUser.getId(), pageable)
+                .getFilteredCompanies(filter, currentUser.getId(), pageable)
                 .map(CompanyMapper::toResponse);
 
         return ResponseEntity.ok(page);

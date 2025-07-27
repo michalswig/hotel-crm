@@ -17,7 +17,7 @@ public interface CompanyService {
 
     Company getById(Long id);
 
-    Page<Company> filterCompanies(CompanyFilter filter, Long userId, Pageable pageable);
+    Page<Company> getFilteredCompanies(CompanyFilter filter, Long userId, Pageable pageable);
 
     List<CompanySummaryDto> fetchCompanySummaryTable(int ytdYear, int lyYear);
 
