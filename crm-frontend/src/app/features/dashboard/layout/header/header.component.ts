@@ -1,20 +1,15 @@
 import {Component, OnInit} from '@angular/core';
 import {MatToolbar} from '@angular/material/toolbar';
-import {MatButton, MatIconButton} from '@angular/material/button';
+import {MatIconButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
-import {NgIf} from '@angular/common';
 import {AuthService} from '../../../../core/auth/auth.service';
-import {RouterLink} from '@angular/router';
 import {User, UserService} from '../../../../shared/services/user.service';
 
 @Component({
   selector: 'app-header',
   imports: [
     MatToolbar,
-    MatButton,
     MatIcon,
-    NgIf,
-    RouterLink,
     MatIconButton
   ],
   templateUrl: './header.component.html',

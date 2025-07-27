@@ -1,13 +1,16 @@
 import {Component, OnInit} from '@angular/core';
-import {MatCard, MatCardTitle} from "@angular/material/card";
+import {MatCard} from "@angular/material/card";
 import {
   MatCell,
   MatCellDef,
   MatColumnDef,
-  MatHeaderCell, MatHeaderCellDef,
+  MatHeaderCell,
+  MatHeaderCellDef,
   MatHeaderRow,
   MatHeaderRowDef,
-  MatRow, MatRowDef, MatTable
+  MatRow,
+  MatRowDef,
+  MatTable
 } from "@angular/material/table";
 import {Company} from '../../../../shared/models/company.model';
 import {CompanyService} from '../../../../shared/services/company.service';
@@ -25,7 +28,6 @@ import {NgIf} from '@angular/common';
   selector: 'app-companies-list',
   imports: [
     MatCard,
-    MatCardTitle,
     MatCell,
     MatCellDef,
     MatColumnDef,
@@ -52,7 +54,7 @@ export class CompaniesListComponent implements OnInit {
   companies: Company[] = [];
   displayedColumns = ['name', 'email', 'phoneNumber'];
 
-  searchControl = new FormControl<string>('', { nonNullable: true });
+  searchControl = new FormControl<string>('', {nonNullable: true});
   nameFilter = '';
 
   pageIndex = 0;
@@ -62,7 +64,8 @@ export class CompaniesListComponent implements OnInit {
   constructor(
     private readonly companyService: CompanyService,
     private readonly router: Router
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     this.searchControl.valueChanges.pipe(
