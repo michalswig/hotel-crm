@@ -14,7 +14,7 @@ import {
 } from "@angular/material/table";
 import {Company} from '../../../../shared/models/company.model';
 import {CompanyService} from '../../../../shared/services/company.service';
-import {MatButton} from '@angular/material/button';
+import {MatButton, MatIconButton} from '@angular/material/button';
 import {Router} from '@angular/router';
 import {MatPaginator, PageEvent} from '@angular/material/paginator';
 import {Page} from '../../../../shared/models/helpers';
@@ -23,6 +23,8 @@ import {debounceTime, distinctUntilChanged, tap} from 'rxjs';
 import {MatFormField, MatInput, MatLabel} from '@angular/material/input';
 import {MatIcon} from '@angular/material/icon';
 import {NgIf} from '@angular/common';
+import {UserService} from '../../../../shared/services/user.service';
+import {MatSnackBar} from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-companies-list',
@@ -46,28 +48,34 @@ import {NgIf} from '@angular/common';
     MatInput,
     MatIcon,
     NgIf,
+    MatIconButton,
   ],
   templateUrl: './companies-list.component.html',
   styleUrl: './companies-list.component.scss'
 })
 export class CompaniesListComponent implements OnInit {
   companies: Company[] = [];
-  displayedColumns = ['name', 'email', 'phoneNumber'];
+  displayedColumns = ['name', 'email', 'phoneNumber', 'actions'];
 
-  searchControl = new FormControl<string>('', {nonNullable: true});
+  searchControl = new FormControl<string>('', { nonNullable: true });
   nameFilter = '';
 
   pageIndex = 0;
   pageSize = 5;
   totalElements = 0;
 
+  currentUserId: number | null = null;
+
   constructor(
     private readonly companyService: CompanyService,
-    private readonly router: Router
-  ) {
-  }
+    private readonly router: Router,
+    private readonly userService: UserService,
+    private readonly snack: MatSnackBar
+  ) {}
 
   ngOnInit(): void {
+    this.currentUserId = this.userService.getCurrentUserId();
+
     this.searchControl.valueChanges.pipe(
       debounceTime(300),
       distinctUntilChanged(),
@@ -101,4 +109,22 @@ export class CompaniesListComponent implements OnInit {
     this.router.navigate(['dashboard', 'companies', 'new']);
   }
 
+  onEditCompany(companyId: number): void {
+    this.router.navigate(['dashboard', 'companies', companyId, 'edit']);
+  }
+
+  onDeleteCompany(companyId: number): void {
+    const confirmed = confirm('Are you sure you want to delete this company?');
+    if (!confirmed) return;
+
+    this.companyService.deleteCompany(companyId).subscribe({
+      next: () => {
+        this.snack.open('Company deleted ✔', '', { duration: 2000 });
+        this.loadCompanies();
+      },
+      error: () => {
+        this.snack.open('Failed to delete company ', '', { duration: 3000 });
+      }
+    });
+  }
 }

@@ -20,6 +20,7 @@ public class CompanyResponse {
     private String postalCode;
     private String city;
     private String country;
+    private Long createdByUserId;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

@@ -1,5 +1,5 @@
 <mat-card class="company-card">
-  <mat-card-title>Add Company</mat-card-title>
+  <mat-card-title>{{ isEditMode ? 'Edit Company' : 'Add Company' }}</mat-card-title>
 
   <form [formGroup]="form" (ngSubmit)="save()">
 

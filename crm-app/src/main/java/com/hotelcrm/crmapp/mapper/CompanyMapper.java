@@ -38,6 +38,7 @@ public class CompanyMapper {
         response.setPostalCode(company.getPostalCode());
         response.setCity(company.getCity());
         response.setCountry(company.getCountry());
+        response.setCreatedByUserId(company.getCreatedBy().getId());
         response.setCreatedAt(company.getCreatedAt());
         response.setUpdatedAt(company.getUpdatedAt());
         return response;

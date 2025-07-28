@@ -98,7 +98,7 @@ public class CompanyController {
                     + "additional filters (name, city, industry, …) are optional query params")
     @ApiResponse(responseCode = "200", description = "Filtered list successfully retrieved")
     @GetMapping("/filter")
-    public ResponseEntity<Page<CompanyResponse>> getFilteredCompanies(
+    public ResponseEntity<Page<CompanyResponse>> getFilteredCompaniesCreatedByCurrentUser(
             @ModelAttribute CompanyFilter filter,
             @AuthenticationPrincipal CustomUserDetails currentUser,
             @PageableDefault(size = 10, sort = "name") Pageable pageable) {

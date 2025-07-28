@@ -23,7 +23,13 @@ export const DASHBOARD_ROUTES: Routes = [
         path: 'companies/new',
         component: AddCompanyComponent,
         title: 'Add Company'
+      },
+      {
+        path: 'companies/:id/edit',
+        component: AddCompanyComponent,
+        title: 'Edit Company'
       }
+
     ]
   }
 ];

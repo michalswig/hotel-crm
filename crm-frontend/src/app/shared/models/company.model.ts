@@ -15,6 +15,7 @@ export interface Company {
   city?: string;
   country?: string;
   createdBy?: UserRef;
+  createdByUserId: number;
   createdAt?: string;
   updatedAt?: string;
   contactPersons?: ContactPerson[];
