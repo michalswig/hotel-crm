@@ -1,0 +1,58 @@
+<mat-card class="company-card">
+  <div class="header">
+    <h2>My Events</h2>
+    <button mat-raised-button color="primary" (click)="onAddEvent()">Add Event</button>
+  </div>
+
+  <div class="table-container">
+    <table mat-table [dataSource]="events" class="mat-elevation-z1">
+
+      <!-- Name -->
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef> Name </th>
+        <td mat-cell *matCellDef="let event"> {{ event.name }} </td>
+      </ng-container>
+
+      <!-- Type -->
+      <ng-container matColumnDef="type">
+        <th mat-header-cell *matHeaderCellDef> Type </th>
+        <td mat-cell *matCellDef="let event"> {{ event.type }} </td>
+      </ng-container>
+
+      <!-- Status -->
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef> Status </th>
+        <td mat-cell *matCellDef="let event"> {{ event.status }} </td>
+      </ng-container>
+
+      <!-- Event Date -->
+      <ng-container matColumnDef="eventDate">
+        <th mat-header-cell *matHeaderCellDef> Date </th>
+        <td mat-cell *matCellDef="let event"> {{ event.eventDate | date: 'shortDate' }} </td>
+      </ng-container>
+
+      <!-- Actions -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef> Actions </th>
+        <td mat-cell *matCellDef="let event">
+          <button mat-icon-button color="primary" (click)="editEvent(event.id)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="deleteEvent(event.id)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+
+  <mat-paginator [length]="totalElements"
+                 [pageSize]="pageSize"
+                 [pageIndex]="pageIndex"
+                 [pageSizeOptions]="[5, 10, 25]"
+                 (page)="onPageChange($event)">
+  </mat-paginator>
+</mat-card>

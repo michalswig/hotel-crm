@@ -1,0 +1,62 @@
+<mat-card class="company-card">
+  <mat-card-title>Add Event</mat-card-title>
+
+  <form [formGroup]="form" (ngSubmit)="save()">
+
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Name *</mat-label>
+      <input matInput formControlName="name" />
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Description</mat-label>
+      <input matInput formControlName="description" />
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="half-width">
+      <mat-label>Type *</mat-label>
+      <mat-select formControlName="type">
+        <mat-option *ngFor="let t of types" [value]="t">{{ t }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="half-width">
+      <mat-label>Status *</mat-label>
+      <mat-select formControlName="status">
+        <mat-option *ngFor="let s of statuses" [value]="s">{{ s }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="half-width">
+      <mat-label>Event Date *</mat-label>
+      <input matInput type="datetime-local" formControlName="eventDate" />
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="half-width">
+      <mat-label>Participants *</mat-label>
+      <input matInput type="number" formControlName="participantsNumber" />
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="half-width">
+      <mat-label>Estimated Revenue (€) *</mat-label>
+      <input matInput type="number" formControlName="estimatedTotalGrossRevenue" />
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="half-width">
+      <mat-label>Company ID *</mat-label>
+      <input matInput type="number" formControlName="companyId" />
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="half-width">
+      <mat-label>Hotel ID *</mat-label>
+      <input matInput type="number" formControlName="hotelId" />
+    </mat-form-field>
+
+    <div class="btn-row">
+      <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid">
+        Save
+      </button>
+      <button mat-button type="button" routerLink="/dashboard/events">Cancel</button>
+    </div>
+  </form>
+</mat-card>

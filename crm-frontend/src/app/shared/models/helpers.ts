@@ -21,11 +21,11 @@ export interface Page<T> {
 }
 
 /** Form request types (used in services and reactive forms) */
-import { Event } from './event.model';
+import { EventModel } from './event.model';
 import { ContactPerson } from './contact-person.model';
 
 export type EventCreateRequest = Omit<
-  Event,
+  EventModel,
   'id' | 'createdAt' | 'updatedAt' | 'hotel' | 'company' | 'createdBy'
 >;
 
