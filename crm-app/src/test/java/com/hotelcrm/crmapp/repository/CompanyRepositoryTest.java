@@ -1,6 +1,6 @@
 package com.hotelcrm.crmapp.repository;
 
-import com.hotelcrm.crmapp.dto.CompanySummaryDto;
+import com.hotelcrm.crmapp.dto.company.CompanySummaryDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

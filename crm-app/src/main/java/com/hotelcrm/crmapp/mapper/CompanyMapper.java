@@ -1,7 +1,7 @@
 package com.hotelcrm.crmapp.mapper;
 
-import com.hotelcrm.crmapp.dto.CompanyRequest;
-import com.hotelcrm.crmapp.dto.CompanyResponse;
+import com.hotelcrm.crmapp.dto.company.CompanyRequest;
+import com.hotelcrm.crmapp.dto.company.CompanyResponse;
 import com.hotelcrm.crmapp.entity.Company;
 
 public class CompanyMapper {

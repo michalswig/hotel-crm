@@ -1,4 +1,4 @@
-package com.hotelcrm.crmapp.dto;
+package com.hotelcrm.crmapp.dto.login;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;

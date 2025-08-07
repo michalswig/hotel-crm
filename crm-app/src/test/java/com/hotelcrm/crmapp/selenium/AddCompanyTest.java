@@ -35,7 +35,7 @@ class AddCompanyTest {
     @Test
     @Order(1)
     void shouldAddNewCompany_whenDataIsValid() {
-        final String companyName = "Test Company";
+        final String companyName = "A-Test Company";
 
         driver.get(BASE_URL + "/login");
         driver.findElement(By.id("username")).sendKeys("specialist2");

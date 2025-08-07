@@ -1,8 +1,8 @@
 package com.hotelcrm.crmapp.service;
 
-import com.hotelcrm.crmapp.dto.CompanyFilter;
-import com.hotelcrm.crmapp.dto.CompanyRequest;
-import com.hotelcrm.crmapp.dto.CompanySummaryDto;
+import com.hotelcrm.crmapp.dto.company.CompanyFilter;
+import com.hotelcrm.crmapp.dto.company.CompanyRequest;
+import com.hotelcrm.crmapp.dto.company.CompanySummaryDto;
 import com.hotelcrm.crmapp.entity.Company;
 import com.hotelcrm.crmapp.entity.User;
 import org.springframework.data.domain.Page;

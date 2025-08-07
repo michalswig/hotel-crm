@@ -1,4 +1,4 @@
-package com.hotelcrm.crmapp.dto;
+package com.hotelcrm.crmapp.dto.company;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

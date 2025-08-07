@@ -1,8 +1,8 @@
 package com.hotelcrm.crmapp.service.impl;
 
-import com.hotelcrm.crmapp.dto.CompanyFilter;
-import com.hotelcrm.crmapp.dto.CompanyRequest;
-import com.hotelcrm.crmapp.dto.CompanySummaryDto;
+import com.hotelcrm.crmapp.dto.company.CompanyFilter;
+import com.hotelcrm.crmapp.dto.company.CompanyRequest;
+import com.hotelcrm.crmapp.dto.company.CompanySummaryDto;
 import com.hotelcrm.crmapp.entity.Company;
 import com.hotelcrm.crmapp.entity.User;
 import com.hotelcrm.crmapp.mapper.CompanyMapper;
@@ -10,7 +10,8 @@ import com.hotelcrm.crmapp.repository.CompanyRepository;
 import com.hotelcrm.crmapp.service.CompanyService;
 import com.hotelcrm.crmapp.specification.CompanySpecification;
 import jakarta.persistence.EntityNotFoundException;
-import lombok.AllArgsConstructor;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -21,12 +22,14 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
+@Transactional
 public class CompanyServiceImpl implements CompanyService {
 
     private final CompanyRepository companyRepository;
 
     @PreAuthorize("hasAnyRole('MANAGER','SPECIALIST')")
+    @Transactional
     @Override
     public Company createCompany(CompanyRequest request, User creator) {
 
@@ -50,16 +53,7 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     public Page<Company> getFilteredCompanies(CompanyFilter filter, Long userId, Pageable pageable) {
-
-        Specification<Company> spec = Specification
-                .where(CompanySpecification.createdBy(userId));
-
-        if (filter.getName() != null) {
-            spec = spec.and(CompanySpecification.hasName(filter.getName()));
-        }
-        if (filter.getId() != null) {
-            spec = spec.and(CompanySpecification.createdBy(filter.getId()));
-        }
+        Specification<Company> spec = CompanySpecification.build(filter, userId);
         return companyRepository.findAll(spec, pageable);
     }
 
@@ -68,6 +62,7 @@ public class CompanyServiceImpl implements CompanyService {
         return companyRepository.fetchCompanySummaryTable(ytdYear, lyYear);
     }
 
+    @Transactional
     @Override
     public Company updateCompany(Long id, CompanyFilter filter) {
         Company company = companyRepository.findById(id)
@@ -89,6 +84,7 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @PreAuthorize("hasAnyRole('MANAGER','SPECIALIST')")
+    @Transactional
     @Override
     public void deleteCompany(Long id) {
         if (!companyRepository.existsById(id)) {

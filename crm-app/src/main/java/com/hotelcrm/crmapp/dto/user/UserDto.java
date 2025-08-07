@@ -1,4 +1,4 @@
-package com.hotelcrm.crmapp.dto;
+package com.hotelcrm.crmapp.dto.user;
 
 import lombok.*;
 

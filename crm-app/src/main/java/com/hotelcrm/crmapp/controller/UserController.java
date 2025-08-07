@@ -1,6 +1,6 @@
 package com.hotelcrm.crmapp.controller;
 
-import com.hotelcrm.crmapp.dto.UserDto;
+import com.hotelcrm.crmapp.dto.user.UserDto;
 import com.hotelcrm.crmapp.entity.User;
 import com.hotelcrm.crmapp.mapper.UserMapper;
 import com.hotelcrm.crmapp.service.UserService;

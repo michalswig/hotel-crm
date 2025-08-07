@@ -1,10 +1,9 @@
 package com.hotelcrm.crmapp.controller;
 
 import com.hotelcrm.crmapp.config.CustomUserDetails;
-import com.hotelcrm.crmapp.dto.LoginRequest;
-import com.hotelcrm.crmapp.dto.LoginResponse;
-import com.hotelcrm.crmapp.dto.LoginToken;
-import com.hotelcrm.crmapp.dto.UserDto;
+import com.hotelcrm.crmapp.dto.login.LoginRequest;
+import com.hotelcrm.crmapp.dto.login.LoginToken;
+import com.hotelcrm.crmapp.dto.user.UserDto;
 import com.hotelcrm.crmapp.exception.UnauthenticatedAccessException;
 import com.hotelcrm.crmapp.mapper.UserMapper;
 import com.hotelcrm.crmapp.service.AuthService;
