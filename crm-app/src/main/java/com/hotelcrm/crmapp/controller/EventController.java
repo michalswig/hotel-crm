@@ -1,5 +1,6 @@
 package com.hotelcrm.crmapp.controller;
 
+import com.hotelcrm.crmapp.config.CustomUserDetails;
 import com.hotelcrm.crmapp.dto.event.mapper.EventMapper;
 import com.hotelcrm.crmapp.dto.event.request.EventCreateRequest;
 import com.hotelcrm.crmapp.dto.event.request.EventFilterRequest;
@@ -8,9 +9,7 @@ import com.hotelcrm.crmapp.dto.event.response.EventDetailResponse;
 import com.hotelcrm.crmapp.entity.Company;
 import com.hotelcrm.crmapp.entity.Event;
 import com.hotelcrm.crmapp.entity.Hotel;
-import com.hotelcrm.crmapp.entity.User;
-import com.hotelcrm.crmapp.repository.CompanyRepository;
-import com.hotelcrm.crmapp.repository.HotelRepository;
+import com.hotelcrm.crmapp.exception.UnauthenticatedAccessException;
 import com.hotelcrm.crmapp.service.CompanyService;
 import com.hotelcrm.crmapp.service.EventService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -43,17 +42,17 @@ public class EventController {
     @PreAuthorize("hasAnyRole('SPECIALIST', 'MANAGER')")
     public EventDetailResponse create(
             @Valid @RequestBody EventCreateRequest request,
-            @AuthenticationPrincipal User user) {
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        Hotel hotel = user.getHotel();
+        Hotel hotel = userDetails.getUser().getHotel();
         if (hotel == null) {
             throw new IllegalStateException("Authenticated user has no assigned hotel");
         }
 
         Company company = companyService.getById(request.getCompanyId());
 
-        Event event = EventMapper.toEntity(request, company, hotel, user);
-        return EventMapper.toDetailResponse(eventService.create(event, user));
+        Event event = EventMapper.toEntity(request, company, hotel, userDetails.getUser());
+        return EventMapper.toDetailResponse(eventService.create(event, userDetails.getUser()));
     }
 
     @Operation(
@@ -66,9 +65,13 @@ public class EventController {
     public Page<EventDetailResponse> getFiltered(
             @ParameterObject EventFilterRequest filter,
             @ParameterObject Pageable pageable,
-            @AuthenticationPrincipal User user) {
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        return eventService.getFiltered(filter, pageable, user.getId())
+        if (userDetails == null) {
+            throw new UnauthenticatedAccessException("User is not authenticated");
+        }
+
+        return eventService.getFiltered(filter, pageable, userDetails.getUser().getId())
                 .map(EventMapper::toDetailResponse);
     }
 
@@ -114,68 +117,4 @@ public class EventController {
         return ResponseEntity.ok(eventService.delete(id));
     }
 
-
-
-
-
-
-//    // ✅ Get all events paginated
-//    @GetMapping
-//    @PreAuthorize("hasAnyRole('SPECIALIST', 'MANAGER')")
-//    public Page<EventDetailResponse> getAll(Pageable pageable) {
-//        return eventService.getEvents(pageable)
-//                .map(EventMapper::toDetailResponse);
-//    }
-//
-//    // ✅ Get filtered events
-//    @GetMapping("/filter")
-//    @PreAuthorize("hasAnyRole('SPECIALIST', 'MANAGER')")
-//    public Page<EventDetailResponse> getFiltered(@ModelAttribute EventFilterRequest filter,
-//                                                 @AuthenticationPrincipal User user,
-//                                                 Pageable pageable) {
-//        return eventService.getFiltered(filter, pageable, user.getId())
-//                .map(EventMapper::toDetailResponse);
-//    }
-//
-//    // ✅ Get event by ID
-//    @GetMapping("/{id}")
-//    @PreAuthorize("hasAnyRole('SPECIALIST', 'MANAGER')")
-//    public EventDetailResponse getById(@PathVariable Long id) {
-//        Event event = eventService.findById(id)
-//                .orElseThrow(() -> new EntityNotFoundException("Event with ID " + id + " not found"));
-//        return EventMapper.toDetailResponse(event);
-//    }
-//
-//    // ✅ Update event
-//    @PutMapping("/{id}")
-//    @PreAuthorize("hasAnyRole('SPECIALIST', 'MANAGER')")
-//    public EventDetailResponse update(@PathVariable Long id,
-//                                      @Valid @RequestBody EventUpdateRequest request) {
-//        Event updated = eventService.update(toFilterFromUpdate(request), id);
-//        return EventMapper.toDetailResponse(updated);
-//    }
-//
-//    // ✅ Delete event
-//    @DeleteMapping("/{id}")
-//    @PreAuthorize("hasAnyRole('MANAGER')")
-//    public Long delete(@PathVariable Long id) {
-//        return eventService.delete(id);
-//    }
-//
-//    // 🔁 Helper to convert EventUpdateRequest → EventFilterRequest (reuses logic)
-//    private EventFilterRequest toFilterFromUpdate(EventUpdateRequest request) {
-//        return EventFilterRequest.builder()
-//                .name(request.getName())
-//                .description(request.getDescription())
-//                .type(request.getType())
-//                .status(request.getStatus())
-//                .eventDate(request.getEventDate())
-//                .participantsNumber(request.getParticipantsNumber())
-//                .estimatedTotalGrossRevenue(request.getEstimatedTotalGrossRevenue())
-//                .updatedAt(request.getUpdatedAt())
-//                .companyId(request.getCompanyId())
-//                .hotelId(request.getHotelId())
-//                .createdByUserId(request.getCreatedByUserId())
-//                .build();
-//    }
 }

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import { Router } from '@angular/router';
 import { DatePipe } from '@angular/common';
 
@@ -23,6 +23,9 @@ import {
   MatRowDef
 } from '@angular/material/table';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import {debounceTime, distinctUntilChanged, tap} from 'rxjs';
+import {FormControl, ReactiveFormsModule} from '@angular/forms';
+import {MatFormField, MatInput, MatLabel} from '@angular/material/input';
 
 @Component({
   selector: 'app-events-list',
@@ -45,12 +48,20 @@ import { MatSnackBar } from '@angular/material/snack-bar';
     MatPaginator,
     MatRow,
     MatRowDef,
-    MatTable
+    MatTable,
+    MatFormField,
+    MatLabel,
+    ReactiveFormsModule,
+    MatInput
   ]
 })
-export class EventsListComponent {
+export class EventsListComponent implements OnInit {
   events: EventModel[] = [];
   displayedColumns = ['name', 'type', 'status', 'eventDate', 'actions'];
+
+  searchControl = new FormControl<string>('', { nonNullable: true });
+  nameFilter = '';
+
   pageIndex = 0;
   pageSize = 5;
   totalElements = 0;
@@ -62,16 +73,30 @@ export class EventsListComponent {
   ) {}
 
   ngOnInit(): void {
+    this.searchControl.valueChanges.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      tap((value: string) => {
+        this.nameFilter = value.trim();
+        this.pageIndex = 0;
+        this.loadEvents();
+      })
+    ).subscribe();
+
     this.loadEvents();
   }
 
   loadEvents(): void {
-    this.eventService.getEvents(this.pageIndex, this.pageSize).subscribe({
+    const filter = { name: this.nameFilter };
+    this.eventService.getFilteredEvents(filter, this.pageIndex, this.pageSize).subscribe({
       next: (page: Page<EventModel>) => {
         this.events = page.content;
         this.totalElements = page.totalElements;
       },
-      error: (err) => console.error('Failed to load events', err)
+      error: (err) => {
+        console.error('Failed to load events', err);
+        this.snack.open('Error loading events', '', { duration: 3000 });
+      }
     });
   }
 

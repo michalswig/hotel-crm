@@ -9,7 +9,7 @@ import {EventModel} from '../models/event.model';
   providedIn: 'root'
 })
 export class EventService {
-  private readonly API_URL = '/api/v1/events';
+  private readonly API_URL = 'http://localhost:8080/api/v1/events';
 
   constructor(private http: HttpClient) {}
 
@@ -19,6 +19,14 @@ export class EventService {
 
   getEvents(page: number, size: number): Observable<Page<EventModel>> {
     return this.http.get<Page<EventModel>>(`${this.API_URL}?page=${page}&size=${size}`);
+  }
+
+  getFilteredEvents(filter: any, page: number, size: number): Observable<Page<EventModel>> {
+    return this.http.get<Page<EventModel>>(
+      `${this.API_URL}/filter`,
+      { params: { ...filter, page, size }, withCredentials: true
+      }
+    );
   }
 
   getEventById(id: number): Observable<Event> {
