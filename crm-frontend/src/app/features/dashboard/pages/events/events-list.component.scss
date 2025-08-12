@@ -68,8 +68,14 @@ tr.mat-row:hover {
   transition: background-color 0.2s ease-in-out;
 }
 
-.mat-paginator {
+.paginator-wrapper {
   margin-top: 1rem;
   border-top: 1px solid #ddd;
   padding-top: 1rem;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 1rem;
+  color: #777;
 }
