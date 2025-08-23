@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,4 +32,15 @@ public class HotelController {
         Hotel hotel = hotelService.getById(id);
         return ResponseEntity.ok(HotelMapper.toResponse(hotel));
     }
+
+    @Operation(summary = "Get all hotels", description = "Returns all hotels")
+    @ApiResponse(responseCode = "200", description = "Hotels successfully retrieved")
+    @ApiResponse(responseCode = "404", description = "Hotels not found")
+    @GetMapping("/all")
+    public java.util.List<HotelResponse> getAll() {
+        return hotelService.getHotels(Pageable.unpaged())
+                .map(HotelMapper::toResponse)
+                .toList();
+    }
+
 }

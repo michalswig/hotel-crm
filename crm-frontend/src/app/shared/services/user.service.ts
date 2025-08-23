@@ -5,8 +5,17 @@ import {BehaviorSubject, Observable} from 'rxjs';
 export interface User {
   id: number;
   username: string;
+
+  hotelId: number;
+  hotelName: string;
+
+  roleId: number;
   role: string;
+
+  createdAt: string;   // ISO date string from backend
+  updatedAt: string;   // same here
 }
+
 
 
 @Injectable({

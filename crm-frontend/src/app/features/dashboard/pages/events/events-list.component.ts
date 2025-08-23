@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import { Router } from '@angular/router';
-import { DatePipe } from '@angular/common';
+import {DatePipe, NgIf} from '@angular/common';
 
 import { Page } from '../../../../shared/models/helpers';
 import { EventModel } from '../../../../shared/models/event.model';
@@ -52,7 +52,8 @@ import {MatFormField, MatInput, MatLabel} from '@angular/material/input';
     MatFormField,
     MatLabel,
     ReactiveFormsModule,
-    MatInput
+    MatInput,
+    NgIf
   ]
 })
 export class EventsListComponent implements OnInit {
