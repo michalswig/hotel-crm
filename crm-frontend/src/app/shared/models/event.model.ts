@@ -1,21 +1,20 @@
-import {EventStatus, EventType} from './enums';
-import {CompanyRef, HotelRef, UserRef} from './helpers';
+import {UserRef} from './helpers';
+import {EventType} from '@angular/router';
+import {EventStatus} from './enums';
 
-export interface Event {
+export interface EventModel {
   id: number;
   name: string;
   description?: string;
   type: EventType;
   status: EventStatus;
+  eventDate: string;
   participantsNumber: number;
-  estimatedTotalGrossRevenue: string;   // keep BigDecimal as string
-  hotel?: HotelRef;
-  hotelId?: number;
-  company?: CompanyRef;
-  companyId?: number;
+  estimatedTotalGrossRevenue: number;
+  createdAt: string;
+  updatedAt: string;
+  companyId: number;
+  hotelId: number;
+  createdByUserId: number;
   createdBy?: UserRef;
-  createdById?: number;
-  eventDate: string;    // ISO
-  createdAt?: string;
-  updatedAt?: string;
 }

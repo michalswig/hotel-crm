@@ -1,4 +1,4 @@
-package com.hotelcrm.crmapp.dto;
+package com.hotelcrm.crmapp.dto.company;
 
 import com.hotelcrm.crmapp.enums.Industry;
 import lombok.Getter;

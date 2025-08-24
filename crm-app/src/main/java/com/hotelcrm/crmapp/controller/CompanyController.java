@@ -1,10 +1,10 @@
 package com.hotelcrm.crmapp.controller;
 
 import com.hotelcrm.crmapp.config.CustomUserDetails;
-import com.hotelcrm.crmapp.dto.CompanyFilter;
-import com.hotelcrm.crmapp.dto.CompanyRequest;
-import com.hotelcrm.crmapp.dto.CompanyResponse;
-import com.hotelcrm.crmapp.dto.CompanySummaryDto;
+import com.hotelcrm.crmapp.dto.company.CompanyFilter;
+import com.hotelcrm.crmapp.dto.company.CompanyRequest;
+import com.hotelcrm.crmapp.dto.company.CompanyResponse;
+import com.hotelcrm.crmapp.dto.company.CompanySummaryDto;
 import com.hotelcrm.crmapp.entity.Company;
 import com.hotelcrm.crmapp.mapper.CompanyMapper;
 import com.hotelcrm.crmapp.service.CompanyService;

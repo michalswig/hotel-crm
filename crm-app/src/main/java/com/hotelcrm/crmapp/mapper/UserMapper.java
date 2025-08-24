@@ -1,6 +1,6 @@
 package com.hotelcrm.crmapp.mapper;
 
-import com.hotelcrm.crmapp.dto.UserDto;
+import com.hotelcrm.crmapp.dto.user.UserDto;
 import com.hotelcrm.crmapp.entity.User;
 import org.springframework.stereotype.Component;
 

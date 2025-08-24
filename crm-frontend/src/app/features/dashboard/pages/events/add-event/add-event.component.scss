@@ -1,0 +1,24 @@
+.form-card {
+  max-width: 840px;
+  margin: 24px auto;
+  padding: 16px;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,.06);
+}
+
+.full-width  { width: 100%; }
+.half-width  { width: 48%; margin-right: 4%; display: inline-block; vertical-align: top; }
+.third-width { width: 31%; margin-right: 3%; display: inline-block; vertical-align: top; }
+
+.btn-row {
+  margin-top: 24px;
+  display: flex;
+  gap: 12px;
+}
+
+.loading-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
