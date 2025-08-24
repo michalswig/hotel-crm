@@ -43,7 +43,8 @@ export const DASHBOARD_ROUTES: Routes = [
         path: 'events/:id/edit',
         component: AddEventComponent,
         title: 'Edit Event'
-      }
+      },
+
     ]
   }
 ];
