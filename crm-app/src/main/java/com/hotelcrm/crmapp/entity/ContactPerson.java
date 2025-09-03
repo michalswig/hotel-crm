@@ -29,7 +29,6 @@ public class ContactPerson {
     private LocalDateTime createdAt;
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
-
     @ManyToOne
     @JoinColumn(name = "company_id", nullable = false)
     private Company company;

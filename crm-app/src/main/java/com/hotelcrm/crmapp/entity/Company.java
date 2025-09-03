@@ -44,6 +44,10 @@ public class Company {
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ContactPerson> contactPersons;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "primary_contact_id")
+    private ContactPerson primaryContactPerson;
+
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Event> events;
 

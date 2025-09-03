@@ -66,6 +66,10 @@ databaseChangeLog:
                   name: updated_at
                   type: TIMESTAMP
 
+              - column:
+                  name: primary_contact_id
+                  type: BIGINT
+
         - addForeignKeyConstraint:
             baseTableName: companies
             baseColumnNames: created_by_user_id
