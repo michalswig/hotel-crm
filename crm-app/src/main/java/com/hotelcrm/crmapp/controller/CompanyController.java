@@ -1,10 +1,7 @@
 package com.hotelcrm.crmapp.controller;
 
 import com.hotelcrm.crmapp.config.CustomUserDetails;
-import com.hotelcrm.crmapp.dto.company.CompanyFilter;
-import com.hotelcrm.crmapp.dto.company.CompanyRequest;
-import com.hotelcrm.crmapp.dto.company.CompanyResponse;
-import com.hotelcrm.crmapp.dto.company.CompanySummaryDto;
+import com.hotelcrm.crmapp.dto.company.*;
 import com.hotelcrm.crmapp.entity.Company;
 import com.hotelcrm.crmapp.mapper.CompanyMapper;
 import com.hotelcrm.crmapp.service.CompanyService;
@@ -89,7 +86,7 @@ public class CompanyController {
     @GetMapping("/{id}")
     public ResponseEntity<CompanyResponse> getCompanyById(@PathVariable Long id) {
         Company company = companyService.getById(id);
-        return ResponseEntity.ok(CompanyMapper.toResponse(company));
+        return ResponseEntity.ok(CompanyMapper.toDetailResponse(company));
     }
 
     @Operation(
@@ -124,6 +121,16 @@ public class CompanyController {
 
         List<CompanySummaryDto> summary = companyService.fetchCompanySummaryTable(yearYTD, yearLY);
         return ResponseEntity.ok(summary);
+    }
+
+    @Operation(summary = "Set primary contact for a company")
+    @ApiResponse(responseCode = "204", description = "Primary contact set")
+    @PatchMapping("/{id}/primary-contact")
+    public ResponseEntity<Void> setPrimaryContact(
+            @PathVariable Long id,
+            @RequestBody SetPrimaryContactRequest req) {
+        companyService.setPrimaryContact(id, req.contactId());
+        return ResponseEntity.noContent().build();
     }
 
 }

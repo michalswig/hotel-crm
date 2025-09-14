@@ -23,4 +23,9 @@ public class CompanyResponse {
     private Long createdByUserId;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
+    private Long primaryContactId;
+    private String primaryContactName;
+    private String primaryContactEmail;
+
 }

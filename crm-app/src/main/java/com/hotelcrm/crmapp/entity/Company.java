@@ -51,4 +51,18 @@ public class Company {
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Event> events;
 
+    public void addContact(ContactPerson cp) {
+        if (contactPersons == null) contactPersons = new java.util.ArrayList<>();
+        cp.setCompany(this);
+        contactPersons.add(cp);
+    }
+
+    public void removeContact(ContactPerson cp) {
+        contactPersons.remove(cp);
+        cp.setCompany(null);
+        if (primaryContactPerson != null && primaryContactPerson.getId().equals(cp.getId())) {
+            primaryContactPerson = null;
+        }
+    }
+
 }

@@ -4,9 +4,11 @@ import com.hotelcrm.crmapp.dto.company.CompanyFilter;
 import com.hotelcrm.crmapp.dto.company.CompanyRequest;
 import com.hotelcrm.crmapp.dto.company.CompanySummaryDto;
 import com.hotelcrm.crmapp.entity.Company;
+import com.hotelcrm.crmapp.entity.ContactPerson;
 import com.hotelcrm.crmapp.entity.User;
 import com.hotelcrm.crmapp.mapper.CompanyMapper;
 import com.hotelcrm.crmapp.repository.CompanyRepository;
+import com.hotelcrm.crmapp.repository.ContactPersonRepository;
 import com.hotelcrm.crmapp.service.CompanyService;
 import com.hotelcrm.crmapp.specification.CompanySpecification;
 import jakarta.persistence.EntityNotFoundException;
@@ -27,6 +29,7 @@ import java.util.List;
 public class CompanyServiceImpl implements CompanyService {
 
     private final CompanyRepository companyRepository;
+    private final ContactPersonRepository contactRepo;
 
     @PreAuthorize("hasAnyRole('MANAGER','SPECIALIST')")
     @Transactional
@@ -91,6 +94,16 @@ public class CompanyServiceImpl implements CompanyService {
             throw new EntityNotFoundException("Company " + id);
         }
         companyRepository.deleteById(id);
+    }
+
+    @Override
+    public void setPrimaryContact(Long companyId, Long contactId) {
+        Company c = companyRepository.findById(companyId)
+                .orElseThrow(() -> new EntityNotFoundException("Company not found"));
+        ContactPerson cp = contactRepo.findByIdAndCompanyId(contactId, companyId)
+                .orElseThrow(() -> new EntityNotFoundException("Contact not found in this company"));
+        c.setPrimaryContactPerson(cp);
+        c.setUpdatedAt(java.time.LocalDateTime.now());
     }
 
 

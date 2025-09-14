@@ -25,4 +25,6 @@ public interface CompanyService {
 
     void deleteCompany(Long id);
 
+    void setPrimaryContact(Long companyId, Long contactId);
+
 }
