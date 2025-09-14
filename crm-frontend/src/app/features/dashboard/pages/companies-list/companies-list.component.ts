@@ -68,7 +68,7 @@ export class CompaniesListComponent implements OnInit {
 
   constructor(
     private readonly companyService: CompanyService,
-    private readonly router: Router,
+    protected readonly router: Router,
     private readonly userService: UserService,
     private readonly snack: MatSnackBar
   ) {}

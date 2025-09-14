@@ -43,6 +43,12 @@
                   (click)="onDeleteCompany(c.id)">
             <mat-icon>delete</mat-icon>
           </button>
+          <button mat-icon-button (click)="router.navigate(['dashboard','companies', c.id, 'contacts'])" matTooltip="Contacts">
+            <mat-icon>people</mat-icon>
+          </button>
+          <button mat-icon-button (click)="router.navigate(['dashboard','companies', c.id, 'contacts','new'])" matTooltip="Add contact">
+            <mat-icon>person_add</mat-icon>
+          </button>
         </td>
       </ng-container>
 

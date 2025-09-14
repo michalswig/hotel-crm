@@ -20,4 +20,8 @@ export interface Company {
   updatedAt?: string;
   contactPersons?: ContactPerson[];
   events?: Event[];
+
+  primaryContactId?: number;
+  primaryContactName?: string;
+  primaryContactEmail?: string;
 }
