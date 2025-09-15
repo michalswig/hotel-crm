@@ -1,7 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {MatCard, MatCardTitle} from '@angular/material/card';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
-import {MatError, MatFormField, MatInput, MatLabel} from '@angular/material/input';
+import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
 import {Industry} from '../../../../shared/models/enums';
 import {CompanyService} from '../../../../shared/services/company.service';
 import {UserService} from '../../../../shared/services/user.service';
@@ -13,6 +14,8 @@ import {MatButton} from '@angular/material/button';
 import {MatSelect} from '@angular/material/select';
 import {MatOption} from '@angular/material/core';
 import {Company} from '../../../../shared/models/company.model';
+import {MatDialog} from '@angular/material/dialog';
+import {ConfirmDialogComponent} from '../contacts/dialogs/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-add-company',
@@ -46,7 +49,8 @@ export class AddCompanyComponent implements OnInit {
     private readonly userService: UserService,
     private readonly snack: MatSnackBar,
     private readonly router: Router,
-    private readonly route: ActivatedRoute
+    private readonly route: ActivatedRoute,
+    private readonly dialog: MatDialog
   ) {
   }
 
@@ -87,39 +91,42 @@ export class AddCompanyComponent implements OnInit {
   }
 
   save(): void {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      return;
-    }
+    if (this.form.invalid) { this.form.markAllAsTouched(); return; }
 
     const uid = this.userService.getCurrentUserId();
-    if (!uid) {
-      this.snack.open('User not loaded yet', '', {duration: 3000});
-      return;
-    }
+    if (!uid) { this.snack.open('User not loaded yet', '', { duration: 3000 }); return; }
 
-    const payload: CompanyRequest = {
-      ...this.form.value,
-      createdByUserId: uid
-    };
+    const payload: CompanyRequest = { ...this.form.value, createdByUserId: uid };
 
     if (this.isEditMode) {
       this.companyService.updateCompany(this.companyId, payload).subscribe({
         next: () => {
-          this.snack.open('Company updated ✔', '', {duration: 2000});
+          this.snack.open('Company updated ✔', '', { duration: 2000 });
           this.router.navigate(['/dashboard/companies']);
         },
-        error: () =>
-          this.snack.open('Failed to update company', '', {duration: 3000})
+        error: () => this.snack.open('Failed to update company', '', { duration: 3000 })
       });
     } else {
       this.companyService.createCompany(payload).subscribe({
-        next: () => {
-          this.snack.open('Company added ✔', '', {duration: 2000});
-          this.router.navigate(['/dashboard/companies']);
+        next: (created: Company) => {
+          this.snack.open('Company added ✔', '', { duration: 1200 });
+
+          this.dialog.open(ConfirmDialogComponent, {
+            data: {
+              title: 'Add contact person?',
+              message: 'Do you want to add a contact person now?',
+              okText: 'Add contact',
+              cancelText: 'Later'
+            }
+          }).afterClosed().subscribe(yes => {
+            if (yes) {
+              this.router.navigate(['/dashboard/companies', created.id, 'contacts', 'new']); // ⬅️ formularz kontaktu
+            } else {
+              this.router.navigate(['/dashboard/companies']);
+            }
+          });
         },
-        error: () =>
-          this.snack.open('Failed to add company', '', {duration: 3000})
+        error: () => this.snack.open('Failed to add company', '', { duration: 3000 })
       });
     }
   }
