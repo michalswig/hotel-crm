@@ -46,4 +46,11 @@ export class CompanyService {
     return this.http.delete<void>(`${this.baseUrl}/${id}`, { withCredentials: true });
   }
 
+  setPrimaryContact(companyId: number, contactId: number) {
+    return this.http.patch<void>(
+      `${this.baseUrl}/${companyId}/primary-contact`,
+      { contactId }, { withCredentials: true }
+    );
+  }
+
 }

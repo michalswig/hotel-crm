@@ -63,3 +63,17 @@ databaseChangeLog:
               - column: { name: created_at, valueDate: '2025-06-28T00:00:00' }
               - column: { name: updated_at, valueDate: '2025-06-28T00:00:00' }
               - column: { name: company_id, valueNumeric: 5 }
+
+        - sql:
+            dbms: postgresql
+            sql: |
+              -- pick the earliest contact per company as primary
+              WITH first_contacts AS (
+              SELECT DISTINCT ON (company_id) id AS contact_id, company_id
+              FROM contact_persons
+              ORDER BY company_id, id
+              )
+              UPDATE companies c
+              SET primary_contact_id = f.contact_id
+              FROM first_contacts f
+              WHERE f.company_id = c.id;

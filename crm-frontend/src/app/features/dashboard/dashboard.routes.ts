@@ -44,7 +44,21 @@ export const DASHBOARD_ROUTES: Routes = [
         component: AddEventComponent,
         title: 'Edit Event'
       },
-
+      {
+        path: 'companies/:companyId/contacts',
+        loadComponent: () =>
+          import('./pages/contacts/contacts-list/contacts-list.component').then(m => m.ContactsListComponent)
+      },
+      {
+        path: 'companies/:companyId/contacts/new',
+        loadComponent: () =>
+          import('./pages/contacts/add-contact/add-contact.component').then(m => m.AddContactComponent)
+      },
+      {
+        path: 'companies/:companyId/contacts/:contactId/edit',
+        loadComponent: () =>
+          import('./pages/contacts/add-contact/add-contact.component').then(m => m.AddContactComponent)
+      }
     ]
   }
 ];
