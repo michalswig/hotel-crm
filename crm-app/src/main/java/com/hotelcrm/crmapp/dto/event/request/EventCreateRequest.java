@@ -42,9 +42,7 @@ public class EventCreateRequest {
     @NotNull(message = "Company ID is required")
     private Long companyId;
 
-    @NotNull(message = "Hotel ID is required")
     private Long hotelId;
 
-    @NotNull(message = "Created by user ID is required")
-    private Long createdByUserId;
+    private Long contactPersonId;
 }

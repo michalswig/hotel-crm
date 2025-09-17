@@ -44,6 +44,8 @@ public class EventUpdateRequest {
 
     private Long createdByUserId;
 
+    private Long contactPersonId;
+
     public EventFilterRequest toFilterRequest() {
         return EventFilterRequest.builder()
                 .name(this.name)
@@ -57,6 +59,7 @@ public class EventUpdateRequest {
                 .companyId(this.companyId)
                 .hotelId(this.hotelId)
                 .createdByUserId(this.createdByUserId)
+                .contactPersonId(this.contactPersonId)
                 .build();
     }
 
