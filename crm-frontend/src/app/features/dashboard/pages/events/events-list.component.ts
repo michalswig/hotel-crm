@@ -58,7 +58,7 @@ import {MatFormField, MatInput, MatLabel} from '@angular/material/input';
 })
 export class EventsListComponent implements OnInit {
   events: EventModel[] = [];
-  displayedColumns = ['name', 'type', 'status', 'eventDate', 'actions'];
+  displayedColumns = ['name', 'type', 'status', 'eventDate', 'contact', 'actions'];
 
   searchControl = new FormControl<string>('', { nonNullable: true });
   nameFilter = '';

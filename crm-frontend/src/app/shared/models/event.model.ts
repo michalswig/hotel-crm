@@ -1,6 +1,5 @@
-import {UserRef} from './helpers';
-import {EventType} from '@angular/router';
-import {EventStatus} from './enums';
+import { EventType, EventStatus } from './enums';
+import { UserRef } from './helpers';
 
 export interface EventModel {
   id: number;
@@ -17,4 +16,6 @@ export interface EventModel {
   hotelId: number;
   createdByUserId: number;
   createdBy?: UserRef;
+  contactPersonId?: number;
+  contactPersonName?: string;
 }
