@@ -1,21 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators
+  FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators
 } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { NgForOf, NgIf } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import {
-  debounceTime,
-  distinctUntilChanged,
-  map,
-  startWith,
-  switchMap,
-  tap
+  debounceTime, distinctUntilChanged, switchMap, tap
 } from 'rxjs/operators';
 
 import { MatCardModule } from '@angular/material/card';
@@ -28,12 +19,12 @@ import { MatButtonModule } from '@angular/material/button';
 
 import { EventStatus, EventType } from '../../../../../shared/models/enums';
 import { Company } from '../../../../../shared/models/company.model';
-import { Hotel } from '../../../../../shared/models/hotel.model';
+import { ContactPerson } from '../../../../../shared/models/contact-person.model';
 import { EventRequest } from '../../../../../shared/models/request/event-request.model';
 import { EventModel } from '../../../../../shared/models/event.model';
 
 import { CompanyService } from '../../../../../shared/services/company.service';
-import { HotelService } from '../../../../../shared/services/hotel.service';
+import { ContactPersonService } from '../../../../../shared/services/contact-person.service';
 import { EventService } from '../../../../../shared/services/event.service';
 import { UserService } from '../../../../../shared/services/user.service';
 
@@ -57,23 +48,21 @@ export class AddEventComponent implements OnInit {
   types = Object.values(EventType);
   statuses = Object.values(EventStatus);
 
-  // Autocomplete helper controls
+  // Company autocomplete
   companyCtrl = new FormControl<string>('', { nonNullable: true });
-  hotelCtrl   = new FormControl<string>('', { nonNullable: true });
-
   companyOptions: Company[] = [];
-  hotelOptions: Hotel[] = [];
-  allHotels: Hotel[] = [];
-
   loadingCompanies = false;
-  loadingHotels = false;
-  loadingEvent = false;
+
+  // Contacts for selected company
+  contacts: ContactPerson[] = [];
+  loadingContacts = false;
+  originalContactId: number | undefined; // to detect clearing on update
 
   constructor(
     private readonly fb: FormBuilder,
     private readonly eventService: EventService,
     private readonly companyService: CompanyService,
-    private readonly hotelService: HotelService,
+    private readonly contactsService: ContactPersonService,
     private readonly userService: UserService,
     private readonly snack: MatSnackBar,
     private readonly router: Router,
@@ -86,46 +75,31 @@ export class AddEventComponent implements OnInit {
       description: ['', [Validators.maxLength(500)]],
       type: ['', Validators.required],
       status: ['', Validators.required],
-      eventDate: ['', Validators.required], // yyyy-MM-ddTHH:mm (datetime-local)
+      eventDate: ['', Validators.required], // yyyy-MM-ddTHH:mm
       participantsNumber: [0, [Validators.required, Validators.min(0)]],
       estimatedTotalGrossRevenue: [0, [Validators.required, Validators.min(0)]],
       companyId: [null, Validators.required],
-      hotelId: [null, Validators.required]
+      contactPersonId: [null] // optional; on update set to 0 to clear
     });
 
-    // Detect edit mode
+    // Are we editing?
     this.route.paramMap.subscribe(params => {
       const id = params.get('id');
       if (id) {
         this.isEditMode = true;
         this.eventId = +id;
         this.loadEvent(this.eventId);
-      } else {
-        // Only prefill when adding (in edit we show real value)
-        this.prefillHotelFromUser();
       }
     });
 
     this.setupCompanyAutocomplete();
-    this.setupHotelAutocomplete();
   }
 
   /* ---------- LOAD/INIT HELPERS ---------- */
 
-  private prefillHotelFromUser(): void {
-    const user = this.userService.getUser();
-    if (user?.hotelId) {
-      this.form.patchValue({ hotelId: user.hotelId });
-      // Best effort display:
-      this.hotelCtrl.setValue(user.hotelName ?? `Hotel #${user.hotelId}`);
-    }
-  }
-
   private loadEvent(id: number): void {
-    this.loadingEvent = true;
     this.eventService.getEventById(id).subscribe({
       next: (ev: EventModel) => {
-        // Patch form values
         this.form.patchValue({
           name: ev.name,
           description: ev.description ?? '',
@@ -135,42 +109,42 @@ export class AddEventComponent implements OnInit {
           participantsNumber: ev.participantsNumber,
           estimatedTotalGrossRevenue: ev.estimatedTotalGrossRevenue,
           companyId: ev.companyId,
-          hotelId: ev.hotelId
+          contactPersonId: ev.contactPersonId ?? null
         });
+        this.originalContactId = ev.contactPersonId ?? undefined;
 
-        // Show labels in autocompletes
+        // Show company name in autocomplete input
         this.companyService.getCompanyById(ev.companyId).subscribe({
           next: c => this.companyCtrl.setValue(c?.name ?? `#${ev.companyId}`),
           error: () => this.companyCtrl.setValue(`#${ev.companyId}`)
         });
 
-        this.hotelService.getById(ev.hotelId).subscribe({
-          next: h => this.hotelCtrl.setValue(h?.name ?? `#${ev.hotelId}`),
-          error: () => this.hotelCtrl.setValue(`#${ev.hotelId}`)
-        });
+        // Load contacts for the company to populate the select
+        this.loadContactsForCompany(ev.companyId);
       },
       error: () => {
         this.snack.open('Failed to load event', '', { duration: 3000 });
         this.router.navigate(['/dashboard/events']);
-      },
-      complete: () => (this.loadingEvent = false)
+      }
     });
   }
 
   private setupCompanyAutocomplete(): void {
-    // Initial suggestions
+    // initial suggestions
     this.companyService.getFilteredCompanies(0, 10, '').subscribe({
       next: page => (this.companyOptions = page.content),
       error: () => (this.companyOptions = [])
     });
 
-    // Live search
+    // live search
     this.companyCtrl.valueChanges
       .pipe(
         debounceTime(300),
         distinctUntilChanged(),
         tap(() => (this.loadingCompanies = true)),
-        switchMap(q => this.companyService.getFilteredCompanies(0, 10, (q ?? '').trim()))
+        switchMap(q =>
+          this.companyService.getFilteredCompanies(0, 10, (q ?? '').trim())
+        )
       )
       .subscribe({
         next: page => {
@@ -184,40 +158,18 @@ export class AddEventComponent implements OnInit {
       });
   }
 
-  private setupHotelAutocomplete(): void {
-    // Load all once (you can switch to a paginated “/hotels/filter” later)
-    this.loadingHotels = true;
-    this.hotelService.getAll().subscribe({
-      next: hotels => {
-        this.allHotels = hotels ?? [];
-        this.hotelOptions = this.allHotels;
-        this.loadingHotels = false;
-
-        // Local filter on user input
-        this.hotelCtrl.valueChanges
-          .pipe(
-            startWith(this.hotelCtrl.value ?? ''),
-            debounceTime(150),
-            distinctUntilChanged(),
-            map(q => {
-              const term = (q ?? '').toString().trim().toLowerCase();
-              if (!term) return this.allHotels;
-
-              const byId = Number(term);
-              return this.allHotels.filter(
-                h =>
-                  (!Number.isNaN(byId) && h.id === byId) ||
-                  h.name?.toLowerCase().includes(term)
-              );
-            })
-          )
-          .subscribe(opts => (this.hotelOptions = opts));
+  private loadContactsForCompany(companyId: number): void {
+    this.loadingContacts = true;
+    // backend endpoint: GET /companies/{companyId}/contacts (paginated)
+    // we just take first 100; adjust as needed
+    this.contactsService.list(companyId, { page: 0, size: 100 } as any).subscribe({
+      next: (p: any) => {
+        this.contacts = p.content ?? [];
+        this.loadingContacts = false;
       },
       error: () => {
-        this.loadingHotels = false;
-        this.allHotels = [];
-        this.hotelOptions = [];
-        this.snack.open('Failed to load hotels', '', { duration: 3000 });
+        this.contacts = [];
+        this.loadingContacts = false;
       }
     });
   }
@@ -226,39 +178,35 @@ export class AddEventComponent implements OnInit {
     if (!iso) return '';
     const d = new Date(iso);
     const p = (n: number) => n.toString().padStart(2, '0');
-    const yyyy = d.getFullYear();
-    const MM = p(d.getMonth() + 1);
-    const dd = p(d.getDate());
-    const hh = p(d.getHours());
-    const mm = p(d.getMinutes());
-    return `${yyyy}-${MM}-${dd}T${hh}:${mm}`;
+    return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`;
+    // seconds are optional for <input type="datetime-local">
   }
 
-  /* ---------- GETTERS FOR TEMPLATE ERRORS ---------- */
+  /* ---------- GETTERS ---------- */
 
-  get nameCtrl()   { return this.form.get('name') as FormControl<string | null>; }
-  get descCtrl()   { return this.form.get('description') as FormControl<string | null>; }
-  get typeCtrl()   { return this.form.get('type') as FormControl<string | null>; }
+  get nameCtrl() { return this.form.get('name') as FormControl<string | null>; }
+  get descCtrl() { return this.form.get('description') as FormControl<string | null>; }
+  get typeCtrl() { return this.form.get('type') as FormControl<string | null>; }
   get statusCtrl() { return this.form.get('status') as FormControl<string | null>; }
-  get dateCtrl()   { return this.form.get('eventDate') as FormControl<string | null>; }
-  get partCtrl()   { return this.form.get('participantsNumber') as FormControl<number | null>; }
-  get revCtrl()    { return this.form.get('estimatedTotalGrossRevenue') as FormControl<number | null>; }
+  get dateCtrl() { return this.form.get('eventDate') as FormControl<string | null>; }
+  get partCtrl() { return this.form.get('participantsNumber') as FormControl<number | null>; }
+  get revCtrl() { return this.form.get('estimatedTotalGrossRevenue') as FormControl<number | null>; }
   get companyIdCtrl() { return this.form.get('companyId') as FormControl<number | null>; }
-  get hotelIdCtrl()   { return this.form.get('hotelId') as FormControl<number | null>; }
+  get contactIdCtrl() { return this.form.get('contactPersonId') as FormControl<number | null>; }
 
-  /* ---------- AUTOCOMPLETE SELECT HANDLERS ---------- */
+  /* ---------- SELECT HANDLERS ---------- */
 
   selectCompany(c: Company): void {
-    this.form.patchValue({ companyId: c.id });
+    this.form.patchValue({ companyId: c.id, contactPersonId: null });
     this.companyCtrl.setValue(c.name);
+    this.loadContactsForCompany(c.id);
   }
 
-  selectHotel(h: Hotel): void {
-    this.form.patchValue({ hotelId: h.id });
-    this.hotelCtrl.setValue(h.name);
+  clearContact(): void {
+    this.contactIdCtrl.setValue(null);
   }
 
-  /* ---------- SAVE (CREATE / UPDATE) ---------- */
+  /* ---------- SAVE ---------- */
 
   save(): void {
     if (this.form.invalid) {
@@ -266,13 +214,7 @@ export class AddEventComponent implements OnInit {
       return;
     }
 
-    const uid = this.userService.getCurrentUserId();
-    if (!uid) {
-      this.snack.open('User not loaded yet', '', { duration: 3000 });
-      return;
-    }
-
-    // Convert datetime-local -> ISO-like string "yyyy-MM-ddTHH:mm:ss"
+    // datetime-local → ISO-like string with seconds
     const raw = this.dateCtrl.value!;
     const iso = new Date(raw).toISOString().slice(0, 19);
 
@@ -285,11 +227,16 @@ export class AddEventComponent implements OnInit {
       participantsNumber: this.partCtrl.value ?? 0,
       estimatedTotalGrossRevenue: this.revCtrl.value ?? 0,
       companyId: this.companyIdCtrl.value!,
-      hotelId: this.hotelIdCtrl.value!,      // if you want to force user's hotel, overwrite here
-      createdByUserId: uid
+      // on create: include only if set
+      // on update: if cleared, send 0 to clear on backend
+      contactPersonId: undefined
     };
 
+    const selectedContact = this.contactIdCtrl.value;
     if (this.isEditMode) {
+      payload.contactPersonId =
+        selectedContact == null && this.originalContactId !== undefined ? 0 : selectedContact ?? undefined;
+
       this.eventService.updateEvent(this.eventId, payload).subscribe({
         next: () => {
           this.snack.open('Event updated ✔', '', { duration: 2000 });
@@ -298,6 +245,8 @@ export class AddEventComponent implements OnInit {
         error: () => this.snack.open('Failed to update event', '', { duration: 3000 })
       });
     } else {
+      if (selectedContact != null) payload.contactPersonId = selectedContact;
+
       this.eventService.createEvent(payload).subscribe({
         next: () => {
           this.snack.open('Event created ✔', '', { duration: 2000 });

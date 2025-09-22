@@ -13,9 +13,9 @@ export interface EventModel {
   createdAt: string;
   updatedAt: string;
   companyId: number;
-  hotelId: number;
-  createdByUserId: number;
+  hotelId: number;            // still returned by API
+  createdByUserId: number;    // still returned by API
   createdBy?: UserRef;
-  contactPersonId?: number;
-  contactPersonName?: string;
+  contactPersonId?: number;   // ← already present
+  contactPersonName?: string; // ← already present
 }
