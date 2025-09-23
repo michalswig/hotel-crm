@@ -45,8 +45,11 @@ public class Event {
     private LocalDateTime eventDate;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-
     @ManyToOne
     @JoinColumn(name = "company_id", nullable = false)
     private Company company;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "contact_person_id")
+    private ContactPerson contactPerson;
+
 }

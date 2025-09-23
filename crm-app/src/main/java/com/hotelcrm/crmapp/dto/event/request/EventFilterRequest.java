@@ -26,4 +26,5 @@ public class EventFilterRequest {
     private Long companyId;
     private Long hotelId;
     private Long createdByUserId;
+    private Long contactPersonId;
 }

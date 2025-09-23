@@ -1,12 +1,13 @@
+import {EventStatus, EventType} from '../enums';
+
 export interface EventRequest {
   name: string;
   description?: string;
-  type: string;
-  status: string;
-  eventDate: string;
-  participantsNumber: number;
-  estimatedTotalGrossRevenue: number;
+  type: EventType;            // ← use enums, not string
+  status: EventStatus;        // ← use enums, not string
+  eventDate: string;          // 'YYYY-MM-DDTHH:mm' from <input type="datetime-local">
+  participantsNumber?: number;
+  estimatedTotalGrossRevenue?: number;
   companyId: number;
-  hotelId: number;
-  createdByUserId: number;
+  contactPersonId?: number | 0; // ← NEW (0 on UPDATE means “clear contact”)
 }

@@ -6,11 +6,8 @@ import com.hotelcrm.crmapp.dto.event.request.EventCreateRequest;
 import com.hotelcrm.crmapp.dto.event.request.EventFilterRequest;
 import com.hotelcrm.crmapp.dto.event.request.EventUpdateRequest;
 import com.hotelcrm.crmapp.dto.event.response.EventDetailResponse;
-import com.hotelcrm.crmapp.entity.Company;
 import com.hotelcrm.crmapp.entity.Event;
-import com.hotelcrm.crmapp.entity.Hotel;
 import com.hotelcrm.crmapp.exception.UnauthenticatedAccessException;
-import com.hotelcrm.crmapp.service.CompanyService;
 import com.hotelcrm.crmapp.service.EventService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -31,7 +28,6 @@ import org.springframework.web.bind.annotation.*;
 public class EventController {
 
     private final EventService eventService;
-    private final CompanyService companyService;
 
     @Operation(
             summary = "Create a new event",
@@ -44,15 +40,12 @@ public class EventController {
             @Valid @RequestBody EventCreateRequest request,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        Hotel hotel = userDetails.getUser().getHotel();
-        if (hotel == null) {
-            throw new IllegalStateException("Authenticated user has no assigned hotel");
+        if (userDetails == null) {
+            throw new UnauthenticatedAccessException("User is not authenticated");
         }
 
-        Company company = companyService.getById(request.getCompanyId());
-
-        Event event = EventMapper.toEntity(request, company, hotel, userDetails.getUser());
-        return EventMapper.toDetailResponse(eventService.create(event, userDetails.getUser()));
+        Event created = eventService.create(request, userDetails.getUser());
+        return EventMapper.toDetailResponse(created);
     }
 
     @Operation(
@@ -101,7 +94,7 @@ public class EventController {
             @PathVariable Long id,
             @Valid @RequestBody EventUpdateRequest request) {
 
-        Event updated = eventService.update(request.toFilterRequest(), id);
+        Event updated = eventService.update(id, request);
         return EventMapper.toDetailResponse(updated);
     }
 
@@ -116,5 +109,4 @@ public class EventController {
     public ResponseEntity<Long> delete(@PathVariable Long id) {
         return ResponseEntity.ok(eventService.delete(id));
     }
-
 }

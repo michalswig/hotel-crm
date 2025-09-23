@@ -26,4 +26,6 @@ public class EventDetailResponse {
     private Long companyId;
     private Long hotelId;
     private Long createdByUserId;
+    private Long contactPersonId;
+    private String contactPersonName;
 }

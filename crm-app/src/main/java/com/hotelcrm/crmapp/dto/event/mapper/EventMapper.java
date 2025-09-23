@@ -2,17 +2,20 @@ package com.hotelcrm.crmapp.dto.event.mapper;
 
 import com.hotelcrm.crmapp.dto.event.request.EventCreateRequest;
 import com.hotelcrm.crmapp.dto.event.response.EventDetailResponse;
-import com.hotelcrm.crmapp.entity.Company;
-import com.hotelcrm.crmapp.entity.Event;
-import com.hotelcrm.crmapp.entity.Hotel;
-import com.hotelcrm.crmapp.entity.User;
+import com.hotelcrm.crmapp.entity.*;
 
 public class EventMapper {
 
     public static Event toEntity(EventCreateRequest request, Company company, Hotel hotel, User createdBy) {
-        if (request == null) {
-            return null;
-        }
+        return toEntity(request, company, hotel, createdBy, null);
+    }
+
+    public static Event toEntity(EventCreateRequest request,
+                                 Company company,
+                                 Hotel hotel,
+                                 User createdBy,
+                                 ContactPerson contact) {
+        if (request == null) return null;
 
         return Event.builder()
                 .name(request.getName())
@@ -27,12 +30,21 @@ public class EventMapper {
                 .company(company)
                 .hotel(hotel)
                 .createdBy(createdBy)
+                .contactPerson(contact)
                 .build();
     }
 
     public static EventDetailResponse toDetailResponse(Event event) {
-        if (event == null) {
-            return null;
+        if (event == null) return null;
+
+        String contactName = null;
+        Long contactId = null;
+        if (event.getContactPerson() != null) {
+            contactId = event.getContactPerson().getId();
+            String fn = event.getContactPerson().getFirstName();
+            String ln = event.getContactPerson().getLastName();
+            contactName = ((fn != null ? fn : "") + " " + (ln != null ? ln : "")).trim();
+            if (contactName.isBlank()) contactName = null;
         }
 
         return EventDetailResponse.builder()
@@ -49,8 +61,9 @@ public class EventMapper {
                 .companyId(event.getCompany() != null ? event.getCompany().getId() : null)
                 .hotelId(event.getHotel() != null ? event.getHotel().getId() : null)
                 .createdByUserId(event.getCreatedBy() != null ? event.getCreatedBy().getId() : null)
+                .contactPersonId(contactId)
+                .contactPersonName(contactName)
                 .build();
     }
-
 }
 

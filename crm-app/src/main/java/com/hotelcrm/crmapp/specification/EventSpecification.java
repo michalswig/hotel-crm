@@ -14,11 +14,11 @@ public class EventSpecification {
         if (filter.getId() != null) {
             spec = spec.and(eventIdEquals(filter.getId()));
         }
-        if (filter.getName() != null) {
-            spec = spec.and(nameLike(filter.getName()));
+        if (notBlank(filter.getName())) {
+            spec = spec.and(nameLike(filter.getName().trim()));
         }
-        if (filter.getDescription() != null) {
-            spec = spec.and(descriptionLike(filter.getDescription()));
+        if (notBlank(filter.getDescription())) {
+            spec = spec.and(descriptionLike(filter.getDescription().trim()));
         }
         if (filter.getType() != null) {
             spec = spec.and(typeEquals(filter.getType()));
@@ -41,8 +41,14 @@ public class EventSpecification {
         if (filter.getHotelId() != null) {
             spec = spec.and(hotelEquals(filter.getHotelId()));
         }
-
+        if (filter.getContactPersonId() != null) {
+            spec = spec.and(contactPersonEquals(filter.getContactPersonId()));
+        }
         return spec;
+    }
+
+    private static boolean notBlank(String s) {
+        return s != null && !s.trim().isEmpty();
     }
 
     private static Specification<Event> createdBy(Long userId) {
@@ -54,11 +60,13 @@ public class EventSpecification {
     }
 
     private static Specification<Event> nameLike(String name) {
-        return (root, query, cb) -> cb.like(cb.lower(root.get("name")), "%" + name.toLowerCase() + "%");
+        return (root, query, cb) ->
+                cb.like(cb.lower(root.get("name")), "%" + name.toLowerCase() + "%");
     }
 
     private static Specification<Event> descriptionLike(String description) {
-        return (root, query, cb) -> cb.like(cb.lower(root.get("description")), "%" + description.toLowerCase() + "%");
+        return (root, query, cb) ->
+                cb.like(cb.lower(root.get("description")), "%" + description.toLowerCase() + "%");
     }
 
     private static Specification<Event> typeEquals(Enum<?> type) {
@@ -87,5 +95,9 @@ public class EventSpecification {
 
     private static Specification<Event> hotelEquals(Long hotelId) {
         return (root, query, cb) -> cb.equal(root.get("hotel").get("id"), hotelId);
+    }
+
+    private static Specification<Event> contactPersonEquals(Long contactPersonId) {
+        return (root, query, cb) -> cb.equal(root.join("contactPerson").get("id"), contactPersonId);
     }
 }
