@@ -5,11 +5,20 @@ import {UserRef} from './helpers';
 export interface Interaction {
   id: number;
   type: InteractionType;
+  companyId: number;
+  companyName?: string;
+
+  contactPersonId: number;
+  contactPersonName?: string;
+
+  userId: number;
+
+  scheduledAt: string;
+  completedAt?: string;
+  followUpAt?: string;
   notes?: string;
-  interactionDate: string;
-  contactPerson?: ContactPerson;
-  contactPersonId?: number;
-  user?: UserRef;
-  userId?: number;
+
+  createdAt?: string;
+  updatedAt?: string;
 }
 
