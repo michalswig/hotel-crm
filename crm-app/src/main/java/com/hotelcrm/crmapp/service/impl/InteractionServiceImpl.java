@@ -90,6 +90,20 @@ public class InteractionServiceImpl implements InteractionService {
             i.setContactPerson(cp);
         }
 
+        if (req.getStatus() != null) {
+            InteractionStatus newStatus = req.getStatus();
+            if (newStatus != InteractionStatus.OVERDUE) {
+                if (newStatus == InteractionStatus.DONE) {
+                    if (i.getCompletedAt() == null) {
+                        i.setCompletedAt(LocalDateTime.now());
+                    }
+                } else {
+                    i.setCompletedAt(null);
+                }
+                i.setStatus(newStatus);
+            }
+        }
+
         i.setUpdatedAt(LocalDateTime.now());
         return InteractionMapper.toResponse(interactions.save(i));
     }

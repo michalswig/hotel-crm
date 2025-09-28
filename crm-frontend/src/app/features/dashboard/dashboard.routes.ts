@@ -79,6 +79,13 @@ export const DASHBOARD_ROUTES: Routes = [
           import('./pages/interactions/add-interaction/add-interaction.component')
             .then(m => m.AddInteractionComponent),
         title: 'Edit Interaction'
+      },
+      {
+        path: 'interactions/:id',
+        loadComponent: () =>
+          import('./pages/interactions/view-interaction/interaction-detail.component')
+            .then(m => m.InteractionDetailComponent),
+        title: 'Interaction Details'
       }
 
     ]

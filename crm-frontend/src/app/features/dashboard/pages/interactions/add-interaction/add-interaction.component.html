@@ -15,6 +15,13 @@
       <input matInput type="date" formControlName="scheduledAt" />
     </mat-form-field>
 
+    <mat-form-field appearance="fill" class="half-width" *ngIf="isEditMode">
+      <mat-label>Status</mat-label>
+      <mat-select formControlName="status">
+        <mat-option *ngFor="let s of statuses" [value]="s">{{ s }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
     <mat-form-field appearance="fill" class="full-width">
       <mat-label>Notes</mat-label>
       <textarea matInput rows="3" formControlName="notes"></textarea>
