@@ -14,9 +14,11 @@ import {
 } from '@angular/material/table';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatFormField, MatInput, MatLabel } from '@angular/material/input';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import {InteractionService} from '../../../../shared/services/interaction.service';
 import {Interaction} from '../../../../shared/models/interaction.model';
 import {Page} from '../../../../shared/models/helpers';
+import { InteractionDetailComponent } from './view-interaction/interaction-detail.component';
 
 @Component({
   selector: 'app-interactions-list',
@@ -27,7 +29,8 @@ import {Page} from '../../../../shared/models/helpers';
     DatePipe, ReactiveFormsModule, NgIf,
     MatCard, MatIcon, MatButton, MatIconButton, MatPaginator,
     MatTable, MatColumnDef, MatHeaderCell, MatHeaderCellDef, MatHeaderRow, MatHeaderRowDef,
-    MatCell, MatCellDef, MatRow, MatRowDef, MatFormField, MatLabel, MatInput
+    MatCell, MatCellDef, MatRow, MatRowDef, MatFormField, MatLabel, MatInput,
+    MatDialogModule
   ]
 })
 export class InteractionsListComponent implements OnInit {
@@ -44,7 +47,8 @@ export class InteractionsListComponent implements OnInit {
   constructor(
     private readonly svc: InteractionService,
     private readonly router: Router,
-    private readonly snack: MatSnackBar
+    private readonly snack: MatSnackBar,
+    private readonly dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -77,8 +81,14 @@ export class InteractionsListComponent implements OnInit {
   edit(id: number) { this.router.navigate(['dashboard','interactions', id, 'edit']); }
 
   complete(id: number) {
-    // open dialog below (CompleteInteractionDialogComponent)
-    this.router.navigateByUrl(`/dashboard/interactions/${id}/edit`); // or use dialog immediately
+    // open lightweight dialog with details
+    this.dialog.open(InteractionDetailComponent, {
+      data: { id },
+      width: '720px',
+      maxWidth: '95vw',
+      autoFocus: false,
+      closeOnNavigation: true,
+    });
   }
 
   remove(id: number) {

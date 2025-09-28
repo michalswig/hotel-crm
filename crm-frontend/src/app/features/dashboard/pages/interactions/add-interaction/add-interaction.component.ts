@@ -13,7 +13,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatOptionModule } from '@angular/material/core';
 import { MatButtonModule } from '@angular/material/button';
 
-import { InteractionType } from '../../../../../shared/models/enums';
+import { InteractionStatus, InteractionType } from '../../../../../shared/models/enums';
 import { Company } from '../../../../../shared/models/company.model';
 import { ContactPerson } from '../../../../../shared/models/contact-person.model';
 import { InteractionService } from '../../../../../shared/services/interaction.service';
@@ -39,6 +39,7 @@ export class AddInteractionComponent implements OnInit {
   private id!: number;
 
   types = Object.values(InteractionType);
+  statuses = Object.values(InteractionStatus).filter(s => s !== InteractionStatus.OVERDUE);
 
   companyCtrl = new FormControl<string>('', { nonNullable: true });
   companyOptions: Company[] = [];
@@ -60,9 +61,10 @@ export class AddInteractionComponent implements OnInit {
     this.form = this.fb.group({
       type: ['', Validators.required],
       scheduledAt: ['', Validators.required], // date
-      notes: ['',[Validators.maxLength(2000)]],
+      notes: ['', [Validators.maxLength(2000)]],
       companyId: [null, Validators.required],
-      contactPersonId: [null, Validators.required]
+      contactPersonId: [null, Validators.required],
+      status: ['']
     });
 
     this.route.paramMap.subscribe(p => {
@@ -81,7 +83,8 @@ export class AddInteractionComponent implements OnInit {
           scheduledAt: this.toDateStr(i.scheduledAt),
           notes: i.notes ?? '',
           companyId: i.companyId,
-          contactPersonId: i.contactPersonId
+          contactPersonId: i.contactPersonId,
+          status: i.status || ''
         });
 
         this.companies.getCompanyById(i.companyId).subscribe({
@@ -142,7 +145,8 @@ export class AddInteractionComponent implements OnInit {
         type: this.form.value.type,
         scheduledAt: scheduled,
         contactPersonId: this.form.value.contactPersonId,
-        notes: this.form.value.notes?.trim() || undefined
+        notes: this.form.value.notes?.trim() || undefined,
+        status: this.form.value.status || undefined
       };
       this.svc.update(this.id, payload).subscribe({
         next: () => { this.snack.open('Interaction updated ✔', '', { duration: 1500 }); this.router.navigate(['/dashboard/interactions']); },

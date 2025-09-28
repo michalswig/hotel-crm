@@ -13,6 +13,7 @@ export interface InteractionUpdateRequest {
   scheduledAt?: string;
   contactPersonId?: number;
   notes?: string;
+  status?: InteractionStatus;
 }
 
 export interface InteractionCompleteRequest {
