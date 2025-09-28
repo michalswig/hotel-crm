@@ -21,6 +21,8 @@ public class InteractionFilterRequest {
     private Long contactPersonId;
     private String notes;
 
+    private String q;
+
     private LocalDate scheduledFrom;
     private LocalDate scheduledTo;
 

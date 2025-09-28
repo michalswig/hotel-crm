@@ -57,7 +57,11 @@ export class InteractionsListComponent implements OnInit {
   }
 
   load(): void {
-    const filter = { withFollowUpOnly: false }; // you can extend with companyId etc.
+    const filter: any = { withFollowUpOnly: false };
+    const q = (this.nameFilter || '').trim();
+    if (q) {
+      filter.q = q;
+    }
     this.svc.filter(filter, this.pageIndex, this.pageSize).subscribe({
       next: (page: Page<Interaction>) => {
         this.interactions = page.content;

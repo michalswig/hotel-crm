@@ -27,6 +27,7 @@ export interface InteractionFilter {
   companyId?: number;
   contactPersonId?: number;
   notes?: string;
+  q?: string;
 
   scheduledFrom?: string;
   scheduledTo?: string;

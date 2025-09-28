@@ -6,6 +6,8 @@ import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import jakarta.persistence.criteria.Predicate;
+import java.util.ArrayList;
 
 public class InteractionSpecification {
 
@@ -20,6 +22,7 @@ public class InteractionSpecification {
         if (f.getCompanyId() != null)        spec = spec.and(eqCompany(f.getCompanyId()));
         if (f.getContactPersonId() != null)  spec = spec.and(eqContact(f.getContactPersonId()));
         if (f.getNotes() != null && !f.getNotes().isBlank()) spec = spec.and(notesContains(f.getNotes()));
+        if (f.getQ() != null && !f.getQ().isBlank())        spec = spec.and(quick(f.getQ()));
 
         if (f.getScheduledFrom() != null)    spec = spec.and(scheduledAtGte(f.getScheduledFrom()));
         if (f.getScheduledTo() != null)      spec = spec.and(scheduledAtLte(f.getScheduledTo()));
@@ -106,5 +109,20 @@ public class InteractionSpecification {
 
     private static Specification<Interaction> followUpIsNotNull() {
         return (r, q, cb) -> cb.isNotNull(r.get("followUpAt"));
+    }
+
+    private static Specification<Interaction> quick(String query) {
+        return (r, q, cb) -> {
+            String s = "%" + query.toLowerCase() + "%";
+            var preds = new ArrayList<Predicate>();
+            preds.add(cb.like(cb.lower(r.get("notes")), s));
+            preds.add(cb.like(cb.lower(r.get("company").get("name")), s));
+            preds.add(cb.like(cb.lower(r.get("contactPerson").get("firstName")), s));
+            preds.add(cb.like(cb.lower(r.get("contactPerson").get("lastName")), s));
+            preds.add(cb.like(cb.lower(cb.concat(cb.concat(r.get("contactPerson").get("firstName"), " "), r.get("contactPerson").get("lastName"))), s));
+            preds.add(cb.like(cb.lower(r.get("type").as(String.class)), s));
+            preds.add(cb.like(cb.lower(r.get("status").as(String.class)), s));
+            return cb.or(preds.toArray(new Predicate[0]));
+        };
     }
 }
