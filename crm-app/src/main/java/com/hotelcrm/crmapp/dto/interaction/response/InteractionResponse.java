@@ -1,5 +1,6 @@
 package com.hotelcrm.crmapp.dto.interaction.response;
 
+import com.hotelcrm.crmapp.enums.InteractionStatus;
 import com.hotelcrm.crmapp.enums.InteractionType;
 import lombok.*;
 
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 public class InteractionResponse {
     private Long id;
     private InteractionType type;
+    private InteractionStatus status;
     private Long companyId;
     private String companyName;
     private Long contactPersonId;

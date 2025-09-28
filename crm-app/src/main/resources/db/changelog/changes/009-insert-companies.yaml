@@ -9,7 +9,7 @@ databaseChangeLog:
             columns:
               - column: { name: name,                 value: 'Acme Logistics' }
               - column: { name: tax_id,               value: 'PL1234567890' }
-              - column: { name: industry,             value: 'Logistics' }
+              - column: { name: industry,             value: 'CORPORATE' }
               - column: { name: email,                value: 'contact@acmelogistics.pl' }
               - column: { name: phone_number,         value: '+48 22 123 45 67' }
               - column: { name: website,              value: 'https://acmelogistics.pl' }
@@ -26,7 +26,7 @@ databaseChangeLog:
             columns:
               - column: { name: name,                 value: 'GreenTech Solutions' }
               - column: { name: tax_id,               value: 'PL0987654321' }
-              - column: { name: industry,             value: 'Renewable Energy' }
+              - column: { name: industry,             value: 'CORPORATE' }
               - column: { name: email,                value: 'info@greentech.pl' }
               - column: { name: phone_number,         value: '+48 58 987 65 43' }
               - column: { name: website,              value: 'https://greentech.pl' }
@@ -44,7 +44,7 @@ databaseChangeLog:
             columns:
               - column: { name: name,                 value: 'Nova Pharma Inc.' }
               - column: { name: tax_id,               value: 'PL5678901234' }
-              - column: { name: industry,             value: 'Pharmaceuticals' }
+              - column: { name: industry,             value: 'CORPORATE' }
               - column: { name: email,                value: 'hello@novapharma.pl' }
               - column: { name: phone_number,         value: '+48 61 222 33 44' }
               - column: { name: website,              value: 'https://novapharma.pl' }
@@ -62,7 +62,7 @@ databaseChangeLog:
             columns:
               - column: { name: name,                 value: 'Blue Ocean Advisors' }
               - column: { name: tax_id,               value: 'PL2468135790' }
-              - column: { name: industry,             value: 'Consulting' }
+              - column: { name: industry,             value: 'CORPORATE' }
               - column: { name: email,                value: 'support@blueocean.pl' }
               - column: { name: phone_number,         value: '+48 12 345 67 89' }
               - column: { name: website,              value: 'https://blueocean.pl' }
@@ -80,7 +80,7 @@ databaseChangeLog:
             columns:
               - column: { name: name,                 value: 'Iron Forge Manufacturing' }
               - column: { name: tax_id,               value: 'PL1357924680' }
-              - column: { name: industry,             value: 'Metal Fabrication' }
+              - column: { name: industry,             value: 'CORPORATE' }
               - column: { name: email,                value: 'sales@ironforge.pl' }
               - column: { name: phone_number,         value: '+48 42 864 20 20' }
               - column: { name: website,              value: 'https://ironforge.pl' }

@@ -23,6 +23,7 @@ export enum EventType    { CONFERENCE = 'CONFERENCE', INCENTIVE = 'INCENTIVE', G
 
 /* INTERACTION ------------------------------------------------- */
 export enum InteractionType { CALL = 'CALL', EMAIL = 'EMAIL', MEETING = 'MEETING' }
+export enum InteractionStatus { PLANNED = 'PLANNED', DONE = 'DONE', OVERDUE = 'OVERDUE', CANCELLED = 'CANCELLED' }
 
 /* ROLE -------------------------------------------------------- */
 export enum RoleType { ADMINISTRATOR = 'ADMINISTRATOR', MANAGER = 'MANAGER', SPECIALIST = 'SPECIALIST' }

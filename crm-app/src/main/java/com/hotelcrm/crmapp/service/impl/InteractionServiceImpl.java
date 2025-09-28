@@ -10,6 +10,7 @@ import com.hotelcrm.crmapp.entity.Company;
 import com.hotelcrm.crmapp.entity.ContactPerson;
 import com.hotelcrm.crmapp.entity.Interaction;
 import com.hotelcrm.crmapp.entity.User;
+import com.hotelcrm.crmapp.enums.InteractionStatus;
 import com.hotelcrm.crmapp.repository.CompanyRepository;
 import com.hotelcrm.crmapp.repository.ContactPersonRepository;
 import com.hotelcrm.crmapp.repository.InteractionRepository;
@@ -49,6 +50,7 @@ public class InteractionServiceImpl implements InteractionService {
         }
 
         Interaction i = InteractionMapper.toEntity(req, company, contact, currentUser);
+        i.setStatus(InteractionStatus.PLANNED);
         i.setCreatedAt(LocalDateTime.now());
         i.setUpdatedAt(LocalDateTime.now());
         return InteractionMapper.toResponse(interactions.save(i));
@@ -61,6 +63,7 @@ public class InteractionServiceImpl implements InteractionService {
         ensureOwner(i, currentUser);
 
         i.setCompletedAt(LocalDateTime.now());
+        i.setStatus(InteractionStatus.DONE);
         i.setFollowUpAt(req.getFollowUpAt());
         i.setNotes(req.getNotes());
         i.setUpdatedAt(LocalDateTime.now());

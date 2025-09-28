@@ -26,6 +26,7 @@ public class InteractionMapper {
         return InteractionResponse.builder()
                 .id(i.getId())
                 .type(i.getType())
+                .status(i.getStatus())
                 .companyId(i.getCompany() != null ? i.getCompany().getId() : null)
                 .companyName(i.getCompany() != null ? i.getCompany().getName() : null)
                 .contactPersonId(i.getContactPerson() != null ? i.getContactPerson().getId() : null)
