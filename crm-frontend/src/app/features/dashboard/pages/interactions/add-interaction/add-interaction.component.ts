@@ -59,7 +59,7 @@ export class AddInteractionComponent implements OnInit {
   ngOnInit(): void {
     this.form = this.fb.group({
       type: ['', Validators.required],
-      scheduledAt: ['', Validators.required], // datetime-local
+      scheduledAt: ['', Validators.required], // date
       notes: ['',[Validators.maxLength(2000)]],
       companyId: [null, Validators.required],
       contactPersonId: [null, Validators.required]
@@ -78,7 +78,7 @@ export class AddInteractionComponent implements OnInit {
       next: (i: Interaction) => {
         this.form.patchValue({
           type: i.type,
-          scheduledAt: this.toLocal(i.scheduledAt),
+          scheduledAt: this.toDateStr(i.scheduledAt),
           notes: i.notes ?? '',
           companyId: i.companyId,
           contactPersonId: i.contactPersonId
@@ -112,7 +112,7 @@ export class AddInteractionComponent implements OnInit {
     });
   }
 
-  selectCompany(c: Company) {
+  selectCompany(c: { id: number; name: string }) {
     this.form.patchValue({ companyId: c.id, contactPersonId: null });
     this.companyCtrl.setValue(c.name);
     this.loadContacts(c.id);
@@ -126,18 +126,16 @@ export class AddInteractionComponent implements OnInit {
     });
   }
 
-  private toLocal(iso?: string): string {
+  private toDateStr(iso?: string): string {
     if (!iso) return '';
-    const d = new Date(iso);
-    const p = (n: number) => n.toString().padStart(2, '0');
-    return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`;
+    return iso.substring(0, 10);
   }
 
   save() {
     if (this.form.invalid) { this.form.markAllAsTouched(); return; }
 
-    const local = this.form.value.scheduledAt as string;
-    const scheduled = new Date(local).toISOString().slice(0,19);
+    const local = this.form.value.scheduledAt as string; // 'YYYY-MM-DD'
+    const scheduled = local.substring(0, 10);
 
     if (this.isEditMode) {
       const payload: InteractionUpdateRequest = {

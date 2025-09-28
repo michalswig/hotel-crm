@@ -4,7 +4,7 @@ import com.hotelcrm.crmapp.enums.InteractionType;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Builder
 public class InteractionUpdateRequest {
     private InteractionType type;
-    private LocalDateTime scheduledAt;
+    private LocalDate scheduledAt;
     @Size(max = 2000) private String notes;
     private Long contactPersonId;
 }

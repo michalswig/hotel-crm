@@ -25,3 +25,5 @@ databaseChangeLog:
       file: db/changelog/changes/011-insert-interactions.yaml
   - include:
       file: db/changelog/changes/012-insert-events.yaml
+  - include:
+      file: db/changelog/changes/013-alter-interactions-dates.yaml

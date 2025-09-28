@@ -4,6 +4,7 @@ import com.hotelcrm.crmapp.dto.interaction.request.InteractionFilterRequest;
 import com.hotelcrm.crmapp.entity.Interaction;
 import org.springframework.data.jpa.domain.Specification;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class InteractionSpecification {
@@ -34,7 +35,7 @@ public class InteractionSpecification {
         return spec;
     }
 
-    public static Specification<Interaction> scheduledBetween(LocalDateTime from, LocalDateTime to) {
+    public static Specification<Interaction> scheduledBetween(LocalDate from, LocalDate to) {
         Specification<Interaction> spec = Specification.where((root, q, cb) -> cb.conjunction());
         if (from != null) spec = spec.and(scheduledAtGte(from));
         if (to != null)   spec = spec.and(scheduledAtLte(to));
@@ -61,12 +62,12 @@ public class InteractionSpecification {
         return (r, q, cb) -> cb.equal(r.get("contactPerson").get("id"), contactId);
     }
 
-    private static Specification<Interaction> scheduledAtGte(LocalDateTime t) {
-        return (r, q, cb) -> cb.greaterThanOrEqualTo(r.get("scheduledAt"), t);
+    private static Specification<Interaction> scheduledAtGte(LocalDate d) {
+        return (r, q, cb) -> cb.greaterThanOrEqualTo(r.get("scheduledAt"), d);
     }
 
-    private static Specification<Interaction> scheduledAtLte(LocalDateTime t) {
-        return (r, q, cb) -> cb.lessThanOrEqualTo(r.get("scheduledAt"), t);
+    private static Specification<Interaction> scheduledAtLte(LocalDate d) {
+        return (r, q, cb) -> cb.lessThanOrEqualTo(r.get("scheduledAt"), d);
     }
 
     private static Specification<Interaction> completedAtGte(LocalDateTime t) {
@@ -77,12 +78,12 @@ public class InteractionSpecification {
         return (r, q, cb) -> cb.lessThanOrEqualTo(r.get("completedAt"), t);
     }
 
-    private static Specification<Interaction> followUpAtGte(LocalDateTime t) {
-        return (r, q, cb) -> cb.greaterThanOrEqualTo(r.get("followUpAt"), t);
+    private static Specification<Interaction> followUpAtGte(LocalDate d) {
+        return (r, q, cb) -> cb.greaterThanOrEqualTo(r.get("followUpAt"), d);
     }
 
-    private static Specification<Interaction> followUpAtLte(LocalDateTime t) {
-        return (r, q, cb) -> cb.lessThanOrEqualTo(r.get("followUpAt"), t);
+    private static Specification<Interaction> followUpAtLte(LocalDate d) {
+        return (r, q, cb) -> cb.lessThanOrEqualTo(r.get("followUpAt"), d);
     }
 
     private static Specification<Interaction> completedIsNull() {

@@ -24,6 +24,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -97,7 +98,7 @@ public class InteractionServiceImpl implements InteractionService {
     }
 
     @Override
-    public Page<InteractionResponse> calendar(Long userId, LocalDateTime from, LocalDateTime to, Pageable pageable) {
+    public Page<InteractionResponse> calendar(Long userId, LocalDate from, LocalDate to, Pageable pageable) {
         Specification<Interaction> spec = InteractionSpecification.createdBy(userId)
                 .and(InteractionSpecification.scheduledBetween(from, to));
         return interactions.findAll(spec, pageable).map(InteractionMapper::toResponse);
@@ -105,7 +106,7 @@ public class InteractionServiceImpl implements InteractionService {
 
     @Override
     public List<InteractionResponse> upcomingFollowUps(Long userId) {
-        return interactions.findTop50ByUser_IdAndFollowUpAtAfterOrderByFollowUpAtAsc(userId, LocalDateTime.now())
+        return interactions.findTop50ByUser_IdAndFollowUpAtAfterOrderByFollowUpAtAsc(userId, LocalDate.now())
                 .stream().map(InteractionMapper::toResponse).toList();
     }
 

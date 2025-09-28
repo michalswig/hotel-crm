@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -17,7 +17,7 @@ public class InteractionCreateRequest {
     private InteractionType type;
     @NotNull private Long companyId;
     @NotNull private Long contactPersonId;
-    @NotNull private LocalDateTime scheduledAt;
+    @NotNull private LocalDate scheduledAt;
     @Size(max = 2000)
     private String notes;
 }

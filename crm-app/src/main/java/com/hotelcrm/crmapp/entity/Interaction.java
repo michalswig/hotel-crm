@@ -4,6 +4,7 @@ import com.hotelcrm.crmapp.enums.InteractionType;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -35,13 +36,13 @@ public class Interaction {
     private User user;
 
     @Column(name = "scheduled_at", nullable = false)
-    private LocalDateTime scheduledAt;
+    private LocalDate scheduledAt;
 
     @Column(name = "completed_at")
     private LocalDateTime completedAt;
 
     @Column(name = "follow_up_at")
-    private LocalDateTime followUpAt;
+    private LocalDate followUpAt;
 
     @Column(name = "notes", length = 2000)
     private String notes;

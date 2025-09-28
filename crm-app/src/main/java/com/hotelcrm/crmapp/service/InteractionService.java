@@ -9,7 +9,7 @@ import com.hotelcrm.crmapp.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,7 +23,7 @@ public interface InteractionService {
 
     Page<InteractionResponse> getFiltered(InteractionFilterRequest filter, Pageable pageable, Long userId);
 
-    Page<InteractionResponse> calendar(Long userId, LocalDateTime from, LocalDateTime to, Pageable pageable);
+    Page<InteractionResponse> calendar(Long userId, LocalDate from, LocalDate to, Pageable pageable);
 
     List<InteractionResponse> upcomingFollowUps(Long userId);
 

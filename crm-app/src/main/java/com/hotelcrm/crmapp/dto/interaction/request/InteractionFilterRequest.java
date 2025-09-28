@@ -3,6 +3,7 @@ package com.hotelcrm.crmapp.dto.interaction.request;
 import com.hotelcrm.crmapp.enums.InteractionType;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -17,14 +18,14 @@ public class InteractionFilterRequest {
     private Long companyId;
     private Long contactPersonId;
 
-    private LocalDateTime scheduledFrom;
-    private LocalDateTime scheduledTo;
+    private LocalDate scheduledFrom;
+    private LocalDate scheduledTo;
 
     private LocalDateTime completedFrom;
     private LocalDateTime completedTo;
 
-    private LocalDateTime followUpFrom;
-    private LocalDateTime followUpTo;
+    private LocalDate followUpFrom;
+    private LocalDate followUpTo;
 
     private Boolean pendingOnly;
     private Boolean completedOnly;
