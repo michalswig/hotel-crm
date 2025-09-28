@@ -58,7 +58,29 @@ export const DASHBOARD_ROUTES: Routes = [
         path: 'companies/:companyId/contacts/:contactId/edit',
         loadComponent: () =>
           import('./pages/contacts/add-contact/add-contact.component').then(m => m.AddContactComponent)
+      },
+      {
+        path: 'interactions',
+        loadComponent: () =>
+          import('./pages/interactions/interactions-list.component')
+            .then(m => m.InteractionsListComponent),
+        title: 'My Interactions'
+      },
+      {
+        path: 'interactions/new',
+        loadComponent: () =>
+          import('./pages/interactions/add-interaction/add-interaction.component')
+            .then(m => m.AddInteractionComponent),
+        title: 'Schedule Interaction'
+      },
+      {
+        path: 'interactions/:id/edit',
+        loadComponent: () =>
+          import('./pages/interactions/add-interaction/add-interaction.component')
+            .then(m => m.AddInteractionComponent),
+        title: 'Edit Interaction'
       }
+
     ]
   }
 ];

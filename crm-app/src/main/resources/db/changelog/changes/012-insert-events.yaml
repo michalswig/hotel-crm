@@ -12,7 +12,7 @@ databaseChangeLog:
               - column: { name: name,  value: 'Annual Sales Summit' }
               - column: { name: description, value: 'Yearly gathering for top clients' }
               - column: { name: type, value: 'CONFERENCE' }          # EventType
-              - column: { name: status, value: 'TENTATIVE' }         # EventStatus
+              - column: { name: status, value: 'CONFIRMED' }         # EventStatus
               - column: { name: event_date, valueDate: '2025-09-10T09:00:00' }
               - column: { name: participants_number, valueNumeric: 100 }
               - column: { name: estimated_total_gross_revenue, valueNumeric: 50000.00 }
@@ -29,7 +29,7 @@ databaseChangeLog:
             columns:
               - column: { name: name,  value: 'Executive Incentive Retreat' }
               - column: { name: description, value: 'Leadership-team off-site' }
-              - column: { name: type, value: 'INCENTIVE' }
+              - column: { name: type, value: 'CONFERENCE' }
               - column: { name: status, value: 'CONFIRMED' }
               - column: { name: event_date, valueDate: '2025-10-05T15:00:00' }
               - column: { name: participants_number, valueNumeric: 30 }
@@ -47,8 +47,8 @@ databaseChangeLog:
             columns:
               - column: { name: name,  value: 'Innovation Workshop' }
               - column: { name: description, value: 'Hands-on technology workshop' }
-              - column: { name: type, value: 'WORKSHOP' }
-              - column: { name: status, value: 'TENTATIVE' }
+              - column: { name: type, value: 'CONFERENCE' }
+              - column: { name: status, value: 'CONFIRMED' }
               - column: { name: event_date, valueDate: '2025-11-01T13:00:00' }
               - column: { name: participants_number, valueNumeric: 50 }
               - column: { name: estimated_total_gross_revenue, valueNumeric: 30000.00 }
@@ -65,7 +65,7 @@ databaseChangeLog:
             columns:
               - column: { name: name,  value: 'VIP Gala Dinner' }
               - column: { name: description, value: 'Evening gala with key accounts' }
-              - column: { name: type, value: 'GALA_DINNER' }
+              - column: { name: type, value: 'CONFERENCE' }
               - column: { name: status, value: 'CONFIRMED' }
               - column: { name: event_date, valueDate: '2025-11-20T19:00:00' }
               - column: { name: participants_number, valueNumeric: 120 }
@@ -83,8 +83,8 @@ databaseChangeLog:
             columns:
               - column: { name: name,  value: 'Site Inspection Tour' }
               - column: { name: description, value: 'Pre-event property walkthrough' }
-              - column: { name: type, value: 'SITE_INSPECTION' }
-              - column: { name: status, value: 'DONE' }
+              - column: { name: type, value: 'CONFERENCE' }
+              - column: { name: status, value: 'CONFIRMED' }
               - column: { name: event_date, valueDate: '2025-12-10T10:00:00' }
               - column: { name: participants_number, valueNumeric: 10 }
               - column: { name: estimated_total_gross_revenue, valueNumeric: 4000.00 }

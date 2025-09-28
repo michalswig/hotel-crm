@@ -14,36 +14,33 @@ import java.util.List;
 public interface CompanyRepository extends JpaRepository<Company, Long>, JpaSpecificationExecutor<Company> {
 
     @Query("""
-            SELECT new com.hotelcrm.crmapp.dto.company.CompanySummaryDto(
-                        c.id,
-                        c.name,
-                        u.username,
-                        (
-                        SELECT MAX(i.interactionDate)
-                        FROM Interaction i
-                        WHERE i.contactPerson.company = c
-                                    ),
-                        (
-                        SELECT COALESCE(SUM(e.estimatedTotalGrossRevenue), 0)
-                        FROM Event e
-                        WHERE e.company = c
-                        AND EXTRACT(YEAR FROM e.eventDate) = :ytdYear
-                                    ),
-                        (
-                        SELECT COALESCE(SUM(e.estimatedTotalGrossRevenue), 0)
-                        FROM Event e
-                        WHERE e.company = c
-                        AND EXTRACT(YEAR FROM e.eventDate) = :lyYear
-                                                  )
-                                                               )
-                        from Company c
-                        join c.createdBy u
-            
-            """)
+        SELECT new com.hotelcrm.crmapp.dto.company.CompanySummaryDto(
+            c.id,
+            c.name,
+            u.username,
+            (
+              SELECT MAX(i.scheduledAt)
+              FROM Interaction i
+              WHERE i.contactPerson.company = c
+            ),
+            (
+              SELECT COALESCE(SUM(e1.estimatedTotalGrossRevenue), 0)
+              FROM Event e1
+              WHERE e1.company = c
+                AND year(e1.eventDate) = :ytdYear
+            ),
+            (
+              SELECT COALESCE(SUM(e2.estimatedTotalGrossRevenue), 0)
+              FROM Event e2
+              WHERE e2.company = c
+                AND year(e2.eventDate) = :lyYear
+            )
+        )
+        FROM Company c
+        JOIN c.createdBy u
+        """)
     List<CompanySummaryDto> fetchCompanySummaryTable(
             @Param("ytdYear") int ytdYear,
             @Param("lyYear") int lyYear
     );
-
-
 }

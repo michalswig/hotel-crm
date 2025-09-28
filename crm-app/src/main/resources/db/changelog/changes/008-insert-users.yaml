@@ -43,7 +43,7 @@ databaseChangeLog:
             tableName: users
             columns:
               - column: {name: username, value: specialist2}
-              - column: {name: password, value: password123}
+              - column: {name: password, value: $2a$10$cCSQo0GITmCZBA8Q72KTsem0/gECr.BXLEbVuvGSSpntiuNQKmQ8.}
               - column: {name: hotel_id, value: 2}
               - column: {name: role_id, value: 3}
               - column: { name: created_at, valueDate: "2024-05-22T12:00:00" }
