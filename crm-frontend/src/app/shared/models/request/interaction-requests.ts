@@ -1,4 +1,4 @@
-import { InteractionType } from '../enums';
+import { InteractionStatus, InteractionType } from '../enums';
 
 export interface InteractionCreateRequest {
   type: InteractionType;
@@ -23,8 +23,10 @@ export interface InteractionCompleteRequest {
 export interface InteractionFilter {
   id?: number;
   type?: InteractionType;
+  status?: InteractionStatus;
   companyId?: number;
   contactPersonId?: number;
+  notes?: string;
 
   scheduledFrom?: string;
   scheduledTo?: string;

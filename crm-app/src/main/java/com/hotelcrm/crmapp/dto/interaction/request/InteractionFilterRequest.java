@@ -1,5 +1,6 @@
 package com.hotelcrm.crmapp.dto.interaction.request;
 
+import com.hotelcrm.crmapp.enums.InteractionStatus;
 import com.hotelcrm.crmapp.enums.InteractionType;
 import lombok.*;
 
@@ -15,8 +16,10 @@ public class InteractionFilterRequest {
 
     private Long id;
     private InteractionType type;
+    private InteractionStatus status;
     private Long companyId;
     private Long contactPersonId;
+    private String notes;
 
     private LocalDate scheduledFrom;
     private LocalDate scheduledTo;

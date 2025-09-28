@@ -16,8 +16,10 @@ public class InteractionSpecification {
 
         if (f.getId() != null)               spec = spec.and(eqId(f.getId()));
         if (f.getType() != null)             spec = spec.and(eqType(f.getType()));
+        if (f.getStatus() != null)           spec = spec.and(eqStatus(f.getStatus()));
         if (f.getCompanyId() != null)        spec = spec.and(eqCompany(f.getCompanyId()));
         if (f.getContactPersonId() != null)  spec = spec.and(eqContact(f.getContactPersonId()));
+        if (f.getNotes() != null && !f.getNotes().isBlank()) spec = spec.and(notesContains(f.getNotes()));
 
         if (f.getScheduledFrom() != null)    spec = spec.and(scheduledAtGte(f.getScheduledFrom()));
         if (f.getScheduledTo() != null)      spec = spec.and(scheduledAtLte(f.getScheduledTo()));
@@ -52,6 +54,14 @@ public class InteractionSpecification {
 
     private static Specification<Interaction> eqType(Enum<?> type) {
         return (r, q, cb) -> cb.equal(r.get("type"), type);
+    }
+
+    private static Specification<Interaction> eqStatus(Enum<?> status) {
+        return (r, q, cb) -> cb.equal(r.get("status"), status);
+    }
+
+    private static Specification<Interaction> notesContains(String s) {
+        return (r, q, cb) -> cb.like(cb.lower(r.get("notes")), "%" + s.toLowerCase() + "%");
     }
 
     private static Specification<Interaction> eqCompany(Long companyId) {
