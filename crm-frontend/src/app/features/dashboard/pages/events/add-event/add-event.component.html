@@ -39,8 +39,9 @@
     <!-- Event Date -->
     <mat-form-field appearance="fill" class="half-width">
       <mat-label>Event Date *</mat-label>
-      <input matInput type="datetime-local" formControlName="eventDate" />
+      <input matInput type="date" formControlName="eventDate" />
       <mat-error *ngIf="dateCtrl.hasError('required')">Required</mat-error>
+      <mat-error *ngIf="dateCtrl.hasError('pastDate')">Event date cannot be in the past</mat-error>
     </mat-form-field>
 
     <!-- Participants -->

@@ -8,11 +8,13 @@
       <mat-select formControlName="type">
         <mat-option *ngFor="let t of types" [value]="t">{{ t }}</mat-option>
       </mat-select>
+      <mat-error *ngIf="form.get('type')?.hasError('required')">Required</mat-error>
     </mat-form-field>
 
     <mat-form-field appearance="fill" class="half-width">
       <mat-label>When *</mat-label>
       <input matInput type="date" formControlName="scheduledAt" />
+      <mat-error *ngIf="form.get('scheduledAt')?.hasError('required')">Required</mat-error>
     </mat-form-field>
 
     <mat-form-field appearance="fill" class="half-width" *ngIf="isEditMode">
@@ -25,6 +27,7 @@
     <mat-form-field appearance="fill" class="full-width">
       <mat-label>Notes</mat-label>
       <textarea matInput rows="3" formControlName="notes"></textarea>
+      <mat-error *ngIf="form.get('notes')?.hasError('maxlength')">Max 2000 characters</mat-error>
     </mat-form-field>
 
     <mat-form-field appearance="fill" class="half-width">
@@ -34,6 +37,7 @@
         <mat-option *ngFor="let c of companyOptions" [value]="c">{{ c.name }}</mat-option>
         <mat-option *ngIf="!companyOptions?.length" disabled>No companies found</mat-option>
       </mat-autocomplete>
+      <mat-error *ngIf="form.get('companyId')?.hasError('required')">Required</mat-error>
     </mat-form-field>
 
     <mat-form-field appearance="fill" class="half-width" *ngIf="form.value.companyId">
@@ -43,6 +47,7 @@
           {{ cp.firstName }} {{ cp.lastName }} — {{ cp.position || cp.email || cp.phoneNumber || 'contact' }}
         </mat-option>
       </mat-select>
+      <mat-error *ngIf="form.get('contactPersonId')?.hasError('required')">Required</mat-error>
     </mat-form-field>
 
     <div class="btn-row">

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {
-  FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators
+  FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators, ValidatorFn, AbstractControl
 } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { NgForOf, NgIf } from '@angular/common';
@@ -75,7 +75,7 @@ export class AddEventComponent implements OnInit {
       description: ['', [Validators.maxLength(500)]],
       type: ['', Validators.required],
       status: ['', Validators.required],
-      eventDate: ['', Validators.required], // yyyy-MM-ddTHH:mm
+      eventDate: ['', [Validators.required, this.futureOrPresentDateValidator()]], // yyyy-MM-dd (no time)
       participantsNumber: [0, [Validators.required, Validators.min(0)]],
       estimatedTotalGrossRevenue: [0, [Validators.required, Validators.min(0)]],
       companyId: [null, Validators.required],
@@ -105,7 +105,7 @@ export class AddEventComponent implements OnInit {
           description: ev.description ?? '',
           type: ev.type,
           status: ev.status,
-          eventDate: this.toDatetimeLocal(ev.eventDate),
+          eventDate: this.toDateLocal(ev.eventDate),
           participantsNumber: ev.participantsNumber,
           estimatedTotalGrossRevenue: ev.estimatedTotalGrossRevenue,
           companyId: ev.companyId,
@@ -174,15 +174,24 @@ export class AddEventComponent implements OnInit {
     });
   }
 
-  private toDatetimeLocal(iso: string | null | undefined): string {
+  private toDateLocal(iso: string | null | undefined): string {
     if (!iso) return '';
     const d = new Date(iso);
     const p = (n: number) => n.toString().padStart(2, '0');
-    return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`;
-    // seconds are optional for <input type="datetime-local">
+    return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
   }
 
-  /* ---------- GETTERS ---------- */
+  private futureOrPresentDateValidator(): ValidatorFn {
+    return (control: AbstractControl) => {
+      const v = control.value as string | null; // expected YYYY-MM-DD
+      if (!v) return null;
+      const today = new Date();
+      const p = (n: number) => n.toString().padStart(2, '0');
+      const todayStr = `${today.getFullYear()}-${p(today.getMonth() + 1)}-${p(today.getDate())}`;
+      return v < todayStr ? { pastDate: true } : null;
+    };
+  }
+
 
   get nameCtrl() { return this.form.get('name') as FormControl<string | null>; }
   get descCtrl() { return this.form.get('description') as FormControl<string | null>; }
@@ -214,9 +223,9 @@ export class AddEventComponent implements OnInit {
       return;
     }
 
-    // datetime-local → ISO-like string with seconds
-    const raw = this.dateCtrl.value!;
-    const iso = new Date(raw).toISOString().slice(0, 19);
+    // date-only → LocalDateTime-like string at start of day to satisfy backend (no timezone)
+    const raw = this.dateCtrl.value!; // YYYY-MM-DD
+    const iso = `${raw}T00:00:00`;
 
     const payload: EventRequest = {
       name: this.nameCtrl.value!,
