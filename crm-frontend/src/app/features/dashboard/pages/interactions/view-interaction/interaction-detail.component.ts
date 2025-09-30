@@ -1,17 +1,17 @@
-import { Component, OnInit, Inject, Optional } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
-import { CommonModule, DatePipe, NgIf } from '@angular/common';
-import { MatCard } from '@angular/material/card';
-import { MatButton } from '@angular/material/button';
-import { MatIcon } from '@angular/material/icon';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { InteractionService } from '../../../../../shared/services/interaction.service';
-import { Interaction } from '../../../../../shared/models/interaction.model';
+import {Component, Inject, OnInit, Optional} from '@angular/core';
+import {ActivatedRoute, RouterLink} from '@angular/router';
+import {CommonModule, DatePipe, NgIf} from '@angular/common';
+import {MatCard} from '@angular/material/card';
+import {MatIcon} from '@angular/material/icon';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {InteractionService} from '../../../../../shared/services/interaction.service';
+import {Interaction} from '../../../../../shared/models/interaction.model';
+import {MatAnchor, MatIconButton} from '@angular/material/button';
 
 @Component({
   selector: 'app-interaction-detail',
   standalone: true,
-  imports: [CommonModule, DatePipe, NgIf, MatCard, MatButton, MatIcon, RouterLink],
+  imports: [CommonModule, DatePipe, NgIf, MatCard, MatIcon, RouterLink, MatAnchor, MatIconButton],
   template: `
     <mat-card class="detail-card" *ngIf="interaction as i">
       <div class="header">
@@ -83,8 +83,8 @@ export class InteractionDetailComponent implements OnInit {
   interaction?: Interaction;
 
   constructor(
-    private route: ActivatedRoute,
-    private svc: InteractionService,
+    private readonly route: ActivatedRoute,
+    private readonly svc: InteractionService,
     @Optional() public dialogRef?: MatDialogRef<InteractionDetailComponent>,
     @Optional() @Inject(MAT_DIALOG_DATA) public data?: { id?: number }
   ) {}
@@ -101,6 +101,7 @@ export class InteractionDetailComponent implements OnInit {
   close() { this.dialogRef?.close(); }
 
   statusOf(i: Interaction) {
+    if (i.status) return i.status;
     return i.completedAt ? 'DONE' : (new Date(i.scheduledAt) > new Date() ? 'PLANNED' : 'OVERDUE');
   }
 }

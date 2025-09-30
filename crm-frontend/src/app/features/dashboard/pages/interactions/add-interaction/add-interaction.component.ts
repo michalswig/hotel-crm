@@ -12,6 +12,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatOptionModule } from '@angular/material/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
 
 import { InteractionStatus, InteractionType } from '../../../../../shared/models/enums';
 import { Company } from '../../../../../shared/models/company.model';
@@ -21,6 +22,7 @@ import { CompanyService } from '../../../../../shared/services/company.service';
 import { ContactPersonService } from '../../../../../shared/services/contact-person.service';
 import { InteractionCreateRequest, InteractionUpdateRequest } from '../../../../../shared/models/request/interaction-requests';
 import {Interaction} from '../../../../../shared/models/interaction.model';
+import { ConfirmDialogComponent } from '../../contacts/dialogs/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-add-interaction',
@@ -54,7 +56,8 @@ export class AddInteractionComponent implements OnInit {
     private contactSvc: ContactPersonService,
     private snack: MatSnackBar,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -70,6 +73,21 @@ export class AddInteractionComponent implements OnInit {
     this.route.paramMap.subscribe(p => {
       const id = p.get('id');
       if (id) { this.isEditMode = true; this.id = +id; this.load(this.id); }
+    });
+
+    this.route.queryParamMap.subscribe(params => {
+      if (!this.isEditMode) {
+        const companyId = Number(params.get('companyId'));
+        const contactPersonId = Number(params.get('contactPersonId'));
+        if (Number.isFinite(companyId) && companyId > 0) {
+          this.form.patchValue({ companyId, contactPersonId: Number.isFinite(contactPersonId) && contactPersonId > 0 ? contactPersonId : null });
+          this.companies.getCompanyById(companyId).subscribe({
+            next: c => this.companyCtrl.setValue(c?.name ?? `#${companyId}`),
+            error: () => this.companyCtrl.setValue(`#${companyId}`)
+          });
+          this.loadContacts(companyId);
+        }
+      }
     });
 
     this.setupCompanyAutocomplete();
@@ -149,7 +167,32 @@ export class AddInteractionComponent implements OnInit {
         status: this.form.value.status || undefined
       };
       this.svc.update(this.id, payload).subscribe({
-        next: () => { this.snack.open('Interaction updated ✔', '', { duration: 1500 }); this.router.navigate(['/dashboard/interactions']); },
+        next: () => {
+          this.snack.open('Interaction updated ✔', '', { duration: 1500 });
+          if ((this.form.value.status as InteractionStatus) === InteractionStatus.DONE) {
+            const ref = this.dialog.open(ConfirmDialogComponent, {
+              data: {
+                title: 'Open new interaction?',
+                message: 'This interaction is marked as DONE. Do you want to create a new interaction with this client now?',
+                okText: 'Yes, create',
+                cancelText: 'No, thanks'
+              }
+            });
+            ref.afterClosed().subscribe(answer => {
+              if (answer) {
+                const companyId = this.form.value.companyId;
+                const contactPersonId = this.form.value.contactPersonId;
+                this.router.navigate(['/dashboard','interactions','new'], {
+                  queryParams: { companyId, contactPersonId }
+                });
+              } else {
+                this.router.navigate(['/dashboard','interactions']);
+              }
+            });
+          } else {
+            this.router.navigate(['/dashboard','interactions']);
+          }
+        },
         error: () => this.snack.open('Update failed', '', { duration: 2500 })
       });
     } else {
