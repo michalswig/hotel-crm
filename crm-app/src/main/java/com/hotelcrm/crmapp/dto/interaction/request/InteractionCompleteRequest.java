@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -14,7 +14,7 @@ import java.time.LocalDate;
 @Builder
 public class InteractionCompleteRequest {
     @NotNull
-    private LocalDate followUpAt;
+    private LocalDateTime followUpAt;
     @NotBlank
     @Size(max = 2000) private String notes;
 }

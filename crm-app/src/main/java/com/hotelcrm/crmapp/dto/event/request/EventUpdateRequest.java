@@ -3,7 +3,6 @@ package com.hotelcrm.crmapp.dto.event.request;
 import com.hotelcrm.crmapp.enums.EventStatus;
 import com.hotelcrm.crmapp.enums.EventType;
 import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -27,7 +26,7 @@ public class EventUpdateRequest {
 
     private EventStatus status;
 
-    @FutureOrPresent(message = "Event date must be in the present or future")
+    // Allow past dates on update; creation still enforces future or present
     private LocalDateTime eventDate;
 
     @Min(value = 0, message = "Participants number cannot be negative")

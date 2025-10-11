@@ -4,7 +4,6 @@ import com.hotelcrm.crmapp.enums.InteractionStatus;
 import com.hotelcrm.crmapp.enums.InteractionType;
 import lombok.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -21,8 +20,8 @@ public class InteractionResponse {
     private Long contactPersonId;
     private String contactPersonName;
     private Long userId;
-    private LocalDate scheduledAt;
+    private LocalDateTime scheduledAt;
     private LocalDateTime completedAt;
-    private LocalDate followUpAt;
+    private LocalDateTime followUpAt;
     private String notes;
 }

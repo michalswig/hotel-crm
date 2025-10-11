@@ -57,13 +57,13 @@ export class AddCompanyComponent implements OnInit {
   ngOnInit(): void {
     this.form = this.fb.group({
       name: ['', Validators.required],
-      taxId: [''],
+      taxId: ['', [Validators.pattern(/\d{10}/)]],
       industry: ['', Validators.required],
       email: ['', Validators.email],
-      phoneNumber: [''],
+      phoneNumber: ['', [Validators.pattern(/\+?\d{7,15}/)]],
       website: [''],
       address: [''],
-      postalCode: [''],
+      postalCode: ['', [Validators.pattern(/\d{2}-\d{3}/)]],
       city: [''],
       country: ['']
     });

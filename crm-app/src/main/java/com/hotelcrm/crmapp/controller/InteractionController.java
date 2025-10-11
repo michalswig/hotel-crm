@@ -1,6 +1,7 @@
 package com.hotelcrm.crmapp.controller;
 
 import com.hotelcrm.crmapp.config.CustomUserDetails;
+import com.hotelcrm.crmapp.dto.interaction.request.InteractionCompleteRequest;
 import com.hotelcrm.crmapp.dto.interaction.request.InteractionCreateRequest;
 import com.hotelcrm.crmapp.dto.interaction.request.InteractionFilterRequest;
 import com.hotelcrm.crmapp.dto.interaction.request.InteractionUpdateRequest;
@@ -19,30 +20,51 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.URI;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/interactions")
 @RequiredArgsConstructor
-@PreAuthorize("hasAnyRole('SPECIALIST','MANAGER')")
 public class InteractionController {
 
     private final InteractionService interactionService;
 
-    @Operation(summary = "Create interaction",
-            description = "Schedules a new interaction with a contact person (future date).")
-    @ApiResponse(responseCode = "200", description = "Interaction created")
-    @PostMapping
-    public InteractionResponse create(
+    @Operation(
+            summary = "Create interaction",
+            description = "Schedules a new interaction (future date). Returns 201 with Location header.",
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "Interaction created"),
+                    @ApiResponse(responseCode = "400", description = "Validation error"),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized"),
+                    @ApiResponse(responseCode = "403", description = "Forbidden")
+            }
+    )
+    @PreAuthorize("hasAnyRole('SPECIALIST','MANAGER')")
+    @PostMapping(consumes = "application/json", produces = "application/json")
+    public ResponseEntity<InteractionResponse> create(
             @Valid @RequestBody InteractionCreateRequest request,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
 
         if (userDetails == null) throw new UnauthenticatedAccessException("User is not authenticated");
-        return interactionService.schedule(request, userDetails.getUser());
+
+        InteractionResponse created = interactionService.create(request, userDetails.getUser());
+
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(created.getId())
+                .toUri();
+
+        return ResponseEntity.created(location).body(created);
     }
 
     @Operation(summary = "Filter my interactions",
             description = "Returns a page of interactions filtered by params; only the current user's interactions.")
     @ApiResponse(responseCode = "200", description = "Interactions fetched")
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/filter")
     public Page<InteractionResponse> getFiltered(
             @ParameterObject InteractionFilterRequest filter,
@@ -57,6 +79,7 @@ public class InteractionController {
             description = "Returns a single interaction if it belongs to the current user.")
     @ApiResponse(responseCode = "200", description = "Interaction found")
     @ApiResponse(responseCode = "404", description = "Interaction not found")
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/{id}")
     public InteractionResponse getById(
             @PathVariable Long id,
@@ -70,6 +93,7 @@ public class InteractionController {
     @Operation(summary = "Update interaction",
             description = "Updates fields like type/notes/scheduledAt/contact (only if not completed).")
     @ApiResponse(responseCode = "200", description = "Interaction updated")
+    @PreAuthorize("hasAnyRole('SPECIALIST','MANAGER')")
     @PutMapping("/{id}")
     public InteractionResponse update(
             @PathVariable Long id,
@@ -83,24 +107,52 @@ public class InteractionController {
     @Operation(summary = "Complete interaction",
             description = "Marks an interaction as completed, attaches notes, and sets an optional follow-up time.")
     @ApiResponse(responseCode = "200", description = "Interaction completed")
+    @PreAuthorize("hasAnyRole('SPECIALIST','MANAGER')")
     @PatchMapping("/{id}/complete")
     public InteractionResponse complete(
             @PathVariable Long id,
-            @Valid @RequestBody com.hotelcrm.crmapp.dto.interaction.request.InteractionCompleteRequest request,
+            @Valid @RequestBody InteractionCompleteRequest request,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
 
         if (userDetails == null) throw new UnauthenticatedAccessException("User is not authenticated");
         return interactionService.complete(id, request, userDetails.getUser());
     }
 
+    @Operation(summary = "Calendar",
+            description = "Returns interactions scheduled between 'from' and 'to' for the current user.")
+    @ApiResponse(responseCode = "200", description = "Calendar page fetched")
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/calendar")
+    public Page<InteractionResponse> calendar(
+            @RequestParam(required = false) LocalDateTime from,
+            @RequestParam(required = false) LocalDateTime to,
+            @ParameterObject Pageable pageable,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        if (userDetails == null) throw new UnauthenticatedAccessException("User is not authenticated");
+        return interactionService.calendar(userDetails.getUser().getId(), from, to, pageable);
+    }
+
+    @Operation(summary = "Upcoming follow-ups",
+            description = "Returns up to 50 upcoming follow-ups for the current user, soonest first.")
+    @ApiResponse(responseCode = "200", description = "Follow-ups fetched")
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/follow-ups")
+    public List<InteractionResponse> upcomingFollowUps(
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        if (userDetails == null) throw new UnauthenticatedAccessException("User is not authenticated");
+        return interactionService.upcomingFollowUps(userDetails.getUser().getId());
+    }
+
     @Operation(summary = "Delete interaction", description = "Deletes an interaction owned by the current user.")
-    @ApiResponse(responseCode = "200", description = "Interaction deleted")
+    @ApiResponse(responseCode = "204", description = "Interaction deleted")
+    @PreAuthorize("hasAnyRole('SPECIALIST','MANAGER')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Long> delete(
+    public ResponseEntity<Void> delete(
             @PathVariable Long id,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
 
         if (userDetails == null) throw new UnauthenticatedAccessException("User is not authenticated");
-        return ResponseEntity.ok(interactionService.delete(id, userDetails.getUser()));
+        interactionService.delete(id, userDetails.getUser());
+        return ResponseEntity.noContent().build();
     }
 }

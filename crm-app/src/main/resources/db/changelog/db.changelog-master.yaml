@@ -27,3 +27,5 @@ databaseChangeLog:
       file: db/changelog/changes/012-insert-events.yaml
   - include:
       file: db/changelog/changes/013-alter-interactions-dates.yaml
+  - include:
+      file: db/changelog/changes/014-fix-followup-and-scheduled-to-timestamp.yaml

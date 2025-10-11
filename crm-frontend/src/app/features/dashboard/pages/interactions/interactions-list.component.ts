@@ -100,6 +100,7 @@ export class InteractionsListComponent implements OnInit {
   }
 
   statusOf(i: Interaction) {
+    if (i.status) return i.status;
     return i.completedAt ? 'DONE' : (new Date(i.scheduledAt) > new Date() ? 'PLANNED' : 'OVERDUE');
   }
 }
