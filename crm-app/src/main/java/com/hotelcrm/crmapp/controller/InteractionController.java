@@ -1,6 +1,7 @@
 package com.hotelcrm.crmapp.controller;
 
 import com.hotelcrm.crmapp.config.CustomUserDetails;
+import com.hotelcrm.crmapp.dto.interaction.request.InteractionCompleteRequest;
 import com.hotelcrm.crmapp.dto.interaction.request.InteractionCreateRequest;
 import com.hotelcrm.crmapp.dto.interaction.request.InteractionFilterRequest;
 import com.hotelcrm.crmapp.dto.interaction.request.InteractionUpdateRequest;
@@ -22,6 +23,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/interactions")
@@ -90,6 +93,7 @@ public class InteractionController {
     @Operation(summary = "Update interaction",
             description = "Updates fields like type/notes/scheduledAt/contact (only if not completed).")
     @ApiResponse(responseCode = "200", description = "Interaction updated")
+    @PreAuthorize("hasAnyRole('SPECIALIST','MANAGER')")
     @PutMapping("/{id}")
     public InteractionResponse update(
             @PathVariable Long id,
@@ -103,24 +107,52 @@ public class InteractionController {
     @Operation(summary = "Complete interaction",
             description = "Marks an interaction as completed, attaches notes, and sets an optional follow-up time.")
     @ApiResponse(responseCode = "200", description = "Interaction completed")
+    @PreAuthorize("hasAnyRole('SPECIALIST','MANAGER')")
     @PatchMapping("/{id}/complete")
     public InteractionResponse complete(
             @PathVariable Long id,
-            @Valid @RequestBody com.hotelcrm.crmapp.dto.interaction.request.InteractionCompleteRequest request,
+            @Valid @RequestBody InteractionCompleteRequest request,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
 
         if (userDetails == null) throw new UnauthenticatedAccessException("User is not authenticated");
         return interactionService.complete(id, request, userDetails.getUser());
     }
 
+    @Operation(summary = "Calendar",
+            description = "Returns interactions scheduled between 'from' and 'to' for the current user.")
+    @ApiResponse(responseCode = "200", description = "Calendar page fetched")
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/calendar")
+    public Page<InteractionResponse> calendar(
+            @RequestParam(required = false) LocalDateTime from,
+            @RequestParam(required = false) LocalDateTime to,
+            @ParameterObject Pageable pageable,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        if (userDetails == null) throw new UnauthenticatedAccessException("User is not authenticated");
+        return interactionService.calendar(userDetails.getUser().getId(), from, to, pageable);
+    }
+
+    @Operation(summary = "Upcoming follow-ups",
+            description = "Returns up to 50 upcoming follow-ups for the current user, soonest first.")
+    @ApiResponse(responseCode = "200", description = "Follow-ups fetched")
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/follow-ups")
+    public List<InteractionResponse> upcomingFollowUps(
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        if (userDetails == null) throw new UnauthenticatedAccessException("User is not authenticated");
+        return interactionService.upcomingFollowUps(userDetails.getUser().getId());
+    }
+
     @Operation(summary = "Delete interaction", description = "Deletes an interaction owned by the current user.")
-    @ApiResponse(responseCode = "200", description = "Interaction deleted")
+    @ApiResponse(responseCode = "204", description = "Interaction deleted")
+    @PreAuthorize("hasAnyRole('SPECIALIST','MANAGER')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Long> delete(
+    public ResponseEntity<Void> delete(
             @PathVariable Long id,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
 
         if (userDetails == null) throw new UnauthenticatedAccessException("User is not authenticated");
-        return ResponseEntity.ok(interactionService.delete(id, userDetails.getUser()));
+        interactionService.delete(id, userDetails.getUser());
+        return ResponseEntity.noContent().build();
     }
 }
