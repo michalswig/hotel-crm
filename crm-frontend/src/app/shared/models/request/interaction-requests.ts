@@ -18,7 +18,7 @@ export interface InteractionUpdateRequest {
 
 export interface InteractionCompleteRequest {
   notes?: string;
-  followUpAt?: string;
+  followUpAt: string; // LocalDateTime ISO string, e.g., 2025-10-11T16:45
 }
 
 export interface InteractionFilter {

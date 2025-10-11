@@ -19,6 +19,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.URI;
 
 @RestController
 @RequestMapping("/api/v1/interactions")
@@ -28,16 +31,31 @@ public class InteractionController {
 
     private final InteractionService interactionService;
 
-    @Operation(summary = "Create interaction",
-            description = "Schedules a new interaction with a contact person (future date).")
-    @ApiResponse(responseCode = "200", description = "Interaction created")
-    @PostMapping
-    public InteractionResponse create(
+    @Operation(
+            summary = "Create interaction",
+            description = "Schedules a new interaction (future date). Returns 201 with Location header.",
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "Interaction created"),
+                    @ApiResponse(responseCode = "400", description = "Validation error"),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized"),
+                    @ApiResponse(responseCode = "403", description = "Forbidden")
+            }
+    )
+    @PostMapping(consumes = "application/json", produces = "application/json")
+    public ResponseEntity<InteractionResponse> create(
             @Valid @RequestBody InteractionCreateRequest request,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
 
         if (userDetails == null) throw new UnauthenticatedAccessException("User is not authenticated");
-        return interactionService.schedule(request, userDetails.getUser());
+
+        InteractionResponse created = interactionService.create(request, userDetails.getUser());
+
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(created.getId())
+                .toUri();
+
+        return ResponseEntity.created(location).body(created);
     }
 
     @Operation(summary = "Filter my interactions",

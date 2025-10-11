@@ -1,17 +1,17 @@
 package com.hotelcrm.crmapp.dto.company;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class CompanySummaryDto {
     Long companyId;
     String companyName;
     String ownerUsername;
-    LocalDate lastContactDate;
+    LocalDateTime lastContactDate;
     BigDecimal totalRevenueYTD;
     BigDecimal totalRevenueLY;
 
-    public CompanySummaryDto(Long companyId, String companyName, String ownerUsername, LocalDate lastContactDate, BigDecimal totalRevenueYTD, BigDecimal totalRevenueLY) {
+    public CompanySummaryDto(Long companyId, String companyName, String ownerUsername, LocalDateTime lastContactDate, BigDecimal totalRevenueYTD, BigDecimal totalRevenueLY) {
         this.companyId = companyId;
         this.companyName = companyName;
         this.ownerUsername = ownerUsername;
@@ -60,11 +60,11 @@ public class CompanySummaryDto {
         this.totalRevenueLY = totalRevenueLY;
     }
 
-    public LocalDate getLastContactDate() {
+    public LocalDateTime getLastContactDate() {
         return lastContactDate;
     }
 
-    public void setLastContactDate(LocalDate lastContactDate) {
+    public void setLastContactDate(LocalDateTime lastContactDate) {
         this.lastContactDate = lastContactDate;
     }
 }

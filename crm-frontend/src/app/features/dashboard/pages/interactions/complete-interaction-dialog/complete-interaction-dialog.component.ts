@@ -39,8 +39,7 @@ export class CompleteInteractionDialogComponent implements OnInit {
   save() {
     if (this.form.invalid) { this.form.markAllAsTouched(); return; }
 
-    const local = this.form.value.followUpAt as string;      // 'YYYY-MM-DD'
-    const followUp = local.substring(0, 10);
+    const followUp = (this.form.value.followUpAt as string).trim(); // 'YYYY-MM-DDTHH:mm'
 
     this.svc.complete(this.data.id, {
       followUpAt: followUp,

@@ -63,7 +63,7 @@ export class AddInteractionComponent implements OnInit {
   ngOnInit(): void {
     this.form = this.fb.group({
       type: ['', Validators.required],
-      scheduledAt: ['', Validators.required], // date
+      scheduledAt: ['', Validators.required], // datetime-local
       notes: ['', [Validators.maxLength(2000)]],
       companyId: [null, Validators.required],
       contactPersonId: [null, Validators.required],
@@ -98,7 +98,7 @@ export class AddInteractionComponent implements OnInit {
       next: (i: Interaction) => {
         this.form.patchValue({
           type: i.type,
-          scheduledAt: this.toDateStr(i.scheduledAt),
+          scheduledAt: this.toDateTimeLocal(i.scheduledAt),
           notes: i.notes ?? '',
           companyId: i.companyId,
           contactPersonId: i.contactPersonId,
@@ -147,16 +147,18 @@ export class AddInteractionComponent implements OnInit {
     });
   }
 
-  private toDateStr(iso?: string): string {
+  private toDateTimeLocal(iso?: string): string {
     if (!iso) return '';
-    return iso.substring(0, 10);
+    const s = iso.trim();
+    if (s.length >= 16 && s.includes('T')) return s.substring(0, 16); // keep YYYY-MM-DDTHH:mm
+    if (s.length >= 10) return s.substring(0, 10) + 'T00:00';
+    return '';
   }
 
   save() {
     if (this.form.invalid) { this.form.markAllAsTouched(); return; }
 
-    const local = this.form.value.scheduledAt as string; // 'YYYY-MM-DD'
-    const scheduled = local.substring(0, 10);
+    const scheduled = (this.form.value.scheduledAt as string).trim(); // 'YYYY-MM-DDTHH:mm'
 
     if (this.isEditMode) {
       const payload: InteractionUpdateRequest = {

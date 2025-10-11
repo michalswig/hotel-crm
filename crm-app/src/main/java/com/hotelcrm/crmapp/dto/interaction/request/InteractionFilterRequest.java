@@ -4,7 +4,6 @@ import com.hotelcrm.crmapp.enums.InteractionStatus;
 import com.hotelcrm.crmapp.enums.InteractionType;
 import lombok.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -23,14 +22,14 @@ public class InteractionFilterRequest {
 
     private String q;
 
-    private LocalDate scheduledFrom;
-    private LocalDate scheduledTo;
+    private LocalDateTime scheduledFrom;
+    private LocalDateTime scheduledTo;
 
     private LocalDateTime completedFrom;
     private LocalDateTime completedTo;
 
-    private LocalDate followUpFrom;
-    private LocalDate followUpTo;
+    private LocalDateTime followUpFrom;
+    private LocalDateTime followUpTo;
 
     private Boolean pendingOnly;
     private Boolean completedOnly;

@@ -71,15 +71,15 @@ describe('AddInteractionComponent (create mode)', () => {
     fixture.detectChanges(); // ngOnInit
   });
 
-  it('should send date-only payload and navigate after successful create', () => {
+  it('should send datetime-local payload and navigate after successful create', () => {
     // Simulate user selecting a company
     component.selectCompany({ id: 1, name: 'Acme Inc.' } as Company);
 
     // Fill form values for create
-    const date = '2025-10-05';
+    const dateTime = '2025-10-05T10:00';
     component.form.patchValue({
       type: 'CALL' as any, // keep loose for test
-      scheduledAt: date,
+      scheduledAt: dateTime,
       notes: '  Follow up with proposal  ',
       companyId: 1,
       contactPersonId: 10,
@@ -88,12 +88,12 @@ describe('AddInteractionComponent (create mode)', () => {
     // Trigger save
     component.save();
 
-    // Expectations: schedule called with trimmed notes and YYYY-MM-DD date string
+    // Expectations: schedule called with trimmed notes and YYYY-MM-DDTHH:mm string
     expect(interactionSvc.schedule).toHaveBeenCalled();
     const payload = interactionSvc.schedule.calls.mostRecent().args[0];
     expect(payload).toEqual(jasmine.objectContaining({
       type: 'CALL' as any,
-      scheduledAt: '2025-10-05',
+      scheduledAt: '2025-10-05T10:00',
       companyId: 1,
       contactPersonId: 10,
       notes: 'Follow up with proposal',
@@ -104,17 +104,17 @@ describe('AddInteractionComponent (create mode)', () => {
     expect(router.navigate).toHaveBeenCalledWith(['/dashboard/interactions']);
   });
 
-  it('should display the selected date value in the date input', () => {
+  it('should display the selected datetime value in the input', () => {
     const fixture = TestBed.createComponent(AddInteractionComponent);
     const comp = fixture.componentInstance;
     fixture.detectChanges();
 
-    const date = '2025-12-31';
-    comp.form.patchValue({ scheduledAt: date });
+    const dateTime = '2025-12-31T09:30';
+    comp.form.patchValue({ scheduledAt: dateTime });
     fixture.detectChanges();
 
-    const input: HTMLInputElement | null = fixture.nativeElement.querySelector('input[type="date"]');
-    expect(input).withContext('date input should exist').not.toBeNull();
-    expect((input as HTMLInputElement).value).toBe(date);
+    const input: HTMLInputElement | null = fixture.nativeElement.querySelector('input[type="datetime-local"]');
+    expect(input).withContext('datetime-local input should exist').not.toBeNull();
+    expect((input as HTMLInputElement).value).toBe(dateTime);
   });
 });

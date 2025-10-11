@@ -13,7 +13,7 @@
 
     <mat-form-field appearance="fill" class="half-width">
       <mat-label>When *</mat-label>
-      <input matInput type="date" formControlName="scheduledAt" />
+      <input matInput type="datetime-local" formControlName="scheduledAt" />
       <mat-error *ngIf="form.get('scheduledAt')?.hasError('required')">Required</mat-error>
     </mat-form-field>
 
