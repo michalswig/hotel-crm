@@ -26,7 +26,6 @@ import java.net.URI;
 @RestController
 @RequestMapping("/api/v1/interactions")
 @RequiredArgsConstructor
-@PreAuthorize("hasAnyRole('SPECIALIST','MANAGER')")
 public class InteractionController {
 
     private final InteractionService interactionService;
@@ -41,6 +40,7 @@ public class InteractionController {
                     @ApiResponse(responseCode = "403", description = "Forbidden")
             }
     )
+    @PreAuthorize("hasAnyRole('SPECIALIST','MANAGER')")
     @PostMapping(consumes = "application/json", produces = "application/json")
     public ResponseEntity<InteractionResponse> create(
             @Valid @RequestBody InteractionCreateRequest request,
@@ -61,6 +61,7 @@ public class InteractionController {
     @Operation(summary = "Filter my interactions",
             description = "Returns a page of interactions filtered by params; only the current user's interactions.")
     @ApiResponse(responseCode = "200", description = "Interactions fetched")
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/filter")
     public Page<InteractionResponse> getFiltered(
             @ParameterObject InteractionFilterRequest filter,
@@ -75,6 +76,7 @@ public class InteractionController {
             description = "Returns a single interaction if it belongs to the current user.")
     @ApiResponse(responseCode = "200", description = "Interaction found")
     @ApiResponse(responseCode = "404", description = "Interaction not found")
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/{id}")
     public InteractionResponse getById(
             @PathVariable Long id,

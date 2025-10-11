@@ -88,6 +88,9 @@ export class AddEventComponent implements OnInit {
       if (id) {
         this.isEditMode = true;
         this.eventId = +id;
+        // In edit mode allow past dates; keep required only
+        this.dateCtrl.setValidators([Validators.required]);
+        this.dateCtrl.updateValueAndValidity({ onlySelf: true });
         this.loadEvent(this.eventId);
       }
     });
