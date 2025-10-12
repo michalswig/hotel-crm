@@ -1,17 +1,17 @@
 package com.hotelcrm.crmapp.controller;
 
 import com.hotelcrm.crmapp.dto.user.UserResponse;
+import com.hotelcrm.crmapp.dto.user.request.UserRequest;
 import com.hotelcrm.crmapp.entity.User;
 import com.hotelcrm.crmapp.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import static com.hotelcrm.crmapp.dto.user.UserMapper.toResponse;
 
@@ -32,4 +32,14 @@ public class UserController {
         User user = userService.getById(id);
         return ResponseEntity.ok(toResponse(user));
     }
+
+    @Operation(summary = "Create user", description = "Creates a new user with username, password, hotel, and role")
+    @ApiResponse(responseCode = "201", description = "User successfully created")
+    @ApiResponse(responseCode = "400", description = "Validation or business error")
+    @PostMapping
+    public ResponseEntity<UserResponse> createUser(@Valid @RequestBody UserRequest userRequest) {
+        User newUser = userService.create(userRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body(toResponse(newUser));
+    }
+
 }
