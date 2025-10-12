@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import static com.hotelcrm.crmapp.dto.user.UserMapper.toResponse;
@@ -36,6 +37,7 @@ public class UserController {
     @Operation(summary = "Create user", description = "Creates a new user with username, password, hotel, and role")
     @ApiResponse(responseCode = "201", description = "User successfully created")
     @ApiResponse(responseCode = "400", description = "Validation or business error")
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
     @PostMapping
     public ResponseEntity<UserResponse> createUser(@Valid @RequestBody UserRequest userRequest) {
         User newUser = userService.create(userRequest);
