@@ -6,4 +6,6 @@ import com.hotelcrm.crmapp.entity.User;
 public interface UserService {
     User getById(Long id);
     User create(UserRequest user);
+    User update(Long id, UserRequest user);
+    void delete(Long id);
 }

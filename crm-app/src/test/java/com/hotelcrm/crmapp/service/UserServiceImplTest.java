@@ -9,6 +9,7 @@ import com.hotelcrm.crmapp.repository.HotelRepository;
 import com.hotelcrm.crmapp.repository.RoleRepository;
 import com.hotelcrm.crmapp.repository.UserRepository;
 import com.hotelcrm.crmapp.service.impl.UserServiceImpl;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,6 +23,8 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -50,6 +53,31 @@ class UserServiceImplTest {
     }
 
     @Test
+    void delete_whenValidId_shouldDelete() {
+        User user = User.builder()
+                .id(1L)
+                .username("testName")
+                .password("testPassword")
+                .build();
+        //given
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        //when
+        userService.delete(1L);
+        //then
+        verify(userRepository).delete(user);
+    }
+
+    @Test
+    void delete_shouldThrowException_whenUserNotFound() {
+        //given
+        when(userRepository.findById(1L)).thenReturn(Optional.empty());
+        //when then
+        EntityNotFoundException entityNotFoundException = assertThrows(EntityNotFoundException.class, () -> userService.delete(1L));
+        assertEquals("User not found: 1", entityNotFoundException.getMessage());
+        verify(userRepository, never()).delete(any(User.class));
+    }
+
+    @Test
     void create_whenValidRequest_shouldReturnCreatedUser() {
         // Arrange
         UserRequest req = UserRequest.builder()
@@ -66,13 +94,13 @@ class UserServiceImplTest {
 
         ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
         when(userRepository.save(any(User.class))).thenAnswer(inv -> {
-            User u = inv.getArgument(0, User.class);
-            u.setId(10L);
+            User user = inv.getArgument(0, User.class);
+            user.setId(10L);
             // simulate JPA setting timestamps if needed
-            if (u.getCreatedAt() == null) {
-                u.setCreatedAt(LocalDateTime.now());
+            if (user.getCreatedAt() == null) {
+                user.setCreatedAt(LocalDateTime.now());
             }
-            return u;
+            return user;
         });
 
         // Act
