@@ -4,7 +4,6 @@ import com.hotelcrm.crmapp.config.CustomUserDetails;
 import com.hotelcrm.crmapp.dto.login.LoginRequest;
 import com.hotelcrm.crmapp.dto.login.LoginToken;
 import com.hotelcrm.crmapp.dto.user.UserDto;
-import com.hotelcrm.crmapp.exception.UnauthenticatedAccessException;
 import com.hotelcrm.crmapp.mapper.UserMapper;
 import com.hotelcrm.crmapp.service.AuthService;
 import com.hotelcrm.crmapp.service.JwtService;
@@ -115,9 +114,7 @@ public class AuthController {
 
     @GetMapping("/me")
     public ResponseEntity<?> me(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        if (userDetails == null) {
-            throw new UnauthenticatedAccessException("User is not authenticated");
-        }
+        // Authentication handled by Spring Security
         UserDto dto = userMapper.toDto(userDetails.getUser());
         return ResponseEntity.ok(dto);
     }

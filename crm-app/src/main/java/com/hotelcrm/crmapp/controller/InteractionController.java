@@ -6,7 +6,6 @@ import com.hotelcrm.crmapp.dto.interaction.request.InteractionCreateRequest;
 import com.hotelcrm.crmapp.dto.interaction.request.InteractionFilterRequest;
 import com.hotelcrm.crmapp.dto.interaction.request.InteractionUpdateRequest;
 import com.hotelcrm.crmapp.dto.interaction.response.InteractionResponse;
-import com.hotelcrm.crmapp.exception.UnauthenticatedAccessException;
 import com.hotelcrm.crmapp.service.InteractionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -49,7 +48,7 @@ public class InteractionController {
             @Valid @RequestBody InteractionCreateRequest request,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        if (userDetails == null) throw new UnauthenticatedAccessException("User is not authenticated");
+        // Authentication handled by Spring Security
 
         InteractionResponse created = interactionService.create(request, userDetails.getUser());
 
@@ -71,7 +70,7 @@ public class InteractionController {
             @ParameterObject Pageable pageable,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        if (userDetails == null) throw new UnauthenticatedAccessException("User is not authenticated");
+        // Authentication handled by Spring Security
         return interactionService.getFiltered(filter, pageable, userDetails.getUser().getId());
     }
 
@@ -85,7 +84,7 @@ public class InteractionController {
             @PathVariable Long id,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        if (userDetails == null) throw new UnauthenticatedAccessException("User is not authenticated");
+        // Authentication handled by Spring Security
         return interactionService.getById(id, userDetails.getUser())
                 .orElseThrow(() -> new EntityNotFoundException("Interaction not found"));
     }
@@ -100,7 +99,7 @@ public class InteractionController {
             @Valid @RequestBody InteractionUpdateRequest request,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        if (userDetails == null) throw new UnauthenticatedAccessException("User is not authenticated");
+        // Authentication handled by Spring Security
         return interactionService.update(id, request, userDetails.getUser());
     }
 
@@ -114,7 +113,7 @@ public class InteractionController {
             @Valid @RequestBody InteractionCompleteRequest request,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        if (userDetails == null) throw new UnauthenticatedAccessException("User is not authenticated");
+        // Authentication handled by Spring Security
         return interactionService.complete(id, request, userDetails.getUser());
     }
 
@@ -128,7 +127,7 @@ public class InteractionController {
             @RequestParam(required = false) LocalDateTime to,
             @ParameterObject Pageable pageable,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
-        if (userDetails == null) throw new UnauthenticatedAccessException("User is not authenticated");
+        // Authentication handled by Spring Security
         return interactionService.calendar(userDetails.getUser().getId(), from, to, pageable);
     }
 
@@ -139,7 +138,7 @@ public class InteractionController {
     @GetMapping("/follow-ups")
     public List<InteractionResponse> upcomingFollowUps(
             @AuthenticationPrincipal CustomUserDetails userDetails) {
-        if (userDetails == null) throw new UnauthenticatedAccessException("User is not authenticated");
+        // Authentication handled by Spring Security
         return interactionService.upcomingFollowUps(userDetails.getUser().getId());
     }
 
@@ -151,7 +150,7 @@ public class InteractionController {
             @PathVariable Long id,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        if (userDetails == null) throw new UnauthenticatedAccessException("User is not authenticated");
+        // Authentication handled by Spring Security
         interactionService.delete(id, userDetails.getUser());
         return ResponseEntity.noContent().build();
     }

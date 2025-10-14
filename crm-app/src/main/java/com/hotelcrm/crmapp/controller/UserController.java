@@ -4,7 +4,6 @@ import com.hotelcrm.crmapp.config.CustomUserDetails;
 import com.hotelcrm.crmapp.dto.user.UserResponse;
 import com.hotelcrm.crmapp.dto.user.request.UserRequest;
 import com.hotelcrm.crmapp.entity.User;
-import com.hotelcrm.crmapp.exception.UnauthenticatedAccessException;
 import com.hotelcrm.crmapp.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -72,7 +71,7 @@ public class UserController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id,
                                        @AuthenticationPrincipal CustomUserDetails userDetails) {
-        if (userDetails == null) throw new UnauthenticatedAccessException("User is not authenticated");
+        // Authentication handled by Spring Security
         userService.delete(id);
         return ResponseEntity.noContent().build();
     }
