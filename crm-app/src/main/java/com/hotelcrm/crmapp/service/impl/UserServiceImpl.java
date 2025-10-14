@@ -1,18 +1,17 @@
 package com.hotelcrm.crmapp.service.impl;
 
-import com.hotelcrm.crmapp.exception.ConflictException;
-import com.hotelcrm.crmapp.exception.NotFoundException;
 import com.hotelcrm.crmapp.dto.user.request.UserRequest;
 import com.hotelcrm.crmapp.entity.Hotel;
 import com.hotelcrm.crmapp.entity.Role;
 import com.hotelcrm.crmapp.entity.User;
+import com.hotelcrm.crmapp.exception.ConflictException;
+import com.hotelcrm.crmapp.exception.NotFoundException;
 import com.hotelcrm.crmapp.repository.HotelRepository;
 import com.hotelcrm.crmapp.repository.RoleRepository;
 import com.hotelcrm.crmapp.repository.UserRepository;
 import com.hotelcrm.crmapp.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -89,11 +88,9 @@ public class UserServiceImpl implements UserService {
         }
         user.setUsername(normalizedUserName);
 
-        // Password encoding
         String encodedPassword = passwordEncoder.encode(userRequest.getPassword());
         user.setPassword(encodedPassword);
 
-        // Role and Hotel updates based on provided IDs
         Role role = roleRepository.findById(userRequest.getRoleId())
                 .orElseThrow(() -> new NotFoundException("Role not found: " + userRequest.getRoleId()));
         Hotel hotel = hotelRepository.findById(userRequest.getHotelId())
