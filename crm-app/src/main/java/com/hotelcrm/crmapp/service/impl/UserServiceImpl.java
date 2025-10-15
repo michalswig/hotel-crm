@@ -1,5 +1,6 @@
 package com.hotelcrm.crmapp.service.impl;
 
+import com.hotelcrm.crmapp.dto.user.request.UpdateUserRequest;
 import com.hotelcrm.crmapp.dto.user.request.UserRequest;
 import com.hotelcrm.crmapp.entity.Hotel;
 import com.hotelcrm.crmapp.entity.Role;
@@ -29,6 +30,11 @@ public class UserServiceImpl implements UserService {
     public User getById(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("User not found: " + id));
+    }
+
+    @Override
+    public java.util.List<User> getAll() {
+        return userRepository.findAll();
     }
 
     @Transactional
@@ -71,7 +77,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public User update(Long id, UserRequest userRequest) {
+    public User update(Long id, UpdateUserRequest userRequest) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("User not found: " + id));
 
@@ -88,8 +94,7 @@ public class UserServiceImpl implements UserService {
         }
         user.setUsername(normalizedUserName);
 
-        String encodedPassword = passwordEncoder.encode(userRequest.getPassword());
-        user.setPassword(encodedPassword);
+        // Do not update password in update request (password change handled via separate flow)
 
         Role role = roleRepository.findById(userRequest.getRoleId())
                 .orElseThrow(() -> new NotFoundException("Role not found: " + userRequest.getRoleId()));

@@ -2,6 +2,7 @@ package com.hotelcrm.crmapp.controller;
 
 import com.hotelcrm.crmapp.config.CustomUserDetails;
 import com.hotelcrm.crmapp.dto.user.UserResponse;
+import com.hotelcrm.crmapp.dto.user.request.UpdateUserRequest;
 import com.hotelcrm.crmapp.dto.user.request.UserRequest;
 import com.hotelcrm.crmapp.entity.User;
 import com.hotelcrm.crmapp.service.UserService;
@@ -17,8 +18,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 
 import static com.hotelcrm.crmapp.dto.user.UserMapper.toResponse;
+import static com.hotelcrm.crmapp.dto.user.UserMapper.toResponseList;
 
 @RestController
 @RequestMapping("api/v1/users")
@@ -26,6 +29,15 @@ import static com.hotelcrm.crmapp.dto.user.UserMapper.toResponse;
 public class UserController {
 
     private final UserService userService;
+
+    @Operation(summary = "List users", description = "Returns all users (admin only)")
+    @ApiResponse(responseCode = "200", description = "Users successfully retrieved")
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
+    @GetMapping
+    public ResponseEntity<List<UserResponse>> getAll() {
+        List<User> users = userService.getAll();
+        return ResponseEntity.ok(toResponseList(users));
+    }
 
     @Operation(summary = "Get user by ID", description = "Returns details of a specific user by ID")
     @ApiResponse(responseCode = "200", description = "User successfully retrieved")
@@ -60,7 +72,7 @@ public class UserController {
     @PreAuthorize("hasRole('ADMINISTRATOR')")
     @PutMapping("/{id}")
     public ResponseEntity<UserResponse> update(@PathVariable Long id,
-                                               @Valid @RequestBody UserRequest userRequest) {
+                                               @Valid @RequestBody UpdateUserRequest userRequest) {
         User update = userService.update(id, userRequest);
         return ResponseEntity.ok(toResponse(update));
     }

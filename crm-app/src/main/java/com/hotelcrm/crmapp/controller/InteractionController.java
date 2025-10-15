@@ -42,7 +42,7 @@ public class InteractionController {
                     @ApiResponse(responseCode = "403", description = "Forbidden")
             }
     )
-    @PreAuthorize("hasAnyRole('SPECIALIST','MANAGER')")
+    @PreAuthorize("hasAnyRole('SPECIALIST','MANAGER','ADMINISTRATOR')")
     @PostMapping(consumes = "application/json", produces = "application/json")
     public ResponseEntity<InteractionResponse> create(
             @Valid @RequestBody InteractionCreateRequest request,
@@ -92,7 +92,7 @@ public class InteractionController {
     @Operation(summary = "Update interaction",
             description = "Updates fields like type/notes/scheduledAt/contact (only if not completed).")
     @ApiResponse(responseCode = "200", description = "Interaction updated")
-    @PreAuthorize("hasAnyRole('SPECIALIST','MANAGER')")
+    @PreAuthorize("hasAnyRole('SPECIALIST','MANAGER','ADMINISTRATOR')")
     @PutMapping("/{id}")
     public InteractionResponse update(
             @PathVariable Long id,
@@ -106,7 +106,7 @@ public class InteractionController {
     @Operation(summary = "Complete interaction",
             description = "Marks an interaction as completed, attaches notes, and sets an optional follow-up time.")
     @ApiResponse(responseCode = "200", description = "Interaction completed")
-    @PreAuthorize("hasAnyRole('SPECIALIST','MANAGER')")
+    @PreAuthorize("hasAnyRole('SPECIALIST','MANAGER','ADMINISTRATOR')")
     @PatchMapping("/{id}/complete")
     public InteractionResponse complete(
             @PathVariable Long id,
@@ -144,7 +144,7 @@ public class InteractionController {
 
     @Operation(summary = "Delete interaction", description = "Deletes an interaction owned by the current user.")
     @ApiResponse(responseCode = "204", description = "Interaction deleted")
-    @PreAuthorize("hasAnyRole('SPECIALIST','MANAGER')")
+    @PreAuthorize("hasAnyRole('SPECIALIST','MANAGER','ADMINISTRATOR')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(
             @PathVariable Long id,
