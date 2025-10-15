@@ -26,7 +26,7 @@ public class ContactPersonController {
         return ResponseEntity.ok(contactService.list(companyId, pageable));
     }
 
-    @PreAuthorize("hasAnyRole('MANAGER','SPECIALIST')")
+    @PreAuthorize("hasAnyRole('MANAGER','SPECIALIST','ADMINISTRATOR')")
     @PostMapping
     public ResponseEntity<ContactPersonResponse> create(
             @PathVariable Long companyId,
@@ -34,7 +34,7 @@ public class ContactPersonController {
         return ResponseEntity.ok(contactService.create(companyId, req));
     }
 
-    @PreAuthorize("hasAnyRole('MANAGER','SPECIALIST')")
+    @PreAuthorize("hasAnyRole('MANAGER','SPECIALIST','ADMINISTRATOR')")
     @PutMapping("/{contactId}")
     public ResponseEntity<ContactPersonResponse> update(
             @PathVariable Long companyId,
@@ -43,7 +43,7 @@ public class ContactPersonController {
         return ResponseEntity.ok(contactService.update(companyId, contactId, req));
     }
 
-    @PreAuthorize("hasAnyRole('MANAGER','SPECIALIST')")
+    @PreAuthorize("hasAnyRole('MANAGER','SPECIALIST','ADMINISTRATOR')")
     @DeleteMapping("/{contactId}")
     public ResponseEntity<Void> delete(
             @PathVariable Long companyId,

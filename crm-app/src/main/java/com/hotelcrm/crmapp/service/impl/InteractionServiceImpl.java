@@ -11,12 +11,12 @@ import com.hotelcrm.crmapp.entity.ContactPerson;
 import com.hotelcrm.crmapp.entity.Interaction;
 import com.hotelcrm.crmapp.entity.User;
 import com.hotelcrm.crmapp.enums.InteractionStatus;
+import com.hotelcrm.crmapp.exception.NotFoundException;
 import com.hotelcrm.crmapp.repository.CompanyRepository;
 import com.hotelcrm.crmapp.repository.ContactPersonRepository;
 import com.hotelcrm.crmapp.repository.InteractionRepository;
 import com.hotelcrm.crmapp.service.InteractionService;
 import com.hotelcrm.crmapp.specification.InteractionSpecification;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -34,16 +34,16 @@ import java.util.Optional;
 @Transactional
 public class InteractionServiceImpl implements InteractionService {
 
-    private final InteractionRepository interactions;
-    private final CompanyRepository companies;
-    private final ContactPersonRepository contacts;
+    private final InteractionRepository interactionRepository;
+    private final CompanyRepository companyRepository;
+    private final ContactPersonRepository contactPersonRepository;
 
     @Override
     public InteractionResponse create(InteractionCreateRequest req, User currentUser) {
-        Company company = companies.findById(req.getCompanyId())
-                .orElseThrow(() -> new EntityNotFoundException("Company not found"));
-        ContactPerson contact = contacts.findById(req.getContactPersonId())
-                .orElseThrow(() -> new EntityNotFoundException("Contact not found"));
+        Company company = companyRepository.findById(req.getCompanyId())
+                .orElseThrow(() -> new NotFoundException("Company not found"));
+        ContactPerson contact = contactPersonRepository.findById(req.getContactPersonId())
+                .orElseThrow(() -> new NotFoundException("Contact not found"));
         if (!contact.getCompany().getId().equals(company.getId())) {
             throw new IllegalArgumentException("Contact must belong to the selected company");
         }
@@ -52,13 +52,13 @@ public class InteractionServiceImpl implements InteractionService {
         i.setStatus(InteractionStatus.PLANNED);
         i.setCreatedAt(LocalDateTime.now());
         i.setUpdatedAt(LocalDateTime.now());
-        return InteractionMapper.toResponse(interactions.save(i));
+        return InteractionMapper.toResponse(interactionRepository.save(i));
     }
 
     @Override
     public InteractionResponse complete(Long id, InteractionCompleteRequest req, User currentUser) {
-        Interaction i = interactions.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Interaction not found"));
+        Interaction i = interactionRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Interaction not found"));
         ensureOwner(i, currentUser);
 
         i.setCompletedAt(LocalDateTime.now());
@@ -66,13 +66,13 @@ public class InteractionServiceImpl implements InteractionService {
         i.setFollowUpAt(req.getFollowUpAt());
         i.setNotes(req.getNotes());
         i.setUpdatedAt(LocalDateTime.now());
-        return InteractionMapper.toResponse(interactions.save(i));
+        return InteractionMapper.toResponse(interactionRepository.save(i));
     }
 
     @Override
     public InteractionResponse update(Long id, InteractionUpdateRequest req, User currentUser) {
-        Interaction i = interactions.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Interaction not found"));
+        Interaction i = interactionRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Interaction not found"));
         ensureOwner(i, currentUser);
 
         if (req.getType() != null) i.setType(req.getType());
@@ -81,8 +81,8 @@ public class InteractionServiceImpl implements InteractionService {
             i.setScheduledAt(req.getScheduledAt());
         }
         if (req.getContactPersonId() != null) {
-            ContactPerson cp = contacts.findById(req.getContactPersonId())
-                    .orElseThrow(() -> new EntityNotFoundException("Contact not found"));
+            ContactPerson cp = contactPersonRepository.findById(req.getContactPersonId())
+                    .orElseThrow(() -> new NotFoundException("Contact not found"));
             if (!cp.getCompany().getId().equals(i.getCompany().getId())) {
                 throw new IllegalArgumentException("Contact must belong to the interaction's company");
             }
@@ -104,41 +104,41 @@ public class InteractionServiceImpl implements InteractionService {
         }
 
         i.setUpdatedAt(LocalDateTime.now());
-        return InteractionMapper.toResponse(interactions.save(i));
+        return InteractionMapper.toResponse(interactionRepository.save(i));
     }
 
     @Override
     public Page<InteractionResponse> getFiltered(InteractionFilterRequest filter, Pageable pageable, Long userId) {
         Specification<Interaction> spec = InteractionSpecification.build(filter, userId);
-        return interactions.findAll(spec, pageable).map(InteractionMapper::toResponse);
+        return interactionRepository.findAll(spec, pageable).map(InteractionMapper::toResponse);
     }
 
     @Override
     public Page<InteractionResponse> calendar(Long userId, LocalDateTime from, LocalDateTime to, Pageable pageable) {
         Specification<Interaction> spec = InteractionSpecification.createdBy(userId)
                 .and(InteractionSpecification.scheduledBetween(from, to));
-        return interactions.findAll(spec, pageable).map(InteractionMapper::toResponse);
+        return interactionRepository.findAll(spec, pageable).map(InteractionMapper::toResponse);
     }
 
     @Override
     public List<InteractionResponse> upcomingFollowUps(Long userId) {
-        return interactions.findTop50ByUser_IdAndFollowUpAtAfterOrderByFollowUpAtAsc(userId, LocalDateTime.now())
+        return interactionRepository.findTop50ByUser_IdAndFollowUpAtAfterOrderByFollowUpAtAsc(userId, LocalDateTime.now())
                 .stream().map(InteractionMapper::toResponse).toList();
     }
 
     @Override
     public Optional<InteractionResponse> getById(Long id, User currentUser) {
-        return interactions.findById(id)
+        return interactionRepository.findById(id)
                 .filter(i -> i.getUser().getId().equals(currentUser.getId()))
                 .map(InteractionMapper::toResponse);
     }
 
     @Override
     public Long delete(Long id, User currentUser) {
-        Interaction i = interactions.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Interaction not found"));
+        Interaction i = interactionRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Interaction not found"));
         ensureOwner(i, currentUser);
-        interactions.delete(i);
+        interactionRepository.delete(i);
         return id;
     }
 

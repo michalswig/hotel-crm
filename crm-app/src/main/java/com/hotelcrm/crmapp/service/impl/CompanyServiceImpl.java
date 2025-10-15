@@ -31,7 +31,7 @@ public class CompanyServiceImpl implements CompanyService {
     private final CompanyRepository companyRepository;
     private final ContactPersonRepository contactRepo;
 
-    @PreAuthorize("hasAnyRole('MANAGER','SPECIALIST')")
+    @PreAuthorize("hasAnyRole('MANAGER','SPECIALIST','ADMINISTRATOR')")
     @Transactional
     @Override
     public Company createCompany(CompanyRequest request, User creator) {
@@ -86,7 +86,7 @@ public class CompanyServiceImpl implements CompanyService {
         return companyRepository.save(company);
     }
 
-    @PreAuthorize("hasAnyRole('MANAGER','SPECIALIST')")
+    @PreAuthorize("hasAnyRole('MANAGER','SPECIALIST','ADMINISTRATOR')")
     @Transactional
     @Override
     public void deleteCompany(Long id) {

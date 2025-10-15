@@ -31,7 +31,7 @@ public class ContactPersonServiceImpl implements ContactPersonService {
         return contactRepo.findByCompanyId(companyId, pageable).map(ContactPersonMapper::toResponse);
     }
 
-    @PreAuthorize("hasAnyRole('MANAGER','SPECIALIST')")
+    @PreAuthorize("hasAnyRole('MANAGER','SPECIALIST','ADMINISTRATOR')")
     @Override
     public ContactPersonResponse create(Long companyId, ContactPersonRequest req) {
         if (contactRepo.existsByCompanyIdAndEmailIgnoreCase(companyId, req.getEmail()))
@@ -48,7 +48,7 @@ public class ContactPersonServiceImpl implements ContactPersonService {
         return ContactPersonMapper.toResponse(cp);
     }
 
-    @PreAuthorize("hasAnyRole('MANAGER','SPECIALIST')")
+    @PreAuthorize("hasAnyRole('MANAGER','SPECIALIST','ADMINISTRATOR')")
     @Override
     public ContactPersonResponse update(Long companyId, Long contactId, ContactPersonRequest req) {
         ContactPerson cp = contactRepo.findByIdAndCompanyId(contactId, companyId)
@@ -64,7 +64,7 @@ public class ContactPersonServiceImpl implements ContactPersonService {
         return ContactPersonMapper.toResponse(cp);
     }
 
-    @PreAuthorize("hasAnyRole('MANAGER','SPECIALIST')")
+    @PreAuthorize("hasAnyRole('MANAGER','SPECIALIST','ADMINISTRATOR')")
     @Override
     public void delete(Long companyId, Long contactId) {
         Company c = companyRepo.findById(companyId)

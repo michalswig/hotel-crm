@@ -6,7 +6,6 @@ import com.hotelcrm.crmapp.dto.interaction.request.InteractionCreateRequest;
 import com.hotelcrm.crmapp.dto.interaction.request.InteractionFilterRequest;
 import com.hotelcrm.crmapp.dto.interaction.request.InteractionUpdateRequest;
 import com.hotelcrm.crmapp.dto.interaction.response.InteractionResponse;
-import com.hotelcrm.crmapp.exception.UnauthenticatedAccessException;
 import com.hotelcrm.crmapp.service.InteractionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -43,13 +42,13 @@ public class InteractionController {
                     @ApiResponse(responseCode = "403", description = "Forbidden")
             }
     )
-    @PreAuthorize("hasAnyRole('SPECIALIST','MANAGER')")
+    @PreAuthorize("hasAnyRole('SPECIALIST','MANAGER','ADMINISTRATOR')")
     @PostMapping(consumes = "application/json", produces = "application/json")
     public ResponseEntity<InteractionResponse> create(
             @Valid @RequestBody InteractionCreateRequest request,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        if (userDetails == null) throw new UnauthenticatedAccessException("User is not authenticated");
+        // Authentication handled by Spring Security
 
         InteractionResponse created = interactionService.create(request, userDetails.getUser());
 
@@ -71,7 +70,7 @@ public class InteractionController {
             @ParameterObject Pageable pageable,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        if (userDetails == null) throw new UnauthenticatedAccessException("User is not authenticated");
+        // Authentication handled by Spring Security
         return interactionService.getFiltered(filter, pageable, userDetails.getUser().getId());
     }
 
@@ -85,7 +84,7 @@ public class InteractionController {
             @PathVariable Long id,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        if (userDetails == null) throw new UnauthenticatedAccessException("User is not authenticated");
+        // Authentication handled by Spring Security
         return interactionService.getById(id, userDetails.getUser())
                 .orElseThrow(() -> new EntityNotFoundException("Interaction not found"));
     }
@@ -93,28 +92,28 @@ public class InteractionController {
     @Operation(summary = "Update interaction",
             description = "Updates fields like type/notes/scheduledAt/contact (only if not completed).")
     @ApiResponse(responseCode = "200", description = "Interaction updated")
-    @PreAuthorize("hasAnyRole('SPECIALIST','MANAGER')")
+    @PreAuthorize("hasAnyRole('SPECIALIST','MANAGER','ADMINISTRATOR')")
     @PutMapping("/{id}")
     public InteractionResponse update(
             @PathVariable Long id,
             @Valid @RequestBody InteractionUpdateRequest request,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        if (userDetails == null) throw new UnauthenticatedAccessException("User is not authenticated");
+        // Authentication handled by Spring Security
         return interactionService.update(id, request, userDetails.getUser());
     }
 
     @Operation(summary = "Complete interaction",
             description = "Marks an interaction as completed, attaches notes, and sets an optional follow-up time.")
     @ApiResponse(responseCode = "200", description = "Interaction completed")
-    @PreAuthorize("hasAnyRole('SPECIALIST','MANAGER')")
+    @PreAuthorize("hasAnyRole('SPECIALIST','MANAGER','ADMINISTRATOR')")
     @PatchMapping("/{id}/complete")
     public InteractionResponse complete(
             @PathVariable Long id,
             @Valid @RequestBody InteractionCompleteRequest request,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        if (userDetails == null) throw new UnauthenticatedAccessException("User is not authenticated");
+        // Authentication handled by Spring Security
         return interactionService.complete(id, request, userDetails.getUser());
     }
 
@@ -128,7 +127,7 @@ public class InteractionController {
             @RequestParam(required = false) LocalDateTime to,
             @ParameterObject Pageable pageable,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
-        if (userDetails == null) throw new UnauthenticatedAccessException("User is not authenticated");
+        // Authentication handled by Spring Security
         return interactionService.calendar(userDetails.getUser().getId(), from, to, pageable);
     }
 
@@ -139,19 +138,19 @@ public class InteractionController {
     @GetMapping("/follow-ups")
     public List<InteractionResponse> upcomingFollowUps(
             @AuthenticationPrincipal CustomUserDetails userDetails) {
-        if (userDetails == null) throw new UnauthenticatedAccessException("User is not authenticated");
+        // Authentication handled by Spring Security
         return interactionService.upcomingFollowUps(userDetails.getUser().getId());
     }
 
     @Operation(summary = "Delete interaction", description = "Deletes an interaction owned by the current user.")
     @ApiResponse(responseCode = "204", description = "Interaction deleted")
-    @PreAuthorize("hasAnyRole('SPECIALIST','MANAGER')")
+    @PreAuthorize("hasAnyRole('SPECIALIST','MANAGER','ADMINISTRATOR')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(
             @PathVariable Long id,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        if (userDetails == null) throw new UnauthenticatedAccessException("User is not authenticated");
+        // Authentication handled by Spring Security
         interactionService.delete(id, userDetails.getUser());
         return ResponseEntity.noContent().build();
     }

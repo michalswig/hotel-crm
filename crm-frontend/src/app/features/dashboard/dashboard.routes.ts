@@ -86,6 +86,21 @@ export const DASHBOARD_ROUTES: Routes = [
           import('./pages/interactions/view-interaction/interaction-detail.component')
             .then(m => m.InteractionDetailComponent),
         title: 'Interaction Details'
+      },
+      {
+        path: 'users',
+        loadComponent: () => import('./pages/users/users-list.component').then(m => m.UsersListComponent),
+        title: 'Users (Admin)'
+      },
+      {
+        path: 'users/new',
+        loadComponent: () => import('./pages/users/add-user/add-user.component').then(m => m.AddUserComponent),
+        title: 'Create User'
+      },
+      {
+        path: 'users/:id/edit',
+        loadComponent: () => import('./pages/users/add-user/add-user.component').then(m => m.AddUserComponent),
+        title: 'Edit User'
       }
 
     ]

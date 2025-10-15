@@ -1,0 +1,34 @@
+<mat-card>
+  <h2>{{ isEdit ? 'Edit User' : 'Create User' }}</h2>
+  <form [formGroup]="form" (ngSubmit)="save()" class="form-grid">
+
+    <mat-form-field appearance="outline">
+      <mat-label>Username</mat-label>
+      <input matInput formControlName="userName" placeholder="username" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" *ngIf="!isEdit">
+      <mat-label>Password</mat-label>
+      <input matInput type="password" formControlName="password" placeholder="password" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Hotel</mat-label>
+      <mat-select formControlName="hotelId">
+        <mat-option *ngFor="let h of hotels" [value]="h.id">{{h.name}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Role</mat-label>
+      <mat-select formControlName="roleId">
+        <mat-option *ngFor="let r of roles" [value]="r.id">{{r.name}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <div class="actions">
+      <button mat-stroked-button type="button" (click)="cancel()">Cancel</button>
+      <button mat-raised-button color="primary" type="submit">{{ isEdit ? 'Update' : 'Create' }}</button>
+    </div>
+  </form>
+</mat-card>

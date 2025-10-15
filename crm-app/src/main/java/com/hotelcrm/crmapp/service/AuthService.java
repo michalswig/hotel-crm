@@ -5,7 +5,6 @@ import com.hotelcrm.crmapp.dto.login.LoginRequest;
 import com.hotelcrm.crmapp.dto.login.LoginResponse;
 import com.hotelcrm.crmapp.dto.login.LoginToken;
 import com.hotelcrm.crmapp.dto.user.UserDto;
-import com.hotelcrm.crmapp.exception.InvalidCredentialsException;
 import com.hotelcrm.crmapp.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +32,7 @@ public class AuthService {
             );
         } catch (AuthenticationException ex) {
             log.warn("Authentication failed for username: {}", request.getUsername());
-            throw new InvalidCredentialsException("Invalid username or password");
+            throw ex;
         }
 
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
@@ -52,7 +51,7 @@ public class AuthService {
                     )
             );
         } catch (AuthenticationException ex) {
-            throw new InvalidCredentialsException("Invalid username or password");
+            throw ex;
         }
 
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();

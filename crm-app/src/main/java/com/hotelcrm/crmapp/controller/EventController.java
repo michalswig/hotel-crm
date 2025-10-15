@@ -7,7 +7,6 @@ import com.hotelcrm.crmapp.dto.event.request.EventFilterRequest;
 import com.hotelcrm.crmapp.dto.event.request.EventUpdateRequest;
 import com.hotelcrm.crmapp.dto.event.response.EventDetailResponse;
 import com.hotelcrm.crmapp.entity.Event;
-import com.hotelcrm.crmapp.exception.UnauthenticatedAccessException;
 import com.hotelcrm.crmapp.service.EventService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -35,14 +34,12 @@ public class EventController {
     )
     @ApiResponse(responseCode = "200", description = "Event successfully created")
     @PostMapping
-    @PreAuthorize("hasAnyRole('SPECIALIST', 'MANAGER')")
+    @PreAuthorize("hasAnyRole('SPECIALIST', 'MANAGER', 'ADMINISTRATOR')")
     public EventDetailResponse create(
             @Valid @RequestBody EventCreateRequest request,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        if (userDetails == null) {
-            throw new UnauthenticatedAccessException("User is not authenticated");
-        }
+        // Authentication handled by Spring Security
 
         Event created = eventService.create(request, userDetails.getUser());
         return EventMapper.toDetailResponse(created);
@@ -54,15 +51,13 @@ public class EventController {
     )
     @ApiResponse(responseCode = "200", description = "Events successfully fetched")
     @GetMapping("/filter")
-    @PreAuthorize("hasAnyRole('SPECIALIST', 'MANAGER')")
+    @PreAuthorize("hasAnyRole('SPECIALIST', 'MANAGER', 'ADMINISTRATOR')")
     public Page<EventDetailResponse> getFiltered(
             @ParameterObject EventFilterRequest filter,
             @ParameterObject Pageable pageable,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        if (userDetails == null) {
-            throw new UnauthenticatedAccessException("User is not authenticated");
-        }
+        // Authentication handled by Spring Security
 
         return eventService.getFiltered(filter, pageable, userDetails.getUser().getId())
                 .map(EventMapper::toDetailResponse);
@@ -75,7 +70,7 @@ public class EventController {
     @ApiResponse(responseCode = "200", description = "Event found")
     @ApiResponse(responseCode = "404", description = "Event not found")
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('SPECIALIST', 'MANAGER')")
+    @PreAuthorize("hasAnyRole('SPECIALIST', 'MANAGER', 'ADMINISTRATOR')")
     public EventDetailResponse getById(@PathVariable Long id) {
         return eventService.findById(id)
                 .map(EventMapper::toDetailResponse)
@@ -89,7 +84,7 @@ public class EventController {
     @ApiResponse(responseCode = "200", description = "Event successfully updated")
     @ApiResponse(responseCode = "404", description = "Event not found")
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('SPECIALIST', 'MANAGER')")
+    @PreAuthorize("hasAnyRole('SPECIALIST', 'MANAGER', 'ADMINISTRATOR')")
     public EventDetailResponse update(
             @PathVariable Long id,
             @Valid @RequestBody EventUpdateRequest request) {
@@ -105,7 +100,7 @@ public class EventController {
     @ApiResponse(responseCode = "200", description = "Event successfully deleted")
     @ApiResponse(responseCode = "404", description = "Event not found")
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole('SPECIALIST', 'MANAGER')")
+    @PreAuthorize("hasAnyRole('SPECIALIST', 'MANAGER', 'ADMINISTRATOR')")
     public ResponseEntity<Long> delete(@PathVariable Long id) {
         return ResponseEntity.ok(eventService.delete(id));
     }
