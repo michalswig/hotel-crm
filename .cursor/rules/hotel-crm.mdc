@@ -1,0 +1,111 @@
+---
+description: Rules for working in the Hotel CRM repository
+globs:
+  - "crm-app/src/main/java/**/*.java"
+  - "crm-app/src/test/java/**/*.java"
+  - "crm-app/src/main/resources/**/*.yml"
+  - "crm-app/src/main/resources/**/*.properties"
+  - "crm-app/pom.xml"
+  - "crm-frontend/src/**/*.ts"
+  - "crm-frontend/src/**/*.html"
+  - "crm-frontend/src/**/*.scss"
+  - "crm-frontend/angular.json"
+  - "crm-frontend/package.json"
+alwaysApply: true
+---
+
+# Hotel CRM rules
+
+## Workflow
+- First analyze the existing code before making changes.
+- For anything beyond a very small change, propose a short implementation plan first.
+- Prefer small, safe, incremental changes.
+- Do not modify unrelated files.
+- Preserve current behavior unless explicitly asked to change it.
+- After changes, explain what was changed, why, and which files were touched.
+
+## Project context
+- This is a Hotel CRM application.
+- Backend module: `crm-app`.
+- Frontend module: `crm-frontend`.
+- The system manages companies, contact persons, events, interactions, users, hotels, roles, opportunities, and CRM reporting.
+- The app is developed solo, so prefer simple, maintainable solutions over overengineering.
+
+## Backend tech stack
+- Java 21.
+- Spring Boot.
+- Maven.
+- PostgreSQL.
+- Liquibase.
+- Spring Security with JWT.
+- JPA/Hibernate.
+- REST API.
+- OpenAPI/Swagger if already present.
+
+## Frontend tech stack
+- Angular.
+- TypeScript.
+- HTML/SCSS.
+- Follow the existing Angular structure and naming style.
+- Prefer small components and clear services.
+- Do not introduce state-management libraries unless explicitly requested.
+
+## Backend architecture
+- Keep controllers thin.
+- Put business logic in services.
+- Keep repositories focused on persistence.
+- Prefer constructor injection.
+- Follow existing package conventions.
+- Do not introduce interfaces unless there is a real project need.
+- Avoid large rewrites; prefer helper methods or small focused classes.
+
+## Security and data isolation
+- Be especially careful with horizontal access control / IDOR.
+- Users should not access companies, events, interactions, contacts, or summaries belonging to another user or hotel unless explicitly allowed by role.
+- When changing GET by ID, UPDATE, DELETE, list, filter, or summary endpoints, verify ownership/scope.
+- Do not hardcode secrets, credentials, JWT keys, tokens, URLs, or production passwords.
+- Prefer environment variables and typed `@ConfigurationProperties`.
+
+## Configuration
+- Prefer `application.yml` / profile-specific config over scattered hardcoded values.
+- Production-sensitive values should come from ENV variables.
+- Do not enable SQL logging in production by default.
+- Be careful with `application-prod.yml`, datasource settings, JWT config, CORS, and security whitelist paths.
+
+## Database and Liquibase
+- Do not change Liquibase changelogs or database schema unless explicitly asked.
+- If schema changes are needed, propose the migration plan first.
+- Be careful with constraints, indexes, foreign keys, nullable fields, and data migration.
+- Do not rely on Hibernate auto-DDL for production schema changes.
+
+## Domain-specific care
+- Be careful with company ownership, hotel ownership, event ownership, contact-person-company relations, interactions, opportunity status, CRM summaries, and dashboard data.
+- When changing reports or summaries, explain whether data is scoped by user, hotel, role, or global admin access.
+- When changing event or interaction logic, explain impact on calendar/dashboard behavior.
+
+## Exceptions and API consistency
+- Prefer consistent domain exceptions such as NotFoundException, ConflictException, BadRequestException, or existing project equivalents.
+- Avoid returning HTTP 500 for expected business errors.
+- When changing exception handling, verify GlobalExceptionHandler behavior.
+- Keep API responses consistent.
+
+## Testing
+- When adding meaningful backend logic, propose or add JUnit 5 / Mockito tests where reasonable.
+- For security-sensitive changes, add tests for unauthorized cross-user/cross-hotel access.
+- For repositories, prefer focused integration tests only when needed.
+- Frontend tests are optional unless explicitly requested.
+- Do not make Selenium/E2E tests part of ordinary small backend changes unless requested.
+
+## Frontend rules
+- Keep UI changes consistent with the existing layout.
+- Reuse existing services, models, and components where possible.
+- Do not duplicate API calls unnecessarily.
+- Handle loading, empty state, and error state when adding user-facing features.
+- Keep forms simple and typed where possible.
+
+## Response style
+- Be concrete and technical.
+- For analysis, identify responsibilities, risks, and next steps.
+- For implementation, summarize changed files and the diff.
+- Separate critical issues from cosmetic improvements.
+- Do not overengineer.
