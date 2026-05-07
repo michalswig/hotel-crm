@@ -21,7 +21,7 @@ export const appConfig: ApplicationConfig = {
       deps: [AuthService],
       useFactory: (auth: AuthService) => () => {
         auth.loadUserAfterLogin();
-        return true;
+        return Promise.resolve();
       }
     }
   ]
