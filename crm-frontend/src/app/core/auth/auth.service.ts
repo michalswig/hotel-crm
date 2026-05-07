@@ -1,21 +1,20 @@
-import {HttpClient} from '@angular/common/http';
-import {Injectable} from '@angular/core';
-import {catchError, map, Observable, of} from 'rxjs';
-import {User, UserService} from '../../shared/services/user.service';
-
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { catchError, map, Observable, of } from 'rxjs';
+import { User, UserService } from '../../shared/services/user.service';
+import { environment } from '../../../environments/environment';  // ← dodajemy import
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  private readonly API_URL = 'http://localhost:8080/api/v1/auth';
+  private readonly API_URL = `${environment.apiUrl}/auth`;
 
-  constructor(private readonly http: HttpClient, private readonly userService: UserService) {
-  }
+  constructor(private readonly http: HttpClient, private readonly userService: UserService) {}
 
   login(credentials: { username: string; password: string }): Observable<void> {
-    return this.http.post<void>(`${this.API_URL}/login`, credentials, {withCredentials: true});
+    return this.http.post<void>(`${this.API_URL}/login`, credentials, { withCredentials: true });
   }
 
   loadUserAfterLogin(): void {
@@ -25,17 +24,14 @@ export class AuthService {
   }
 
   isAuthenticated(): Observable<boolean> {
-    return this.http.get(`${this.API_URL}/me`, {withCredentials: true}).pipe(
+    return this.http.get(`${this.API_URL}/me`, { withCredentials: true }).pipe(
       map(() => true),
       catchError(() => of(false))
     );
   }
 
   getCurrentUser(): Observable<User | null> {
-    return this.http.get<User>(
-      `${this.API_URL}/me`,
-      { withCredentials: true }
-    ).pipe(
+    return this.http.get<User>(`${this.API_URL}/me`, { withCredentials: true }).pipe(
       catchError(() => of(null))
     );
   }
@@ -53,6 +49,4 @@ export class AuthService {
       }
     });
   }
-
-
 }

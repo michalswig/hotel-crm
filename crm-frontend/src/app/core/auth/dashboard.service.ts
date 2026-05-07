@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {Observable} from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment'; // ← dodajemy import
 
 export interface CompanySummary {
   companyId: number;
   companyName: string;
   ownerUsername: string;
-  lastContactDate: string; // or Date, if you want to convert it
+  lastContactDate: string;
   totalRevenueYTD: number;
   totalRevenueLY: number;
 }
@@ -15,7 +16,7 @@ export interface CompanySummary {
   providedIn: 'root'
 })
 export class DashboardService {
-  private readonly API_URL = 'http://localhost:8080/api/v1/companies';
+  private readonly API_URL = `${environment.apiUrl}/companies`;
 
   constructor(private readonly http: HttpClient) {}
 
@@ -24,5 +25,4 @@ export class DashboardService {
       withCredentials: true
     });
   }
-
 }
