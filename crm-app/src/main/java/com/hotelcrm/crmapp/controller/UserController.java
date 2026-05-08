@@ -42,6 +42,8 @@ public class UserController {
     @Operation(summary = "Get user by ID", description = "Returns details of a specific user by ID")
     @ApiResponse(responseCode = "200", description = "User successfully retrieved")
     @ApiResponse(responseCode = "404", description = "User not found")
+    @ApiResponse(responseCode = "403", description = "Access denied")
+    @PreAuthorize("hasRole('ADMINISTRATOR') or #id == authentication.principal.id")
     @GetMapping("/{id}")
     public ResponseEntity<UserResponse> getById(
             @Parameter(description = "ID of the user to retrieve") @PathVariable Long id) {
