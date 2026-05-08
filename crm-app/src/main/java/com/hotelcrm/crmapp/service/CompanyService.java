@@ -12,19 +12,11 @@ import java.util.List;
 
 public interface CompanyService {
     Company createCompany(CompanyRequest request, User user);
-
     Page<Company> getCompanies(Pageable pageable);
-
     Company getById(Long id);
-
     Page<Company> getFilteredCompanies(CompanyFilter filter, Long userId, Pageable pageable);
-
     List<CompanySummaryDto> fetchCompanySummaryTable(int ytdYear, int lyYear);
-
-    Company updateCompany(Long id, CompanyFilter request);
-
-    void deleteCompany(Long id);
-
-    void setPrimaryContact(Long companyId, Long contactId);
-
+    Company updateCompany(Long id, CompanyFilter request, User actor);      // ← dodano actor
+    void deleteCompany(Long id, User actor);                                // ← dodano actor
+    void setPrimaryContact(Long companyId, Long contactId, User actor);     // ← dodano actor
 }

@@ -6,6 +6,7 @@ import com.hotelcrm.crmapp.dto.company.CompanySummaryDto;
 import com.hotelcrm.crmapp.entity.Company;
 import com.hotelcrm.crmapp.entity.ContactPerson;
 import com.hotelcrm.crmapp.entity.User;
+import com.hotelcrm.crmapp.exception.ForbiddenException;
 import com.hotelcrm.crmapp.mapper.CompanyMapper;
 import com.hotelcrm.crmapp.repository.CompanyRepository;
 import com.hotelcrm.crmapp.repository.ContactPersonRepository;
@@ -17,7 +18,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -31,15 +31,22 @@ public class CompanyServiceImpl implements CompanyService {
     private final CompanyRepository companyRepository;
     private final ContactPersonRepository contactRepo;
 
-    @PreAuthorize("hasAnyRole('MANAGER','SPECIALIST','ADMINISTRATOR')")
-    @Transactional
-    @Override
-    public Company createCompany(CompanyRequest request, User creator) {
+    private void assertCanModify(Company company, User actor) {
+        boolean isOwner = company.getCreatedBy().getId().equals(actor.getId());
+        String roleName = actor.getRole().getName().name();
+        boolean isManagerOrAdmin = roleName.equals("MANAGER") || roleName.equals("ADMINISTRATOR");
 
+        if (!isOwner && !isManagerOrAdmin) {
+            throw new ForbiddenException("You don't have permission to modify this company");
+        }
+    }
+
+    @Override
+    @Transactional
+    public Company createCompany(CompanyRequest request, User creator) {
         Company company = CompanyMapper.toEntity(request);
         company.setCreatedBy(creator);
         company.setCreatedAt(LocalDateTime.now());
-
         return companyRepository.save(company);
     }
 
@@ -65,11 +72,13 @@ public class CompanyServiceImpl implements CompanyService {
         return companyRepository.fetchCompanySummaryTable(ytdYear, lyYear);
     }
 
-    @Transactional
     @Override
-    public Company updateCompany(Long id, CompanyFilter filter) {
+    @Transactional
+    public Company updateCompany(Long id, CompanyFilter filter, User actor) {
         Company company = companyRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Company " + id));
+
+        assertCanModify(company, actor);
 
         if (filter.getName() != null) company.setName(filter.getName());
         if (filter.getTaxId() != null) company.setTaxId(filter.getTaxId());
@@ -86,25 +95,27 @@ public class CompanyServiceImpl implements CompanyService {
         return companyRepository.save(company);
     }
 
-    @PreAuthorize("hasAnyRole('MANAGER','SPECIALIST','ADMINISTRATOR')")
-    @Transactional
     @Override
-    public void deleteCompany(Long id) {
-        if (!companyRepository.existsById(id)) {
-            throw new EntityNotFoundException("Company " + id);
-        }
+    @Transactional
+    public void deleteCompany(Long id, User actor) {
+        Company company = companyRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Company " + id));
+
+        assertCanModify(company, actor);
+
         companyRepository.deleteById(id);
     }
 
     @Override
-    public void setPrimaryContact(Long companyId, Long contactId) {
+    public void setPrimaryContact(Long companyId, Long contactId, User actor) {
         Company c = companyRepository.findById(companyId)
                 .orElseThrow(() -> new EntityNotFoundException("Company not found"));
+
+        assertCanModify(c, actor);
+
         ContactPerson cp = contactRepo.findByIdAndCompanyId(contactId, companyId)
                 .orElseThrow(() -> new EntityNotFoundException("Contact not found in this company"));
         c.setPrimaryContactPerson(cp);
-        c.setUpdatedAt(java.time.LocalDateTime.now());
+        c.setUpdatedAt(LocalDateTime.now());
     }
-
-
 }

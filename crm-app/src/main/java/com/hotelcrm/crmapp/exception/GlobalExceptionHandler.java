@@ -127,6 +127,11 @@ public class GlobalExceptionHandler {
                 ex.getMessage() != null ? ex.getMessage() : "Invalid request", null);
     }
 
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<ErrorResponse> handleForbidden(ForbiddenException ex) {
+        return build(HttpStatus.FORBIDDEN, ErrorCode.ACCESS_DENIED, ex.getMessage(), null);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleUnhandled(Exception ex) {
         String msg = "Unexpected error";
