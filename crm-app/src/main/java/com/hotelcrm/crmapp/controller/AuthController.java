@@ -14,6 +14,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
@@ -33,6 +34,9 @@ public class AuthController {
     private final UserMapper userMapper;
     private final JwtService jwtService;
 
+    @Value("${app.cookie.secure}")
+    private boolean cookieSecure;
+
     @Operation(summary = "Authenticate user and return JWT token")
     @ApiResponse(responseCode = "200", description = "Successful authentication")
     @PostMapping("/login")
@@ -41,7 +45,7 @@ public class AuthController {
 
         ResponseCookie accessCookie = ResponseCookie.from("access_token", tokens.getAccessToken())
                 .httpOnly(true)
-                .secure(false)
+                .secure(cookieSecure)
                 .path("/")
                 .maxAge(Duration.ofMinutes(15))
                 .sameSite("Lax")
@@ -49,7 +53,7 @@ public class AuthController {
 
         ResponseCookie refreshCookie = ResponseCookie.from("refresh_token", tokens.getRefreshToken())
                 .httpOnly(true)
-                .secure(false)
+                .secure(cookieSecure)
                 .path("/")
                 .maxAge(Duration.ofDays(7))
                 .sameSite("Lax")
@@ -65,7 +69,7 @@ public class AuthController {
     public ResponseEntity<Void> logout(HttpServletResponse response) {
         ResponseCookie accessToken = ResponseCookie.from("access_token", "")
                 .httpOnly(true)
-                .secure(false)
+                .secure(cookieSecure)
                 .path("/")
                 .maxAge(0)
                 .sameSite("Lax")
@@ -73,7 +77,7 @@ public class AuthController {
 
         ResponseCookie refreshToken = ResponseCookie.from("refresh_token", "")
                 .httpOnly(true)
-                .secure(false)
+                .secure(cookieSecure)
                 .path("/")
                 .maxAge(0)
                 .sameSite("Lax")
@@ -85,7 +89,6 @@ public class AuthController {
         return ResponseEntity.ok().build();
     }
 
-
     @PostMapping("/refresh-token")
     public ResponseEntity<Void> refreshToken(HttpServletRequest request, HttpServletResponse response) {
         String refreshToken = extractCookie(request, "refresh_token");
@@ -94,13 +97,12 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        String username = jwtService.extractUsername(refreshToken);  // assumes same extraction method
-
+        String username = jwtService.extractUsername(refreshToken);
         String newAccessToken = jwtService.generateToken(username);
 
         ResponseCookie accessCookie = ResponseCookie.from("access_token", newAccessToken)
                 .httpOnly(true)
-                .secure(false)
+                .secure(cookieSecure)
                 .path("/")
                 .maxAge(Duration.ofMinutes(15))
                 .sameSite("Lax")
@@ -111,10 +113,8 @@ public class AuthController {
         return ResponseEntity.ok().build();
     }
 
-
     @GetMapping("/me")
     public ResponseEntity<?> me(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        // Authentication handled by Spring Security
         UserDto dto = userMapper.toDto(userDetails.getUser());
         return ResponseEntity.ok(dto);
     }
@@ -127,8 +127,4 @@ public class AuthController {
                 .findFirst()
                 .orElse(null);
     }
-
-
-
-
 }
