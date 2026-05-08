@@ -39,8 +39,6 @@ public class EventController {
             @Valid @RequestBody EventCreateRequest request,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        // Authentication handled by Spring Security
-
         Event created = eventService.create(request, userDetails.getUser());
         return EventMapper.toDetailResponse(created);
     }
@@ -56,8 +54,6 @@ public class EventController {
             @ParameterObject EventFilterRequest filter,
             @ParameterObject Pageable pageable,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
-
-        // Authentication handled by Spring Security
 
         return eventService.getFiltered(filter, pageable, userDetails.getUser().getId())
                 .map(EventMapper::toDetailResponse);

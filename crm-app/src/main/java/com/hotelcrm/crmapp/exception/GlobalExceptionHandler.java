@@ -115,6 +115,18 @@ public class GlobalExceptionHandler {
         return build(status, code, message, null);
     }
 
+    @ExceptionHandler(jakarta.persistence.EntityNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleEntityNotFound(jakarta.persistence.EntityNotFoundException ex) {
+        return build(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND,
+                ex.getMessage() != null ? ex.getMessage() : "Resource not found", null);
+    }
+
+    @ExceptionHandler({IllegalArgumentException.class, IllegalStateException.class})
+    public ResponseEntity<ErrorResponse> handleIllegalArgument(RuntimeException ex) {
+        return build(HttpStatus.BAD_REQUEST, ErrorCode.BAD_REQUEST,
+                ex.getMessage() != null ? ex.getMessage() : "Invalid request", null);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleUnhandled(Exception ex) {
         String msg = "Unexpected error";
