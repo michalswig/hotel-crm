@@ -109,3 +109,30 @@ alwaysApply: true
 - For implementation, summarize changed files and the diff.
 - Separate critical issues from cosmetic improvements.
 - Do not overengineer.
+
+## MVP status (as of 2026-05-08)
+
+### Completed commits
+- [x] chore(routing): fix duplicate dashboard route and APP_INITIALIZER
+- [x] chore(api): unify API base URLs via environment, clean up jwt interceptor
+- [x] chore(security): externalize JWT secret and datasource credentials to ENV
+- [x] fix(exceptions): handle EntityNotFoundException and IllegalArgumentException
+- [x] feat(security): enforce ownership on company write operations
+- [x] feat(security): enforce ownership on event write operations
+- [x] feat(security): enforce ownership on contact and interaction write operations
+- [x] fix(security): restrict GET /users/{id} to admin or self
+- [x] chore: remove dev-only Test.java from main sources
+- [x] chore(config): add prod profile hardening and ENV-based CORS
+
+### Ownership policy (enforced)
+- GET (read) — every authenticated user sees everything
+- POST (create) — every authenticated user can create
+- PUT/DELETE — only creator (createdBy) OR Manager/Administrator
+- Applies to: Company, Event, ContactPerson, Interaction
+
+### Known gaps / next steps
+- [ ] [12] Security regression tests (IDOR paths) — JUnit 5 + MockMvc
+- [ ] [13] HotelController — optional, restrict to admin-only if multi-hotel
+- [ ] Opportunity entity — not yet implemented (in scope per rules)
+- [ ] CRM reporting / dashboard KPI — basic summary only, no advanced reporting
+- [ ] Production deployment checklist — ENV variables documented above
