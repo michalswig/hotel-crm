@@ -11,6 +11,7 @@ import com.hotelcrm.crmapp.entity.ContactPerson;
 import com.hotelcrm.crmapp.entity.Interaction;
 import com.hotelcrm.crmapp.entity.User;
 import com.hotelcrm.crmapp.enums.InteractionStatus;
+import com.hotelcrm.crmapp.exception.ForbiddenException;
 import com.hotelcrm.crmapp.exception.NotFoundException;
 import com.hotelcrm.crmapp.repository.CompanyRepository;
 import com.hotelcrm.crmapp.repository.ContactPersonRepository;
@@ -22,7 +23,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -37,6 +37,18 @@ public class InteractionServiceImpl implements InteractionService {
     private final InteractionRepository interactionRepository;
     private final CompanyRepository companyRepository;
     private final ContactPersonRepository contactPersonRepository;
+
+    // Właściciel (user) lub Manager/Administrator mogą modyfikować.
+    // Specialist który nie jest właścicielem — dostaje 403.
+    private void assertCanModify(Interaction i, User actor) {
+        boolean isOwner = i.getUser().getId().equals(actor.getId());
+        String roleName = actor.getRole().getName().name();
+        boolean isManagerOrAdmin = roleName.equals("MANAGER") || roleName.equals("ADMINISTRATOR");
+
+        if (!isOwner && !isManagerOrAdmin) {
+            throw new ForbiddenException("You don't have permission to modify this interaction");
+        }
+    }
 
     @Override
     public InteractionResponse create(InteractionCreateRequest req, User currentUser) {
@@ -59,7 +71,8 @@ public class InteractionServiceImpl implements InteractionService {
     public InteractionResponse complete(Long id, InteractionCompleteRequest req, User currentUser) {
         Interaction i = interactionRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Interaction not found"));
-        ensureOwner(i, currentUser);
+
+        assertCanModify(i, currentUser);
 
         i.setCompletedAt(LocalDateTime.now());
         i.setStatus(InteractionStatus.DONE);
@@ -73,7 +86,8 @@ public class InteractionServiceImpl implements InteractionService {
     public InteractionResponse update(Long id, InteractionUpdateRequest req, User currentUser) {
         Interaction i = interactionRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Interaction not found"));
-        ensureOwner(i, currentUser);
+
+        assertCanModify(i, currentUser);
 
         if (req.getType() != null) i.setType(req.getType());
         if (req.getNotes() != null) i.setNotes(req.getNotes());
@@ -122,7 +136,8 @@ public class InteractionServiceImpl implements InteractionService {
 
     @Override
     public List<InteractionResponse> upcomingFollowUps(Long userId) {
-        return interactionRepository.findTop50ByUser_IdAndFollowUpAtAfterOrderByFollowUpAtAsc(userId, LocalDateTime.now())
+        return interactionRepository
+                .findTop50ByUser_IdAndFollowUpAtAfterOrderByFollowUpAtAsc(userId, LocalDateTime.now())
                 .stream().map(InteractionMapper::toResponse).toList();
     }
 
@@ -137,14 +152,10 @@ public class InteractionServiceImpl implements InteractionService {
     public Long delete(Long id, User currentUser) {
         Interaction i = interactionRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Interaction not found"));
-        ensureOwner(i, currentUser);
+
+        assertCanModify(i, currentUser);
+
         interactionRepository.delete(i);
         return id;
-    }
-
-    private static void ensureOwner(Interaction i, User currentUser) {
-        if (!i.getUser().getId().equals(currentUser.getId())) {
-            throw new AccessDeniedException("Forbidden");
-        }
     }
 }

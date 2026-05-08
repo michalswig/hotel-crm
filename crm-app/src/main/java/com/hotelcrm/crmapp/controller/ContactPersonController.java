@@ -1,5 +1,6 @@
 package com.hotelcrm.crmapp.controller;
 
+import com.hotelcrm.crmapp.config.CustomUserDetails;
 import com.hotelcrm.crmapp.dto.contactperson.request.ContactPersonRequest;
 import com.hotelcrm.crmapp.dto.contactperson.response.ContactPersonResponse;
 import com.hotelcrm.crmapp.service.ContactPersonService;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -30,8 +32,9 @@ public class ContactPersonController {
     @PostMapping
     public ResponseEntity<ContactPersonResponse> create(
             @PathVariable Long companyId,
-            @Valid @RequestBody ContactPersonRequest req) {
-        return ResponseEntity.ok(contactService.create(companyId, req));
+            @Valid @RequestBody ContactPersonRequest req,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {  // ← dodano
+        return ResponseEntity.ok(contactService.create(companyId, req, userDetails.getUser()));  // ← przekazano
     }
 
     @PreAuthorize("hasAnyRole('MANAGER','SPECIALIST','ADMINISTRATOR')")
@@ -39,16 +42,18 @@ public class ContactPersonController {
     public ResponseEntity<ContactPersonResponse> update(
             @PathVariable Long companyId,
             @PathVariable Long contactId,
-            @Valid @RequestBody ContactPersonRequest req) {
-        return ResponseEntity.ok(contactService.update(companyId, contactId, req));
+            @Valid @RequestBody ContactPersonRequest req,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {  // ← dodano
+        return ResponseEntity.ok(contactService.update(companyId, contactId, req, userDetails.getUser()));  // ← przekazano
     }
 
     @PreAuthorize("hasAnyRole('MANAGER','SPECIALIST','ADMINISTRATOR')")
     @DeleteMapping("/{contactId}")
     public ResponseEntity<Void> delete(
             @PathVariable Long companyId,
-            @PathVariable Long contactId) {
-        contactService.delete(companyId, contactId);
+            @PathVariable Long contactId,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {  // ← dodano
+        contactService.delete(companyId, contactId, userDetails.getUser());  // ← przekazano
         return ResponseEntity.noContent().build();
     }
 }
