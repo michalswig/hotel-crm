@@ -11,13 +11,12 @@ import org.springframework.data.domain.Pageable;
 import java.util.Optional;
 
 public interface EventService {
-
     Event create(Event event, User user);
     Event create(EventCreateRequest req, User currentUser);
     Page<Event> getEvents(Pageable pageable);
     Optional<Event> findById(Long id);
     Page<Event> getFiltered(EventFilterRequest filter, Pageable pageable, Long userId);
     Event update(EventFilterRequest request, Long id);
-    Event update(Long id, EventUpdateRequest request);
-    Long delete(Long id);
+    Event update(Long id, EventUpdateRequest request, User actor);
+    Long delete(Long id, User actor);
 }

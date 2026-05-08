@@ -28,25 +28,18 @@ public class EventController {
 
     private final EventService eventService;
 
-    @Operation(
-            summary = "Create a new event",
-            description = "Creates an event assigned to the logged-in user's hotel using the provided data"
-    )
+    @Operation(summary = "Create a new event")
     @ApiResponse(responseCode = "200", description = "Event successfully created")
     @PostMapping
     @PreAuthorize("hasAnyRole('SPECIALIST', 'MANAGER', 'ADMINISTRATOR')")
     public EventDetailResponse create(
             @Valid @RequestBody EventCreateRequest request,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
-
         Event created = eventService.create(request, userDetails.getUser());
         return EventMapper.toDetailResponse(created);
     }
 
-    @Operation(
-            summary = "Get paginated and optionally filtered list of events",
-            description = "Returns a page of events filtered by request parameters and created by the logged-in user"
-    )
+    @Operation(summary = "Get paginated and optionally filtered list of events")
     @ApiResponse(responseCode = "200", description = "Events successfully fetched")
     @GetMapping("/filter")
     @PreAuthorize("hasAnyRole('SPECIALIST', 'MANAGER', 'ADMINISTRATOR')")
@@ -54,15 +47,11 @@ public class EventController {
             @ParameterObject EventFilterRequest filter,
             @ParameterObject Pageable pageable,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
-
         return eventService.getFiltered(filter, pageable, userDetails.getUser().getId())
                 .map(EventMapper::toDetailResponse);
     }
 
-    @Operation(
-            summary = "Get event by ID",
-            description = "Returns a single event by its ID"
-    )
+    @Operation(summary = "Get event by ID")
     @ApiResponse(responseCode = "200", description = "Event found")
     @ApiResponse(responseCode = "404", description = "Event not found")
     @GetMapping("/{id}")
@@ -73,31 +62,29 @@ public class EventController {
                 .orElseThrow(() -> new EntityNotFoundException("Event not found"));
     }
 
-    @Operation(
-            summary = "Update an event",
-            description = "Updates an existing event by ID with the provided data"
-    )
+    @Operation(summary = "Update an event")
     @ApiResponse(responseCode = "200", description = "Event successfully updated")
+    @ApiResponse(responseCode = "403", description = "Not allowed to modify this event")
     @ApiResponse(responseCode = "404", description = "Event not found")
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole('SPECIALIST', 'MANAGER', 'ADMINISTRATOR')")
     public EventDetailResponse update(
             @PathVariable Long id,
-            @Valid @RequestBody EventUpdateRequest request) {
-
-        Event updated = eventService.update(id, request);
+            @Valid @RequestBody EventUpdateRequest request,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        Event updated = eventService.update(id, request, userDetails.getUser());
         return EventMapper.toDetailResponse(updated);
     }
 
-    @Operation(
-            summary = "Delete an event",
-            description = "Deletes an event by ID"
-    )
+    @Operation(summary = "Delete an event")
     @ApiResponse(responseCode = "200", description = "Event successfully deleted")
+    @ApiResponse(responseCode = "403", description = "Not allowed to delete this event")
     @ApiResponse(responseCode = "404", description = "Event not found")
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAnyRole('SPECIALIST', 'MANAGER', 'ADMINISTRATOR')")
-    public ResponseEntity<Long> delete(@PathVariable Long id) {
-        return ResponseEntity.ok(eventService.delete(id));
+    public ResponseEntity<Long> delete(
+            @PathVariable Long id,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        return ResponseEntity.ok(eventService.delete(id, userDetails.getUser()));
     }
 }

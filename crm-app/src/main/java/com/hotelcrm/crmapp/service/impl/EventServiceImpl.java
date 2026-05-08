@@ -5,6 +5,7 @@ import com.hotelcrm.crmapp.dto.event.request.EventCreateRequest;
 import com.hotelcrm.crmapp.dto.event.request.EventFilterRequest;
 import com.hotelcrm.crmapp.dto.event.request.EventUpdateRequest;
 import com.hotelcrm.crmapp.entity.*;
+import com.hotelcrm.crmapp.exception.ForbiddenException;
 import com.hotelcrm.crmapp.repository.CompanyRepository;
 import com.hotelcrm.crmapp.repository.ContactPersonRepository;
 import com.hotelcrm.crmapp.repository.EventRepository;
@@ -30,6 +31,16 @@ public class EventServiceImpl implements EventService {
     private final CompanyRepository companyRepository;
     private final HotelRepository hotelRepository;
     private final ContactPersonRepository contactPersonRepository;
+
+    private void assertCanModify(Event event, User actor) {
+        boolean isOwner = event.getCreatedBy().getId().equals(actor.getId());
+        String roleName = actor.getRole().getName().name();
+        boolean isManagerOrAdmin = roleName.equals("MANAGER") || roleName.equals("ADMINISTRATOR");
+
+        if (!isOwner && !isManagerOrAdmin) {
+            throw new ForbiddenException("You don't have permission to modify this event");
+        }
+    }
 
     @Override
     public Event create(Event event, User user) {
@@ -97,9 +108,11 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public Event update(Long id, EventUpdateRequest req) {
+    public Event update(Long id, EventUpdateRequest req, User actor) {
         Event event = eventRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Event with ID " + id + " not found"));
+
+        assertCanModify(event, actor);
 
         if (req.getName() != null) event.setName(req.getName());
         if (req.getDescription() != null) event.setDescription(req.getDescription());
@@ -114,10 +127,9 @@ public class EventServiceImpl implements EventService {
             Company company = companyRepository.findById(req.getCompanyId())
                     .orElseThrow(() -> new EntityNotFoundException("Company not found: " + req.getCompanyId()));
             event.setCompany(company);
-
             if (event.getContactPerson() != null &&
                     !event.getContactPerson().getCompany().getId().equals(company.getId())) {
-                event.setContactPerson(null); // or company.getPrimaryContactPerson()
+                event.setContactPerson(null);
             }
         }
 
@@ -148,9 +160,12 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public Long delete(Long id) {
+    public Long delete(Long id, User actor) {
         Event event = eventRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Event with ID " + id + " not found"));
+
+        assertCanModify(event, actor);
+
         eventRepository.delete(event);
         return id;
     }
