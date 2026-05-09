@@ -52,13 +52,15 @@ class AddCompanyTest {
                 .until(ExpectedConditions.elementToBeClickable(addBtn)).click();
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("input[formcontrolname='name']")));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.cssSelector("input[formcontrolname='name']")));
 
         driver.findElement(By.cssSelector("input[formcontrolname='name']")).sendKeys(companyName);
         driver.findElement(By.cssSelector("input[formcontrolname='taxId']")).sendKeys("1234567890");
 
         driver.findElement(By.cssSelector("mat-select[formcontrolname='industry']")).click();
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("mat-option"))).click();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.cssSelector("mat-option"))).click();
 
         driver.findElement(By.cssSelector("input[formcontrolname='email']")).sendKeys("test@company.com");
         driver.findElement(By.cssSelector("input[formcontrolname='phoneNumber']")).sendKeys("+48123456789");
@@ -70,9 +72,21 @@ class AddCompanyTest {
 
         driver.findElement(By.cssSelector("button[type='submit']")).click();
 
+        // Obsługa dialogu "Add contact person?" — klikamy "Later"
+        try {
+            WebElement laterBtn = new WebDriverWait(driver, Duration.ofSeconds(5))
+                    .until(ExpectedConditions.elementToBeClickable(
+                            By.xpath("//button[normalize-space()='Later']")
+                    ));
+            laterBtn.click();
+        } catch (Exception e) {
+            // Dialog nie pojawił się — kontynuujemy
+        }
+
         wait.until(ExpectedConditions.urlContains("/dashboard/companies"));
 
-        WebElement table = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("table")));
+        WebElement table = wait.until(
+                ExpectedConditions.visibilityOfElementLocated(By.cssSelector("table")));
         String tableText = table.getText();
 
         Assertions.assertTrue(tableText.contains(companyName),
