@@ -5,6 +5,7 @@ import com.hotelcrm.crmapp.entity.Hotel;
 import com.hotelcrm.crmapp.entity.Role;
 import com.hotelcrm.crmapp.entity.User;
 import com.hotelcrm.crmapp.enums.RoleType;
+import com.hotelcrm.crmapp.exception.NotFoundException;
 import com.hotelcrm.crmapp.repository.HotelRepository;
 import com.hotelcrm.crmapp.repository.RoleRepository;
 import com.hotelcrm.crmapp.repository.UserRepository;
@@ -72,8 +73,8 @@ class UserServiceImplTest {
         //given
         when(userRepository.findById(1L)).thenReturn(Optional.empty());
         //when then
-        EntityNotFoundException entityNotFoundException = assertThrows(EntityNotFoundException.class, () -> userService.delete(1L));
-        assertEquals("User not found: 1", entityNotFoundException.getMessage());
+        NotFoundException exception = assertThrows(NotFoundException.class, () -> userService.delete(1L));  // ← zmiana typu
+        assertEquals("User not found: 1", exception.getMessage());
         verify(userRepository, never()).delete(any(User.class));
     }
 
