@@ -49,4 +49,9 @@ export class AuthService {
       }
     });
   }
+
+  refreshToken(): Observable<void> {
+    return this.http.post<void>(`${this.API_URL}/refresh-token`, {}, { withCredentials: true });
+  }
+
 }
