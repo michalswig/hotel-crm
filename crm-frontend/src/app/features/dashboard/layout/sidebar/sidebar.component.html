@@ -1,0 +1,11 @@
+<aside class="sidebar">
+  <nav>
+    <ul>
+      <li routerLink="/dashboard" routerLinkActive="active">🏠 Dashboard</li>
+      <li routerLink="/dashboard/companies" routerLinkActive="active">🏢 My Companies</li>
+      <li routerLink="/dashboard/events" routerLinkActive="active">📅 My Events</li>
+      <li routerLink="/dashboard/interactions" routerLinkActive="active">🤝 Interactions</li>
+      <li *ngIf="(user$ | async)?.role === 'ADMINISTRATOR'" routerLink="/dashboard/users" routerLinkActive="active">👤 User Management</li>
+    </ul>
+  </nav>
+</aside>

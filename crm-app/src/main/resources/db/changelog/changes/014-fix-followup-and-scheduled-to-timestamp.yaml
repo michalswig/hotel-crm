@@ -1,0 +1,12 @@
+databaseChangeLog:
+  - changeSet:
+      id: interactions-datetimes-to-timestamp
+      author: junie
+      changes:
+        - sql:
+            splitStatements: false
+            sql: |
+              ALTER TABLE interactions
+                ALTER COLUMN scheduled_at TYPE TIMESTAMP(6) USING scheduled_at::timestamp(6);
+              ALTER TABLE interactions
+                ALTER COLUMN follow_up_at TYPE TIMESTAMP(6) USING follow_up_at::timestamp(6);

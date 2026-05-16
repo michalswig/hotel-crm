@@ -1,0 +1,12 @@
+databaseChangeLog:
+  - changeSet:
+      id: interactions-dates-to-date
+      author: junie
+      changes:
+        - sql:
+            splitStatements: false
+            sql: |
+              ALTER TABLE interactions
+                ALTER COLUMN scheduled_at TYPE DATE USING scheduled_at::date;
+              ALTER TABLE interactions
+                ALTER COLUMN follow_up_at TYPE DATE USING follow_up_at::date;

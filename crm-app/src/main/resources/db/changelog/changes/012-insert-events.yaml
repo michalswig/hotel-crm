@@ -1,0 +1,96 @@
+# append after 3.2 or bump the id if 3.3 is already taken
+# append after 3.3
+databaseChangeLog:
+  - changeSet:
+      id: 3.4
+      author: mike
+      changes:
+        # ── Event for company 1 / hotel 1 ────────────────────────────────
+        - insert:
+            tableName: events
+            columns:
+              - column: { name: name,  value: 'Annual Sales Summit' }
+              - column: { name: description, value: 'Yearly gathering for top clients' }
+              - column: { name: type, value: 'CONFERENCE' }          # EventType
+              - column: { name: status, value: 'CONFIRMED' }         # EventStatus
+              - column: { name: event_date, valueDate: '2025-09-10T09:00:00' }
+              - column: { name: participants_number, valueNumeric: 100 }
+              - column: { name: estimated_total_gross_revenue, valueNumeric: 50000.00 }
+              - column: { name: created_at, valueDate: '2025-06-28T10:00:00' }
+              - column: { name: updated_at, valueDate: '2025-06-28T10:00:00' }
+              - column: { name: company_id, valueNumeric: 1 }
+              - column: { name: contact_person_id, valueNumeric: 1 }   # Sylwia Kaczmarek (company 1)
+              - column: { name: hotel_id, valueNumeric: 1 }
+              - column: { name: created_by_user_id, valueNumeric: 5 }
+
+        # ── Event for company 2 / hotel 2 ────────────────────────────────
+        - insert:
+            tableName: events
+            columns:
+              - column: { name: name,  value: 'Executive Incentive Retreat' }
+              - column: { name: description, value: 'Leadership-team off-site' }
+              - column: { name: type, value: 'CONFERENCE' }
+              - column: { name: status, value: 'CONFIRMED' }
+              - column: { name: event_date, valueDate: '2025-10-05T15:00:00' }
+              - column: { name: participants_number, valueNumeric: 30 }
+              - column: { name: estimated_total_gross_revenue, valueNumeric: 20000.00 }
+              - column: { name: created_at, valueDate: '2025-06-28T11:00:00' }
+              - column: { name: updated_at, valueDate: '2025-06-28T11:00:00' }
+              - column: { name: company_id, valueNumeric: 2 }
+              - column: { name: contact_person_id, valueNumeric: 2 }   # Piotr Zieliński (company 2)
+              - column: { name: hotel_id, valueNumeric: 2 }
+              - column: { name: created_by_user_id, valueNumeric: 5 }
+
+        # ── Event for company 3 / hotel 1 ────────────────────────────────
+        - insert:
+            tableName: events
+            columns:
+              - column: { name: name,  value: 'Innovation Workshop' }
+              - column: { name: description, value: 'Hands-on technology workshop' }
+              - column: { name: type, value: 'CONFERENCE' }
+              - column: { name: status, value: 'CONFIRMED' }
+              - column: { name: event_date, valueDate: '2025-11-01T13:00:00' }
+              - column: { name: participants_number, valueNumeric: 50 }
+              - column: { name: estimated_total_gross_revenue, valueNumeric: 30000.00 }
+              - column: { name: created_at, valueDate: '2025-06-28T12:00:00' }
+              - column: { name: updated_at, valueDate: '2025-06-28T12:00:00' }
+              - column: { name: company_id, valueNumeric: 3 }
+              - column: { name: contact_person_id, valueNumeric: 3 }   # Maria Nowicka (company 3)
+              - column: { name: hotel_id, valueNumeric: 1 }
+              - column: { name: created_by_user_id, valueNumeric: 5 }
+
+        # ── Event for company 4 / hotel 2 ────────────────────────────────
+        - insert:
+            tableName: events
+            columns:
+              - column: { name: name,  value: 'VIP Gala Dinner' }
+              - column: { name: description, value: 'Evening gala with key accounts' }
+              - column: { name: type, value: 'CONFERENCE' }
+              - column: { name: status, value: 'CONFIRMED' }
+              - column: { name: event_date, valueDate: '2025-11-20T19:00:00' }
+              - column: { name: participants_number, valueNumeric: 120 }
+              - column: { name: estimated_total_gross_revenue, valueNumeric: 60000.00 }
+              - column: { name: created_at, valueDate: '2025-06-28T13:00:00' }
+              - column: { name: updated_at, valueDate: '2025-06-28T13:00:00' }
+              - column: { name: company_id, valueNumeric: 4 }
+              - column: { name: contact_person_id, valueNumeric: 4 }   # Tomasz Lewandowski (company 4)
+              - column: { name: hotel_id, valueNumeric: 2 }
+              - column: { name: created_by_user_id, valueNumeric: 5 }
+
+        # ── Event for company 5 / hotel 1 ────────────────────────────────
+        - insert:
+            tableName: events
+            columns:
+              - column: { name: name,  value: 'Site Inspection Tour' }
+              - column: { name: description, value: 'Pre-event property walkthrough' }
+              - column: { name: type, value: 'CONFERENCE' }
+              - column: { name: status, value: 'CONFIRMED' }
+              - column: { name: event_date, valueDate: '2025-12-10T10:00:00' }
+              - column: { name: participants_number, valueNumeric: 10 }
+              - column: { name: estimated_total_gross_revenue, valueNumeric: 4000.00 }
+              - column: { name: created_at, valueDate: '2025-06-28T14:00:00' }
+              - column: { name: updated_at, valueDate: '2025-06-28T14:00:00' }
+              - column: { name: company_id, valueNumeric: 5 }
+              - column: { name: contact_person_id, valueNumeric: 5 }   # Ewa Baran (company 5)
+              - column: { name: hotel_id, valueNumeric: 1 }
+              - column: { name: created_by_user_id, valueNumeric: 5 }

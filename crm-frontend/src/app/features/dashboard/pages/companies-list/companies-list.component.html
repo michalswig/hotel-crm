@@ -1,0 +1,74 @@
+<mat-card class="company-card">
+  <div class="header">
+    <h2>Company List</h2>
+    <button mat-flat-button color="primary" (click)="onAddCompany()">
+      + Add Company
+    </button>
+  </div>
+
+  <mat-form-field appearance="outline" class="search-field" floatLabel="always">
+    <mat-label>Search by name</mat-label>
+    <input matInput [formControl]="searchControl" placeholder="Type to search..."/>
+    <mat-icon matSuffix>search</mat-icon>
+  </mat-form-field>
+
+  <div class="table-container">
+    <table mat-table [dataSource]="companies" class="mat-elevation-z2">
+
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef> Name</th>
+        <td mat-cell *matCellDef="let c"> {{ c.name }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="email">
+        <th mat-header-cell *matHeaderCellDef> Email</th>
+        <td mat-cell *matCellDef="let c"> {{ c.email || '-' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="phoneNumber">
+        <th mat-header-cell *matHeaderCellDef> Phone</th>
+        <td mat-cell *matCellDef="let c"> {{ c.phoneNumber || '-' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef> Actions </th>
+        <td mat-cell *matCellDef="let c">
+          <button mat-icon-button color="primary"
+                  *ngIf="c.createdByUserId === currentUserId"
+                  (click)="onEditCompany(c.id)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="warn"
+                  *ngIf="c.createdByUserId === currentUserId"
+                  (click)="onDeleteCompany(c.id)">
+            <mat-icon>delete</mat-icon>
+          </button>
+          <button mat-icon-button (click)="router.navigate(['dashboard','companies', c.id, 'contacts'])" matTooltip="Contacts">
+            <mat-icon>people</mat-icon>
+          </button>
+          <button mat-icon-button (click)="router.navigate(['dashboard','companies', c.id, 'contacts','new'])" matTooltip="Add contact">
+            <mat-icon>person_add</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+
+    <div *ngIf="companies.length === 0" class="empty-state">
+      <p>No companies found matching your search.</p>
+    </div>
+  </div>
+
+  <div class="paginator-wrapper">
+    <mat-paginator
+      [length]="totalElements"
+      [pageSize]="pageSize"
+      [pageIndex]="pageIndex"
+      [pageSizeOptions]="[5, 10, 20]"
+      showFirstLastButtons
+      (page)="onPageChange($event)">
+    </mat-paginator>
+  </div>
+</mat-card>

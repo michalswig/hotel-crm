@@ -1,0 +1,17 @@
+.toolbar {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.username {
+  margin-right: 16px;
+}

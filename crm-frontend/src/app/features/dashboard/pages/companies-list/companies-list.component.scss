@@ -1,0 +1,75 @@
+.company-card {
+  margin: 2rem auto;
+  padding: 1.5rem;
+  border-radius: 12px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  max-width: 1100px;
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+
+    h2 {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #222;
+    }
+
+    button {
+      font-weight: 500;
+      border-radius: 8px;
+    }
+  }
+}
+
+.search-field {
+  margin-bottom: 1rem;
+  width: 100%;
+
+  ::ng-deep .mat-form-field-infix {
+    padding: 10px 0;
+  }
+}
+
+.table-container {
+  overflow-x: auto;
+  border-radius: 8px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fafafa;
+  font-size: 14px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+th.mat-header-cell {
+  background-color: #f7f7f7;
+  font-weight: 600;
+  color: #444;
+  text-align: left;
+}
+
+td.mat-cell,
+th.mat-header-cell {
+  padding: 12px 16px;
+  border-bottom: 1px solid #e0e0e0;
+  color: #333;
+}
+
+tr.mat-row:hover {
+  background-color: #f1f5ff;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.mat-paginator {
+  margin-top: 1rem;
+  border-top: 1px solid #ddd;
+  padding-top: 1rem;
+}

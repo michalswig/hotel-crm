@@ -1,0 +1,68 @@
+package com.hotelcrm.crmapp.entity;
+
+import com.hotelcrm.crmapp.enums.Industry;
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Entity
+@Table(name = "companies")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class Company {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String name;
+    @Column(name = "tax_id")
+    private String taxId;
+    @Enumerated(EnumType.STRING)
+    private Industry industry;
+    private String email;
+    @Column(name = "phone_number")
+    private String phoneNumber;
+    private String website;
+    private String address;
+    @Column(name = "postal_code")
+    private String postalCode;
+    private String city;
+    private String country;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "created_by_user_id", nullable = false)
+    private User createdBy;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ContactPerson> contactPersons;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "primary_contact_id")
+    private ContactPerson primaryContactPerson;
+
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Event> events;
+
+    public void addContact(ContactPerson cp) {
+        if (contactPersons == null) contactPersons = new java.util.ArrayList<>();
+        cp.setCompany(this);
+        contactPersons.add(cp);
+    }
+
+    public void removeContact(ContactPerson cp) {
+        contactPersons.remove(cp);
+        cp.setCompany(null);
+        if (primaryContactPerson != null && primaryContactPerson.getId().equals(cp.getId())) {
+            primaryContactPerson = null;
+        }
+    }
+
+}

@@ -1,0 +1,163 @@
+databaseChangeLog:
+  - changeSet:
+      id: 3.1
+      author: mike
+      changes:
+        - createTable:
+            tableName: events
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: description
+                  type: VARCHAR(255)
+
+              - column:
+                  name: type
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: status
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: event_date
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: participants_number
+                  type: INTEGER
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: estimated_total_gross_revenue
+                  type: NUMERIC(38,2)
+
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+
+              - column:
+                  name: company_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: hotel_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: created_by_user_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: 3.2
+      author: mike
+      changes:
+        # Foreign keys
+        - addForeignKeyConstraint:
+            baseTableName: events
+            baseColumnNames: company_id
+            constraintName: fk_event_company
+            referencedTableName: companies
+            referencedColumnNames: id
+
+        - addForeignKeyConstraint:
+            baseTableName: events
+            baseColumnNames: hotel_id
+            constraintName: fk_event_hotel
+            referencedTableName: hotels
+            referencedColumnNames: id
+
+        - addForeignKeyConstraint:
+            baseTableName: events
+            baseColumnNames: created_by_user_id
+            constraintName: fk_event_user
+            referencedTableName: users
+            referencedColumnNames: id
+
+        # indexes (FKs + common filter)
+        - createIndex:
+            indexName: idx_events_company_id
+            tableName: events
+            columns:
+              - column:
+                  name: company_id
+
+        - createIndex:
+            indexName: idx_events_hotel_id
+            tableName: events
+            columns:
+              - column:
+                  name: hotel_id
+
+        - createIndex:
+            indexName: idx_events_created_by_user_id
+            tableName: events
+            columns:
+              - column:
+                  name: created_by_user_id
+
+        - createIndex:
+            indexName: idx_events_event_date
+            tableName: events
+            columns:
+              - column:
+                  name: event_date
+
+  - changeSet:
+      id: 3.3
+      author: mike
+      changes:
+        - addColumn:
+            tableName: events
+            columns:
+              - column:
+                  name: contact_person_id
+                  type: BIGINT
+                  constraints:
+                    nullable: true
+
+        - addForeignKeyConstraint:
+            baseTableName: events
+            baseColumnNames: contact_person_id
+            referencedTableName: contact_persons
+            referencedColumnNames: id
+            constraintName: fk_event_contact_person
+            onDelete: SET NULL
+
+        - createIndex:
+            indexName: idx_events_contact_person_id
+            tableName: events
+            columns:
+              - column:
+                  name: contact_person_id

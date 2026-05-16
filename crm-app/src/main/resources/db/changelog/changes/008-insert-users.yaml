@@ -1,0 +1,50 @@
+databaseChangeLog:
+  - changeSet:
+      id: 004
+      author: mike
+      changes:
+        - insert:
+            tableName: users
+            columns:
+              - column: {name: username, value: admin1}
+              - column: {name: password, value: password123}
+              - column: {name: hotel_id, value: 1}
+              - column: {name: role_id, value: 1}
+              - column: { name: created_at, valueDate: "2024-05-22T12:00:00" }
+              - column: { name: updated_at, valueDate: "2024-05-22T12:00:00" }
+        - insert:
+            tableName: users
+            columns:
+              - column: {name: username, value: manager1}
+              - column: {name: password, value: password123}
+              - column: {name: hotel_id, value: 2}
+              - column: {name: role_id, value: 2}
+              - column: { name: created_at, valueDate: "2024-05-22T12:00:00" }
+              - column: { name: updated_at, valueDate: "2024-05-22T12:00:00" }
+        - insert:
+            tableName: users
+            columns:
+              - column: {name: username, value: specialist1}
+              - column: {name: password, value: password123}
+              - column: {name: hotel_id, value: 1}
+              - column: {name: role_id, value: 3}
+              - column: { name: created_at, valueDate: "2024-05-22T12:00:00" }
+              - column: { name: updated_at, valueDate: "2024-05-22T12:00:00" }
+        - insert:
+            tableName: users
+            columns:
+              - column: {name: username, value: manager2}
+              - column: {name: password, value: password123}
+              - column: {name: hotel_id, value: 2}
+              - column: {name: role_id, value: 2}
+              - column: { name: created_at, valueDate: "2024-05-22T12:00:00" }
+              - column: { name: updated_at, valueDate: "2024-05-22T12:00:00" }
+        - insert:
+            tableName: users
+            columns:
+              - column: {name: username, value: specialist2}
+              - column: {name: password, value: $2a$10$cCSQo0GITmCZBA8Q72KTsem0/gECr.BXLEbVuvGSSpntiuNQKmQ8.}
+              - column: {name: hotel_id, value: 2}
+              - column: {name: role_id, value: 3}
+              - column: { name: created_at, valueDate: "2024-05-22T12:00:00" }
+              - column: { name: updated_at, valueDate: "2024-05-22T12:00:00" }

@@ -1,0 +1,75 @@
+# ─── append this block after the table-creation change set ──────────────────────
+databaseChangeLog:
+  - changeSet:
+      id: seed-interactions-v2        # use a unique ID
+      author: mike
+      changes:
+        # ── Interaction for contact_person_id = 1 ──────────────────────────────
+        - insert:
+            tableName: interactions
+            columns:
+              - column: { name: type,              value: 'CALL' }
+              - column: { name: interaction_status, value: 'PLANNED'}
+              - column: { name: notes,             value: 'Introductory phone call to discuss needs.' }
+              - column: { name: scheduled_at,      valueDate: '2025-06-27T10:00:00' }
+              - column: { name: contact_person_id, valueNumeric: 1 }
+              - column: { name: company_id,        valueComputed: "(SELECT company_id FROM contact_persons WHERE id = 1)" }
+              - column: { name: user_id,           valueNumeric: 5 }
+              - column: { name: created_at,        valueDate: '2025-06-27T10:00:00' }
+              - column: { name: updated_at,        valueDate: '2025-06-27T10:00:00' }
+
+        # ── Interaction for contact_person_id = 2 ──────────────────────────────
+        - insert:
+            tableName: interactions
+            columns:
+              - column: { name: type,              value: 'EMAIL' }
+              - column: { name: interaction_status, value: 'PLANNED'}
+              - column: { name: notes,             value: 'Sent product brochure and pricing details.' }
+              - column: { name: scheduled_at,      valueDate: '2025-06-27T13:30:00' }
+              - column: { name: contact_person_id, valueNumeric: 2 }
+              - column: { name: company_id,        valueComputed: "(SELECT company_id FROM contact_persons WHERE id = 2)" }
+              - column: { name: user_id,           valueNumeric: 5 }
+              - column: { name: created_at,        valueDate: '2025-06-27T13:30:00' }
+              - column: { name: updated_at,        valueDate: '2025-06-27T13:30:00' }
+
+        # ── Interaction for contact_person_id = 3 ──────────────────────────────
+        - insert:
+            tableName: interactions
+            columns:
+              - column: { name: type,              value: 'MEETING' }
+              - column: { name: interaction_status, value: 'PLANNED'}
+              - column: { name: notes,             value: 'On-site demo at client office.' }
+              - column: { name: scheduled_at,      valueDate: '2025-06-28T09:00:00' }
+              - column: { name: contact_person_id, valueNumeric: 3 }
+              - column: { name: company_id,        valueComputed: "(SELECT company_id FROM contact_persons WHERE id = 3)" }
+              - column: { name: user_id,           valueNumeric: 5 }
+              - column: { name: created_at,        valueDate: '2025-06-28T09:00:00' }
+              - column: { name: updated_at,        valueDate: '2025-06-28T09:00:00' }
+
+        # ── Interaction for contact_person_id = 4 ──────────────────────────────
+        - insert:
+            tableName: interactions
+            columns:
+              - column: { name: type,              value: 'CALL' }
+              - column: { name: interaction_status, value: 'PLANNED'}
+              - column: { name: notes,             value: 'Follow-up call to answer technical questions.' }
+              - column: { name: scheduled_at,      valueDate: '2025-06-28T14:15:00' }
+              - column: { name: contact_person_id, valueNumeric: 4 }
+              - column: { name: company_id,        valueComputed: "(SELECT company_id FROM contact_persons WHERE id = 4)" }
+              - column: { name: user_id,           valueNumeric: 5 }
+              - column: { name: created_at,        valueDate: '2025-06-28T14:15:00' }
+              - column: { name: updated_at,        valueDate: '2025-06-28T14:15:00' }
+
+        # ── Interaction for contact_person_id = 5 ──────────────────────────────
+        - insert:
+            tableName: interactions
+            columns:
+              - column: { name: type,              value: 'EMAIL' }
+              - column: { name: interaction_status, value: 'PLANNED'}
+              - column: { name: notes,             value: 'Sent proposal and project timeline for review.' }
+              - column: { name: scheduled_at,      valueDate: '2025-06-28T17:45:00' }
+              - column: { name: contact_person_id, valueNumeric: 5 }
+              - column: { name: company_id,        valueComputed: "(SELECT company_id FROM contact_persons WHERE id = 5)" }
+              - column: { name: user_id,           valueNumeric: 5 }
+              - column: { name: created_at,        valueDate: '2025-06-28T17:45:00' }
+              - column: { name: updated_at,        valueDate: '2025-06-28T17:45:00' }
